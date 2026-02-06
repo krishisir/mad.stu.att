@@ -1023,6 +1023,40 @@
             }
         }
         
+        /* অতীত তারিখের হাজিরা বাটন */
+        .past-date-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .past-date-btn:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+        }
+        
+        .date-picker-container {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .selected-date-display {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
         @media (max-width: 768px) {
             .dashboard-stats {
                 grid-template-columns: 1fr;
@@ -1084,8 +1118,8 @@
                         <i class="fas fa-mosque"></i>
                     </div>
                     <div>
-                        <div class="logo-text">ছাত্র-ছাত্রী হাজিরা</div>
-                        <div class="logo-subtext">মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা</div>
+                        <div class="logo-text">মাদ্রাসা হাজিরা</div>
+                        <div class="logo-subtext">মেহেরপুর আনছারুল উলূম</div>
                     </div>
                 </a>
                 
@@ -1275,8 +1309,41 @@
                                     class="btn btn-primary">
                                 <i class="fas fa-save"></i> সংরক্ষণ
                             </button>
+                            <button onclick="showPastDateAttendance()" class="past-date-btn">
+                                <i class="fas fa-calendar-alt"></i> অতীত তারিখের হাজিরা
+                            </button>
                             <button onclick="showClassSheets()" class="btn btn-info">
                                 <i class="fas fa-print"></i> শ্রেণি সীট
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- অতীত তারিখ সিলেক্টর -->
+                    <div id="pastDateSelector" class="date-picker-container hidden">
+                        <div class="flex flex-col md:flex-row items-center gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
+                                    অতীত তারিখ নির্বাচন করুন
+                                </label>
+                                <input type="date" id="pastDateInput" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
+                            </div>
+                            <div>
+                                <button onclick="loadPastDateAttendance()" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> হাজিরা দেখুন
+                                </button>
+                                <button onclick="closePastDateSelector()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 ml-2">
+                                    <i class="fas fa-times"></i> বাতিল
+                                </button>
+                            </div>
+                        </div>
+                        <div id="selectedDateDisplay" class="hidden mt-3">
+                            <span class="selected-date-display">
+                                <i class="fas fa-calendar-check mr-2"></i>
+                                নির্বাচিত তারিখ: <span id="selectedDateText"></span>
+                            </span>
+                            <button onclick="resetToToday()" class="btn btn-warning ml-3">
+                                <i class="fas fa-redo"></i> আজকে ফিরে যান
                             </button>
                         </div>
                     </div>
@@ -1465,6 +1532,9 @@
                             </button>
                             <button onclick="showMonthlyReport()" class="btn btn-info">
                                 <i class="fas fa-calendar-alt"></i> মাসিক রিপোর্ট
+                            </button>
+                            <button onclick="showPastDateCorrection()" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> অতীত হাজিরা সংশোধন
                             </button>
                         </div>
                     </div>
@@ -2086,6 +2156,9 @@
                 <button onclick="exportClassSheet()" class="btn btn-success flex-1">
                     <i class="fas fa-download"></i> ডাউনলোড করুন
                 </button>
+                <button onclick="showPastDateForClassSheet()" class="btn btn-warning flex-1">
+                    <i class="fas fa-calendar-alt"></i> অতীত তারিখ
+                </button>
             </div>
             
             <div id="classSheetContent">
@@ -2231,6 +2304,44 @@
         </div>
     </div>
 
+    <!-- অতীত তারিখের হাজিরা সংশোধনের মডেল -->
+    <div id="pastDateCorrectionModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-8 pb-4 border-b">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                    <div class="bg-gradient-to-r from-orange-500 to-red-500 p-2 rounded-lg">
+                        <i class="fas fa-calendar-edit text-white"></i>
+                    </div>
+                    অতীত তারিখের হাজিরা সংশোধন
+                </h2>
+                <button onclick="closePastDateCorrectionModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <i class="fas fa-calendar-day text-blue-500"></i>
+                    তারিখ নির্বাচন করুন
+                </label>
+                <div class="flex gap-4">
+                    <input type="date" id="correctionDateInput" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
+                    <button onclick="loadDateForCorrection()" class="btn btn-primary whitespace-nowrap">
+                        <i class="fas fa-search"></i> হাজিরা দেখুন
+                    </button>
+                </div>
+            </div>
+            
+            <div id="dateCorrectionContent">
+                <div class="text-center py-12 text-gray-500">
+                    <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+                    <div class="text-xl">তারিখ নির্বাচন করুন</div>
+                    <div class="text-sm mt-2">একটি তারিখ নির্বাচন করে হাজিরা দেখুন এবং সংশোধন করুন</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- PWA ইনস্টল প্রম্পট -->
     <div id="pwaInstallPrompt" class="pwa-install-prompt">
         <div class="pwa-install-prompt-content">
@@ -2305,6 +2416,10 @@
         let deleteType = ''; // ডিলিটের ধরন (single, bulk, clearData)
         let deleteStudentData = null; // ডিলিট করা ছাত্রের তথ্য
         
+        // অতীত তারিখের হাজিরা ভ্যারিয়েবল
+        let selectedPastDate = null; // নির্বাচিত অতীত তারিখ
+        let isPastDateMode = false; // অতীত তারিখ মোড চালু আছে কিনা
+        
         // Navigation Variables
         let currentPage = 'dashboard';
         
@@ -2329,6 +2444,29 @@
                 }
                 return digit;
             }).join('');
+        }
+
+        // বাংলা তারিখে রূপান্তর
+        function toBanglaDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const day = banglaDays[date.getDay()];
+            const dayNum = toBangla(date.getDate());
+            const month = banglaMonths[date.getMonth()];
+            const year = toBangla(date.getFullYear());
+            
+            return `${day}, ${dayNum} ${month} ${year}`;
+        }
+
+        // তারিখ স্ট্রিং থেকে বাংলা তারিখ
+        function getBanglaDateFromString(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const dayNum = toBangla(date.getDate());
+            const month = banglaMonths[date.getMonth()];
+            const year = toBangla(date.getFullYear());
+            
+            return `${dayNum} ${month} ${year}`;
         }
 
         // Initialize Firebase
@@ -2789,7 +2927,11 @@
             updateDashboard();
             if (currentPage === 'attendance') {
                 renderClassFilters('attendance');
-                renderAttendanceTable();
+                if (isPastDateMode && selectedPastDate) {
+                    renderAttendanceTableForDate(selectedPastDate);
+                } else {
+                    renderAttendanceTable();
+                }
             } else if (currentPage === 'students') {
                 renderClassFilters('students');
                 renderStudentsTable();
@@ -2854,7 +2996,11 @@
             
             if (page === 'attendance') {
                 renderClassFilters('attendance');
-                renderAttendanceTable();
+                if (isPastDateMode && selectedPastDate) {
+                    renderAttendanceTableForDate(selectedPastDate);
+                } else {
+                    renderAttendanceTable();
+                }
             } else {
                 renderClassFilters('students');
                 renderStudentsTable();
@@ -2887,8 +3033,14 @@
             document.getElementById('attendanceRate').textContent = toBangla(rate) + '%';
         }
 
-        // হাজিরা টেবিল রেন্ডার
+        // হাজিরা টেবিল রেন্ডার (বর্তমান তারিখের জন্য)
         function renderAttendanceTable() {
+            const today = new Date().toDateString();
+            renderAttendanceTableForDate(today);
+        }
+
+        // নির্দিষ্ট তারিখের জন্য হাজিরা টেবিল রেন্ডার
+        function renderAttendanceTableForDate(dateString) {
             const table = document.getElementById('attendanceTable');
             const noStudents = document.getElementById('noStudents');
             
@@ -2906,12 +3058,26 @@
             
             noStudents.classList.add('hidden');
             
-            const today = new Date().toDateString();
+            const banglaDate = toBanglaDate(dateString);
+            const isToday = dateString === new Date().toDateString();
+            
+            // হেডারে তারিখ আপডেট করুন
+            if (isPastDateMode && selectedPastDate) {
+                document.getElementById('todayDate2').textContent = banglaDate + ' (অতীত তারিখ)';
+                document.getElementById('todayDate2').className = 'text-orange-600';
+            } else if (isToday) {
+                document.getElementById('todayDate2').textContent = banglaDate;
+                document.getElementById('todayDate2').className = 'text-blue-600';
+            } else {
+                document.getElementById('todayDate2').textContent = banglaDate + ' (অতীত তারিখ)';
+                document.getElementById('todayDate2').className = 'text-orange-600';
+            }
+            
             let html = '';
             
             filteredStudents.forEach((student, index) => {
                 const studentAttendance = attendance.find(a => 
-                    a.studentId === student.id && a.date === today
+                    a.studentId === student.id && a.date === dateString
                 );
                 
                 const status = studentAttendance ? studentAttendance.status : 'absent';
@@ -2928,11 +3094,11 @@
                         </td>
                         <td class="attendance-column">
                             <div class="flex flex-col md:flex-row gap-2">
-                                <button onclick="markAttendance('${student.id}', 'present')" 
+                                <button onclick="markAttendanceForDate('${student.id}', 'present', '${dateString}')" 
                                         class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
                                     <i class="fas fa-check"></i> উপস্থিত
                                 </button>
-                                <button onclick="markAttendance('${student.id}', 'absent')" 
+                                <button onclick="markAttendanceForDate('${student.id}', 'absent', '${dateString}')" 
                                         class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
                                     <i class="fas fa-times"></i> অনুপস্থিত
                                 </button>
@@ -3336,39 +3502,53 @@
             showToast(`${toBangla(deletedCount)} জন ছাত্র সফলভাবে ডিলিট করা হয়েছে!`, 'success');
         }
 
-        // হাজিরা মার্ক করা
+        // হাজিরা মার্ক করা (বর্তমান তারিখের জন্য)
         function markAttendance(studentId, status) {
             const today = new Date().toDateString();
+            markAttendanceForDate(studentId, status, today);
+        }
+
+        // নির্দিষ্ট তারিখের জন্য হাজিরা মার্ক করা
+        function markAttendanceForDate(studentId, status, dateString) {
             const student = students.find(s => s.id === studentId);
             const statusText = status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
+            const banglaDate = getBanglaDateFromString(dateString);
             
             const existingIndex = attendance.findIndex(a => 
-                a.studentId === studentId && a.date === today
+                a.studentId === studentId && a.date === dateString
             );
             
             const attendanceData = {
-                id: `${studentId}_${today}`,
+                id: `${studentId}_${dateString}`,
                 studentId: studentId,
                 studentName: student.name,
                 studentClass: student.class,
-                date: today,
+                date: dateString,
                 status: status,
                 timestamp: new Date().toISOString(),
-                teacher: getClassTeacher(student.class)
+                teacher: getClassTeacher(student.class),
+                corrected: existingIndex !== -1 // সংশোধন করা হয়েছে কিনা
             };
             
             if (existingIndex !== -1) {
                 attendance[existingIndex] = attendanceData;
+                showToast(`${student.name} - ${banglaDate} তারিখের হাজিরা সংশোধন করা হয়েছে! (${statusText})`, 'success');
             } else {
                 attendance.push(attendanceData);
+                showToast(`${student.name} - ${banglaDate} তারিখের হাজিরা যোগ করা হয়েছে! (${statusText})`, 'success');
             }
             
             // Save to Firebase
             saveAttendanceToFirebase(attendanceData);
             
-            updateUI();
+            // Update UI
+            if (isPastDateMode && selectedPastDate === dateString) {
+                renderAttendanceTableForDate(dateString);
+            } else if (dateString === new Date().toDateString()) {
+                renderAttendanceTable();
+            }
             
-            showToast(`${student.name} - ${statusText} মার্ক করা হয়েছে!`, 'success');
+            updateDashboard();
         }
 
         // ছাত্র এডিট
@@ -3506,21 +3686,24 @@
 
         // সবাইকে উপস্থিত মার্ক
         function markAllPresent() {
-            const today = new Date().toDateString();
+            const dateString = isPastDateMode && selectedPastDate ? selectedPastDate : new Date().toDateString();
+            const banglaDate = getBanglaDateFromString(dateString);
+            
             students.forEach(student => {
                 const attendanceData = {
-                    id: `${student.id}_${today}`,
+                    id: `${student.id}_${dateString}`,
                     studentId: student.id,
                     studentName: student.name,
                     studentClass: student.class,
-                    date: today,
+                    date: dateString,
                     status: 'present',
                     timestamp: new Date().toISOString(),
-                    teacher: getClassTeacher(student.class)
+                    teacher: getClassTeacher(student.class),
+                    corrected: true
                 };
                 
                 const existingIndex = attendance.findIndex(a => 
-                    a.studentId === student.id && a.date === today
+                    a.studentId === student.id && a.date === dateString
                 );
                 
                 if (existingIndex !== -1) {
@@ -3533,8 +3716,16 @@
                 saveAttendanceToFirebase(attendanceData);
             });
             
-            updateUI();
-            showToast('সবাইকে উপস্থিত মার্ক করা হয়েছে!', 'success');
+            // Update UI
+            if (isPastDateMode && selectedPastDate) {
+                renderAttendanceTableForDate(selectedPastDate);
+            } else {
+                renderAttendanceTable();
+            }
+            
+            updateDashboard();
+            
+            showToast(`সবাইকে ${banglaDate} তারিখের জন্য উপস্থিত মার্ক করা হয়েছে!`, 'success');
         }
 
         // ছাত্র সংরক্ষণ
@@ -3595,7 +3786,11 @@
             
             if (!searchText) {
                 if (page === 'attendance') {
-                    renderAttendanceTable();
+                    if (isPastDateMode && selectedPastDate) {
+                        renderAttendanceTableForDate(selectedPastDate);
+                    } else {
+                        renderAttendanceTable();
+                    }
                 } else {
                     renderStudentsTable();
                 }
@@ -3621,7 +3816,7 @@
         function renderFilteredAttendanceTable(filteredStudents) {
             const table = document.getElementById('attendanceTable');
             const noStudents = document.getElementById('noStudents');
-            const today = new Date().toDateString();
+            const dateString = isPastDateMode && selectedPastDate ? selectedPastDate : new Date().toDateString();
             
             if (filteredStudents.length === 0) {
                 table.innerHTML = '';
@@ -3635,7 +3830,7 @@
             
             filteredStudents.forEach((student, index) => {
                 const studentAttendance = attendance.find(a => 
-                    a.studentId === student.id && a.date === today
+                    a.studentId === student.id && a.date === dateString
                 );
                 
                 const status = studentAttendance ? studentAttendance.status : 'absent';
@@ -3652,11 +3847,11 @@
                         </td>
                         <td class="attendance-column">
                             <div class="flex flex-col md:flex-row gap-2">
-                                <button onclick="markAttendance('${student.id}', 'present')" 
+                                <button onclick="markAttendanceForDate('${student.id}', 'present', '${dateString}')" 
                                         class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
                                     <i class="fas fa-check"></i> উপস্থিত
                                 </button>
-                                <button onclick="markAttendance('${student.id}', 'absent')" 
+                                <button onclick="markAttendanceForDate('${student.id}', 'absent', '${dateString}')" 
                                         class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
                                     <i class="fas fa-times"></i> অনুপস্থিত
                                 </button>
@@ -3908,14 +4103,18 @@
                 filteredStudents = students.filter(student => student.class === selectedClass);
             }
             
-            const today = new Date().toDateString();
+            const dateString = selectedPastDate || new Date().toDateString();
             const classInfo = selectedClass ? getClassLabel(selectedClass) : {label: 'সকল শ্রেণি', badge: ''};
             const teacherName = selectedClass ? getClassTeacher(selectedClass) : 'প্রতিষ্ঠান প্রধান';
+            const banglaDate = toBanglaDate(dateString);
             
             let content = `
                 <h3 class="text-lg font-bold text-gray-800 mb-2">
                     ${classInfo.label} - হাজিরা সীট
                 </h3>
+                <div class="text-sm ${selectedPastDate ? 'text-orange-600' : 'text-purple-600'} font-semibold mb-4">
+                    তারিখ: ${banglaDate} ${selectedPastDate ? '(অতীত তারিখ)' : ''}
+                </div>
                 <div class="text-sm text-purple-600 font-semibold mb-4">
                     শ্রেণি শিক্ষক: ${teacherName}
                 </div>
@@ -3927,7 +4126,7 @@
                                 <th>নাম</th>
                                 <th>পিতা</th>
                                 <th>শ্রেণি</th>
-                                <th>আজকের হাজিরা</th>
+                                <th>হাজিরা</th>
                                 <th>স্বাক্ষর</th>
                             </tr>
                         </thead>
@@ -3936,7 +4135,7 @@
             
             filteredStudents.sort((a, b) => a.roll - b.roll).forEach((student, index) => {
                 const studentAttendance = attendance.find(a => 
-                    a.studentId === student.id && a.date === today
+                    a.studentId === student.id && a.date === dateString
                 );
                 const status = studentAttendance ? studentAttendance.status : 'absent';
                 const studentClassInfo = getClassLabel(student.class);
@@ -3980,7 +4179,7 @@
                         </div>
                         <div class="text-center">
                             <div class="font-bold text-gray-800 mb-2">তারিখ</div>
-                            <div class="text-xl font-bold text-blue-600 pt-4">${document.getElementById('todayDate2').textContent}</div>
+                            <div class="text-xl font-bold ${selectedPastDate ? 'text-orange-600' : 'text-blue-600'} pt-4">${banglaDate}</div>
                             <div class="text-sm text-gray-600 mt-1">হাজিরা তারিখ</div>
                         </div>
                     </div>
@@ -4073,29 +4272,28 @@
 
         // শ্রেণি সীট ডাউনলোড
         function exportClassSheet() {
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            const dateString = selectedPastDate || new Date().toDateString();
+            const date = new Date(dateString);
+            const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
             const selectedClass = document.getElementById('sheetClassSelect').value;
             const className = selectedClass ? getClassLabel(selectedClass).label : 'সকল-শ্রেণি';
             const teacherName = selectedClass ? getClassTeacher(selectedClass) : 'প্রতিষ্ঠান প্রধান';
             
-            let csv = 'রোল,নাম,পিতা,শ্রেণি,আজকের হাজিরা,শ্রেণি শিক্ষক\n';
+            let csv = 'রোল,নাম,পিতা,শ্রেণি,হাজিরা,শ্রেণি শিক্ষক,তারিখ\n';
             
             let filteredStudents = students;
             if (selectedClass) {
                 filteredStudents = students.filter(student => student.class === selectedClass);
             }
             
-            const todayStr = today.toDateString();
-            
             filteredStudents.sort((a, b) => a.roll - b.roll).forEach((student, index) => {
                 const studentAttendance = attendance.find(a => 
-                    a.studentId === student.id && a.date === todayStr
+                    a.studentId === student.id && a.date === dateString
                 );
                 const status = studentAttendance ? studentAttendance.status : 'absent';
                 const statusText = status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
                 
-                csv += `${student.roll},${student.name},${student.father},${getClassLabel(student.class).label},${statusText},${teacherName}\n`;
+                csv += `${student.roll},${student.name},${student.father},${getClassLabel(student.class).label},${statusText},${teacherName},${toBanglaDate(dateString)}\n`;
             });
             
             const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -5621,6 +5819,215 @@
             }, 1500);
         }
 
+        // অতীত তারিখের হাজিরা সংশোধন ফাংশনগুলি
+        function showPastDateAttendance() {
+            document.getElementById('pastDateSelector').classList.remove('hidden');
+            // Set default date to yesterday
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdaysDate = yesterday.toISOString().split('T')[0];
+            document.getElementById('pastDateInput').value = yesterdaysDate;
+        }
+        
+        function closePastDateSelector() {
+            document.getElementById('pastDateSelector').classList.add('hidden');
+            document.getElementById('selectedDateDisplay').classList.add('hidden');
+            resetToToday();
+        }
+        
+        function loadPastDateAttendance() {
+            const dateInput = document.getElementById('pastDateInput').value;
+            if (!dateInput) {
+                showToast('দয়া করে একটি তারিখ নির্বাচন করুন!', 'warning');
+                return;
+            }
+            
+            selectedPastDate = new Date(dateInput).toDateString();
+            isPastDateMode = true;
+            
+            // Show selected date
+            document.getElementById('selectedDateText').textContent = toBanglaDate(selectedPastDate);
+            document.getElementById('selectedDateDisplay').classList.remove('hidden');
+            
+            // Hide date selector
+            document.getElementById('pastDateSelector').classList.add('hidden');
+            
+            // Update attendance table for the selected date
+            renderAttendanceTableForDate(selectedPastDate);
+            
+            showToast(`${toBanglaDate(selectedPastDate)} তারিখের হাজিরা লোড করা হয়েছে!`, 'success');
+        }
+        
+        function resetToToday() {
+            selectedPastDate = null;
+            isPastDateMode = false;
+            
+            // Reset date display
+            document.getElementById('selectedDateDisplay').classList.add('hidden');
+            document.getElementById('pastDateSelector').classList.add('hidden');
+            
+            // Update to today's attendance
+            renderAttendanceTable();
+            
+            showToast('আজকের হাজিরাতে ফিরে এসেছেন!', 'info');
+        }
+        
+        function showPastDateCorrection() {
+            document.getElementById('pastDateCorrectionModal').classList.remove('hidden');
+        }
+        
+        function closePastDateCorrectionModal() {
+            document.getElementById('pastDateCorrectionModal').classList.add('hidden');
+        }
+        
+        function loadDateForCorrection() {
+            const dateInput = document.getElementById('correctionDateInput').value;
+            if (!dateInput) {
+                showToast('দয়া করে একটি তারিখ নির্বাচন করুন!', 'warning');
+                return;
+            }
+            
+            const dateString = new Date(dateInput).toDateString();
+            const banglaDate = toBanglaDate(dateString);
+            
+            // Get attendance for this date
+            const dayAttendance = attendance.filter(a => a.date === dateString);
+            
+            let content = `
+                <h3 class="text-lg font-bold mb-4">${banglaDate} - হাজিরা সংশোধন</h3>
+                <div class="mb-6">
+                    <div class="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-xl border border-orange-200">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-info-circle text-orange-500"></i>
+                            <div>
+                                <h4 class="font-bold text-orange-700">নির্দেশনা:</h4>
+                                <p class="text-orange-600 text-sm">নিচের তালিকা থেকে ছাত্রদের হাজিরা সংশোধন করুন। পরিবর্তনগুলো সাথে সাথে সংরক্ষণ হবে।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr>
+                                <th>রোল</th>
+                                <th>নাম</th>
+                                <th>শ্রেণি</th>
+                                <th>বর্তমান হাজিরা</th>
+                                <th>হাজিরা পরিবর্তন</th>
+                                <th>সংশোধনের সময়</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            students.sort((a, b) => a.roll - b.roll).forEach((student, index) => {
+                const studentAttendance = dayAttendance.find(a => a.studentId === student.id);
+                const status = studentAttendance ? studentAttendance.status : 'absent';
+                const classInfo = getClassLabel(student.class);
+                const correctedTime = studentAttendance && studentAttendance.corrected ? 
+                    new Date(studentAttendance.timestamp).toLocaleString('bn-BD') : 'নাই';
+                
+                content += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="py-3 px-4 text-center font-bold">${toBangla(student.roll)}</td>
+                        <td class="py-3 px-4">${student.name}</td>
+                        <td class="py-3 px-4">
+                            <span class="${classInfo.badge} class-badge text-xs">${classInfo.label}</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="${status === 'present' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} px-3 py-1 rounded-full text-sm font-bold">
+                                ${status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত'}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="flex gap-2">
+                                <button onclick="markAttendanceForDate('${student.id}', 'present', '${dateString}')" 
+                                        class="btn ${status === 'present' ? 'btn-success' : 'btn-outline-success'} text-sm py-1">
+                                    <i class="fas fa-check"></i> উপস্থিত
+                                </button>
+                                <button onclick="markAttendanceForDate('${student.id}', 'absent', '${dateString}')" 
+                                        class="btn ${status === 'absent' ? 'btn-danger' : 'btn-outline-danger'} text-sm py-1">
+                                    <i class="fas fa-times"></i> অনুপস্থিত
+                                </button>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-sm">${correctedTime}</td>
+                    </tr>
+                `;
+            });
+            
+            content += `
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t">
+                    <div class="flex gap-4">
+                        <button onclick="closePastDateCorrectionModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
+                            <i class="fas fa-times"></i> বন্ধ করুন
+                        </button>
+                        <button onclick="markAllPresentForDate('${dateString}')" class="btn btn-success flex-1">
+                            <i class="fas fa-check-circle"></i> সবাই উপস্থিত
+                        </button>
+                        <button onclick="loadDateForCorrection()" class="btn btn-primary flex-1">
+                            <i class="fas fa-redo"></i> রিফ্রেশ
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('dateCorrectionContent').innerHTML = content;
+        }
+        
+        function markAllPresentForDate(dateString) {
+            const banglaDate = getBanglaDateFromString(dateString);
+            
+            students.forEach(student => {
+                const attendanceData = {
+                    id: `${student.id}_${dateString}`,
+                    studentId: student.id,
+                    studentName: student.name,
+                    studentClass: student.class,
+                    date: dateString,
+                    status: 'present',
+                    timestamp: new Date().toISOString(),
+                    teacher: getClassTeacher(student.class),
+                    corrected: true
+                };
+                
+                const existingIndex = attendance.findIndex(a => 
+                    a.studentId === student.id && a.date === dateString
+                );
+                
+                if (existingIndex !== -1) {
+                    attendance[existingIndex] = attendanceData;
+                } else {
+                    attendance.push(attendanceData);
+                }
+                
+                // Save to Firebase
+                saveAttendanceToFirebase(attendanceData);
+            });
+            
+            // Reload the correction view
+            loadDateForCorrection();
+            
+            showToast(`সবাইকে ${banglaDate} তারিখের জন্য উপস্থিত মার্ক করা হয়েছে!`, 'success');
+        }
+        
+        function showPastDateForClassSheet() {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdaysDate = yesterday.toISOString().split('T')[0];
+            
+            document.getElementById('pastDateCorrectionModal').classList.remove('hidden');
+            document.getElementById('correctionDateInput').value = yesterdaysDate;
+            loadDateForCorrection();
+        }
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Firebase
@@ -5674,6 +6081,8 @@
                 closeReportModal();
                 cancelAction();
                 cancelDelete();
+                closePastDateCorrectionModal();
+                closePastDateSelector();
                 toggleMobileMenu(); // ESC-এ মেনু বন্ধ হবে
             }
             
@@ -5690,8 +6099,17 @@
                     showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র ডিলিট করবেন?', 'bulk');
                 }
             }
+            
+            // অতীত তারিখ মোড টগল (Alt+P)
+            if (e.altKey && e.key === 'p') {
+                e.preventDefault();
+                if (isPastDateMode) {
+                    resetToToday();
+                } else {
+                    showPastDateAttendance();
+                }
+            }
         });
     </script>
 </body>
 </html>
-
