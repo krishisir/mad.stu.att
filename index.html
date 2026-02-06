@@ -615,6 +615,12 @@
             color: white;
         }
         
+        .action-btn-delete:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
         .action-btn-view {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
@@ -860,6 +866,163 @@
             color: white;
         }
         
+        /* উন্নত ডিলিট মডেল স্টাইল */
+        .delete-confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .delete-confirmation-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .delete-icon {
+            font-size: 60px;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+        
+        .delete-student-info {
+            background: #fef2f2;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .delete-student-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .delete-student-info-label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        
+        .delete-student-info-value {
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .delete-warning {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .delete-warning-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+        
+        .delete-warning-icon {
+            color: #f59e0b;
+        }
+        
+        .delete-warning-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .delete-warning-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: #92400e;
+        }
+        
+        .delete-warning-list li i {
+            color: #f59e0b;
+            margin-top: 3px;
+        }
+        
+        .delete-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .delete-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+        
+        .delete-cancel-btn {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+        
+        .delete-cancel-btn:hover {
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .delete-confirm-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .delete-confirm-btn:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        /* বাটন এনিমেশন */
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+        
         @media (max-width: 768px) {
             .dashboard-stats {
                 grid-template-columns: 1fr;
@@ -875,6 +1038,10 @@
             }
             
             .confirmation-buttons {
+                flex-direction: column;
+            }
+            
+            .delete-buttons {
                 flex-direction: column;
             }
             
@@ -907,12 +1074,6 @@
     </style>
 </head>
 <body>
-    <!-- Firebase Connection Status -->
-    <div id="firebaseStatus" class="firebase-status firebase-syncing hidden">
-        <i class="fas fa-sync-alt fa-spin"></i>
-        <span>ফায়ারবেস সংযোগ হচ্ছে...</span>
-    </div>
-
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
@@ -1198,6 +1359,9 @@
                             <button onclick="showImportModal()" class="btn btn-warning">
                                 <i class="fas fa-upload"></i> ইমপোর্ট
                             </button>
+                            <button onclick="showBulkDeleteOptions()" class="btn btn-danger pulse-animation">
+                                <i class="fas fa-trash-alt"></i> বাল্ক ডিলিট
+                            </button>
                         </div>
                     </div>
 
@@ -1225,6 +1389,9 @@
                         <table>
                             <thead>
                                 <tr>
+                                    <th style="width: 50px;">
+                                        <input type="checkbox" id="selectAllStudents" onclick="toggleSelectAllStudents()">
+                                    </th>
                                     <th>আইডি নং</th>
                                     <th>রোল</th>
                                     <th>নাম</th>
@@ -1239,6 +1406,29 @@
                                 <!-- ডেটা লোড হবে -->
                             </tbody>
                         </table>
+                    </div>
+                    
+                    <!-- বাল্ক ডিলিট অপশন -->
+                    <div id="bulkDeleteOptions" class="hidden mt-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-200">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-red-100 p-3 rounded-full">
+                                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-red-800">বাল্ক ডিলিট অপশন</h4>
+                                    <p class="text-sm text-red-600">আপনি <span id="selectedCount" class="font-bold">0</span> টি ছাত্র নির্বাচন করেছেন</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="cancelBulkDelete()" class="btn bg-gradient-to-r from-gray-500 to-gray-600">
+                                    <i class="fas fa-times"></i> বাতিল
+                                </button>
+                                <button onclick="deleteSelectedStudents()" class="btn btn-danger">
+                                    <i class="fas fa-trash-alt"></i> নির্বাচিত ছাত্র ডিলিট করুন
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
                     <div id="noStudentsList" class="text-center py-12 hidden">
@@ -1582,7 +1772,8 @@
                                 <button onclick="importData()" class="btn btn-warning">
                                     <i class="fas fa-upload"></i> ডেটা রিস্টোর
                                 </button>
-                                <button onclick="confirmAction('clearData', 'সমস্ত ডেটা ডিলিট করতে চান?', 'এই কাজটি অপরিবর্তনীয়। সব ডেটা মুছে যাবে!')" class="btn btn-danger">
+                                <button onclick="showDeleteConfirmation('clearData', 'সমস্ত ডেটা ডিলিট করতে চান?', 'clearData')" 
+                                        class="btn btn-danger">
                                     <i class="fas fa-trash"></i> সকল ডেটা ডিলিট
                                 </button>
                                 <button onclick="resetSettings()" class="btn btn-info">
@@ -1993,6 +2184,53 @@
         </div>
     </div>
 
+    <!-- উন্নত ডিলিট কনফার্মেশন মডেল -->
+    <div id="deleteConfirmationModal" class="delete-confirmation-modal hidden">
+        <div class="delete-confirmation-content">
+            <div class="delete-icon">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4" id="deleteTitle">ছাত্র ডিলিট করবেন?</h2>
+            <p class="text-gray-600 mb-6" id="deleteMessage">আপনি কি নিশ্চিত যে এই ছাত্রকে ডিলিট করতে চান?</p>
+            
+            <!-- ছাত্রের তথ্য -->
+            <div class="delete-student-info" id="deleteStudentInfo">
+                <!-- ছাত্রের তথ্য এখানে লোড হবে -->
+            </div>
+            
+            <!-- সতর্কবার্তা -->
+            <div class="delete-warning">
+                <div class="delete-warning-title">
+                    <i class="fas fa-exclamation-triangle delete-warning-icon"></i>
+                    <span>সতর্কতা!</span>
+                </div>
+                <ul class="delete-warning-list">
+                    <li>
+                        <i class="fas fa-times-circle"></i>
+                        <span>ডিলিটের পর ছাত্রের সকল তথ্য মুছে যাবে</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-calendar-times"></i>
+                        <span>ছাত্রের সকল হাজিরা রেকর্ড ডিলিট হবে</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-history"></i>
+                        <span>এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="delete-buttons">
+                <button onclick="cancelDelete()" class="delete-btn delete-cancel-btn">
+                    <i class="fas fa-times"></i> বাতিল করুন
+                </button>
+                <button onclick="confirmDelete()" class="delete-btn delete-confirm-btn">
+                    <i class="fas fa-trash-alt"></i> হ্যাঁ, ডিলিট করুন
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- PWA ইনস্টল প্রম্পট -->
     <div id="pwaInstallPrompt" class="pwa-install-prompt">
         <div class="pwa-install-prompt-content">
@@ -2063,6 +2301,9 @@
         let pendingAction = null;
         let currentFilterClass = '';
         let confirmationData = null;
+        let selectedStudents = new Set(); // বাল্ক ডিলিটের জন্য নির্বাচিত ছাত্র আইডি
+        let deleteType = ''; // ডিলিটের ধরন (single, bulk, clearData)
+        let deleteStudentData = null; // ডিলিট করা ছাত্রের তথ্য
         
         // Navigation Variables
         let currentPage = 'dashboard';
@@ -2372,6 +2613,7 @@
                 return;
             }
             
+            // Delete student document
             db.collection(STUDENTS_COLLECTION).doc(studentId).delete()
                 .then(() => {
                     console.log("Student deleted from Firebase");
@@ -2387,6 +2629,7 @@
                     snapshot.forEach((doc) => {
                         doc.ref.delete();
                     });
+                    console.log("Attendance records deleted from Firebase");
                 })
                 .catch((error) => {
                     console.error("Error deleting attendance records: ", error);
@@ -2718,9 +2961,9 @@
                                 <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
                                     <i class="fas fa-edit"></i> এডিট
                                 </button>
-                                <button onclick="confirmAction('deleteStudent', 'এই ছাত্রকে ডিলিট করতে চান?', 'ছাত্র: ${student.name}\\nরোল: ${student.roll}\\n\\nডিলিটের পর পুনরুদ্ধার করা যাবে না!', '${student.id}')" 
+                                <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
                                         class="action-btn action-btn-delete">
-                                    <i class="fas fa-trash"></i> ডিলিট
+                                    <i class="fas fa-trash-alt"></i> ডিলিট
                                 </button>
                                 <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view">
                                     <i class="fas fa-eye"></i> বিস্তারিত
@@ -2749,6 +2992,7 @@
                 table.innerHTML = '';
                 noStudents.classList.remove('hidden');
                 document.getElementById('totalStudentsCount').textContent = '০';
+                document.getElementById('bulkDeleteOptions').classList.add('hidden');
                 return;
             }
             
@@ -2757,12 +3001,18 @@
             
             let html = '';
             
-            filteredStudents.forEach(student => {
+            filteredStudents.forEach((student, index) => {
                 const classInfo = getClassLabel(student.class);
                 const teacherName = getClassTeacher(student.class);
+                const isSelected = selectedStudents.has(student.id);
                 
                 html += `
                     <tr>
+                        <td style="width: 50px;">
+                            <input type="checkbox" class="student-checkbox" 
+                                   onclick="toggleStudentSelection('${student.id}')" 
+                                   ${isSelected ? 'checked' : ''}>
+                        </td>
                         <td><span class="font-bold bg-gray-100 px-3 py-1 rounded-lg">${student.id || 'N/A'}</span></td>
                         <td><span class="font-bold text-gray-800">${toBangla(student.roll)}</span></td>
                         <td>
@@ -2790,6 +3040,10 @@
                                 <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
                                     <i class="fas fa-edit"></i> এডিট
                                 </button>
+                                <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
+                                        class="action-btn action-btn-delete">
+                                    <i class="fas fa-trash-alt"></i> ডিলিট
+                                </button>
                                 <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view">
                                     <i class="fas fa-eye"></i> বিস্তারিত
                                 </button>
@@ -2800,6 +3054,286 @@
             });
             
             table.innerHTML = html;
+            
+            // Update bulk delete options visibility
+            updateBulkDeleteOptions();
+        }
+
+        // ছাত্র নির্বাচন টগল
+        function toggleStudentSelection(studentId) {
+            if (selectedStudents.has(studentId)) {
+                selectedStudents.delete(studentId);
+            } else {
+                selectedStudents.add(studentId);
+            }
+            
+            updateBulkDeleteOptions();
+        }
+
+        // সব ছাত্র নির্বাচন/অনির্বাচন
+        function toggleSelectAllStudents() {
+            const selectAllCheckbox = document.getElementById('selectAllStudents');
+            const studentCheckboxes = document.querySelectorAll('.student-checkbox');
+            
+            if (selectAllCheckbox.checked) {
+                students.forEach(student => {
+                    selectedStudents.add(student.id);
+                });
+                studentCheckboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+            } else {
+                selectedStudents.clear();
+                studentCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+            
+            updateBulkDeleteOptions();
+        }
+
+        // বাল্ক ডিলিট অপশন আপডেট
+        function updateBulkDeleteOptions() {
+            const bulkDeleteOptions = document.getElementById('bulkDeleteOptions');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            if (selectedStudents.size > 0) {
+                bulkDeleteOptions.classList.remove('hidden');
+                selectedCount.textContent = selectedStudents.size;
+            } else {
+                bulkDeleteOptions.classList.add('hidden');
+            }
+            
+            // Update select all checkbox
+            const selectAllCheckbox = document.getElementById('selectAllStudents');
+            const studentCheckboxes = document.querySelectorAll('.student-checkbox');
+            
+            if (studentCheckboxes.length > 0) {
+                const allSelected = Array.from(studentCheckboxes).every(cb => cb.checked);
+                selectAllCheckbox.checked = allSelected;
+            }
+        }
+
+        // বাল্ক ডিলিট অপশন দেখাও
+        function showBulkDeleteOptions() {
+            if (students.length === 0) {
+                showToast('ডিলিট করার কোন ছাত্র নেই!', 'warning');
+                return;
+            }
+            
+            if (selectedStudents.size === 0) {
+                // যদি কোন ছাত্র নির্বাচিত না থাকে, সব ছাত্র নির্বাচন করুন
+                students.forEach(student => {
+                    selectedStudents.add(student.id);
+                });
+                renderStudentsTable();
+            }
+            
+            showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্রদের ডিলিট করবেন?', 'bulk');
+        }
+
+        // বাল্ক ডিলিট বাতিল
+        function cancelBulkDelete() {
+            selectedStudents.clear();
+            renderStudentsTable();
+        }
+
+        // নির্বাচিত ছাত্র ডিলিট
+        function deleteSelectedStudents() {
+            if (selectedStudents.size === 0) {
+                showToast('কোন ছাত্র নির্বাচন করা হয়নি!', 'warning');
+                return;
+            }
+            
+            showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্রদের ডিলিট করবেন?', 'bulk');
+        }
+
+        // উন্নত ডিলিট কনফার্মেশন মডেল দেখাও
+        function showDeleteConfirmation(type, message, data) {
+            deleteType = type;
+            deleteStudentData = data;
+            
+            const modal = document.getElementById('deleteConfirmationModal');
+            const title = document.getElementById('deleteTitle');
+            const messageEl = document.getElementById('deleteMessage');
+            const studentInfo = document.getElementById('deleteStudentInfo');
+            
+            // মডেলের টাইটেল ও মেসেজ সেট করুন
+            if (type === 'single') {
+                const student = students.find(s => s.id === data);
+                if (student) {
+                    deleteStudentData = student;
+                    title.textContent = 'ছাত্র ডিলিট করবেন?';
+                    messageEl.textContent = `আপনি কি নিশ্চিত যে "${student.name}" কে ডিলিট করতে চান?`;
+                    
+                    // ছাত্রের তথ্য দেখান
+                    studentInfo.innerHTML = `
+                        <div class="delete-student-info-item">
+                            <span class="delete-student-info-label">নাম:</span>
+                            <span class="delete-student-info-value">${student.name}</span>
+                        </div>
+                        <div class="delete-student-info-item">
+                            <span class="delete-student-info-label">আইডি:</span>
+                            <span class="delete-student-info-value">${student.id}</span>
+                        </div>
+                        <div class="delete-student-info-item">
+                            <span class="delete-student-info-label">রোল:</span>
+                            <span class="delete-student-info-value">${toBangla(student.roll)}</span>
+                        </div>
+                        <div class="delete-student-info-item">
+                            <span class="delete-student-info-label">শ্রেণি:</span>
+                            <span class="delete-student-info-value">${getClassLabel(student.class).label}</span>
+                        </div>
+                    `;
+                    studentInfo.classList.remove('hidden');
+                }
+            } else if (type === 'bulk') {
+                title.textContent = 'নির্বাচিত ছাত্র ডিলিট করবেন?';
+                messageEl.textContent = `আপনি কি নিশ্চিত যে ${selectedStudents.size} জন ছাত্রকে ডিলিট করতে চান?`;
+                
+                // নির্বাচিত ছাত্রদের তালিকা দেখান
+                let selectedStudentsList = '';
+                let count = 0;
+                students.forEach(student => {
+                    if (selectedStudents.has(student.id) && count < 3) {
+                        selectedStudentsList += `
+                            <div class="delete-student-info-item">
+                                <span class="delete-student-info-label">${count + 1}. ${student.name}</span>
+                                <span class="delete-student-info-value">রোল: ${toBangla(student.roll)}</span>
+                            </div>
+                        `;
+                        count++;
+                    }
+                });
+                
+                if (selectedStudents.size > 3) {
+                    selectedStudentsList += `
+                        <div class="delete-student-info-item">
+                            <span class="delete-student-info-label">এবং আরও...</span>
+                            <span class="delete-student-info-value">${selectedStudents.size - 3} জন</span>
+                        </div>
+                    `;
+                }
+                
+                studentInfo.innerHTML = selectedStudentsList;
+                studentInfo.classList.remove('hidden');
+            } else if (type === 'clearData') {
+                title.textContent = 'সমস্ত ডেটা ডিলিট করবেন?';
+                messageEl.textContent = 'আপনি কি নিশ্চিত যে সমস্ত ডেটা (ছাত্র, হাজিরা, শিক্ষক) ডিলিট করতে চান?';
+                
+                // ডেটা পরিসংখ্যান দেখান
+                studentInfo.innerHTML = `
+                    <div class="delete-student-info-item">
+                        <span class="delete-student-info-label">ছাত্র:</span>
+                        <span class="delete-student-info-value">${students.length} জন</span>
+                    </div>
+                    <div class="delete-student-info-item">
+                        <span class="delete-student-info-label">হাজিরা রেকর্ড:</span>
+                        <span class="delete-student-info-value">${attendance.length} টি</span>
+                    </div>
+                    <div class="delete-student-info-item">
+                        <span class="delete-student-info-label">শ্রেণি শিক্ষক:</span>
+                        <span class="delete-student-info-value">${Object.keys(teachers).length} জন</span>
+                    </div>
+                `;
+                studentInfo.classList.remove('hidden');
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        // ডিলিট কনফার্মেশন বাতিল
+        function cancelDelete() {
+            document.getElementById('deleteConfirmationModal').classList.add('hidden');
+            deleteType = '';
+            deleteStudentData = null;
+        }
+
+        // ডিলিট নিশ্চিত
+        function confirmDelete() {
+            document.getElementById('deleteConfirmationModal').classList.add('hidden');
+            
+            if (deleteType === 'single') {
+                // একক ছাত্র ডিলিট
+                if (deleteStudentData && deleteStudentData.id) {
+                    deleteSingleStudent(deleteStudentData.id);
+                }
+            } else if (deleteType === 'bulk') {
+                // বাল্ক ডিলিট
+                deleteBulkStudents();
+            } else if (deleteType === 'clearData') {
+                // সব ডেটা ডিলিট
+                clearAllData();
+            }
+            
+            deleteType = '';
+            deleteStudentData = null;
+        }
+
+        // একক ছাত্র ডিলিট
+        function deleteSingleStudent(studentId) {
+            const index = students.findIndex(s => s.id === studentId);
+            if (index !== -1) {
+                const studentName = students[index].name;
+                
+                // ছাত্র ডিলিট
+                students.splice(index, 1);
+                
+                // সংশ্লিষ্ট হাজিরা ডেটা ডিলিট
+                attendance = attendance.filter(a => a.studentId !== studentId);
+                
+                // Firebase থেকে ডিলিট
+                deleteStudentFromFirebase(studentId);
+                
+                // লোকাল স্টোরেজে সেভ
+                saveToLocal('students', students);
+                saveToLocal('attendance', attendance);
+                
+                // নির্বাচিত ছাত্রদের তালিকা থেকে রিমুভ
+                selectedStudents.delete(studentId);
+                
+                updateUI();
+                
+                showToast(`${studentName} - ছাত্র সফলভাবে ডিলিট করা হয়েছে!`, 'success');
+            }
+        }
+
+        // বাল্ক ডিলিট
+        function deleteBulkStudents() {
+            if (selectedStudents.size === 0) {
+                showToast('কোন ছাত্র নির্বাচন করা হয়নি!', 'warning');
+                return;
+            }
+            
+            let deletedCount = 0;
+            
+            // প্রতিটি নির্বাচিত ছাত্র ডিলিট করুন
+            selectedStudents.forEach(studentId => {
+                const index = students.findIndex(s => s.id === studentId);
+                if (index !== -1) {
+                    // ছাত্র ডিলিট
+                    students.splice(index, 1);
+                    
+                    // সংশ্লিষ্ট হাজিরা ডেটা ডিলিট
+                    attendance = attendance.filter(a => a.studentId !== studentId);
+                    
+                    // Firebase থেকে ডিলিট
+                    deleteStudentFromFirebase(studentId);
+                    
+                    deletedCount++;
+                }
+            });
+            
+            // লোকাল স্টোরেজে সেভ
+            saveToLocal('students', students);
+            saveToLocal('attendance', attendance);
+            
+            // নির্বাচিত ছাত্রদের তালিকা ক্লিয়ার
+            selectedStudents.clear();
+            
+            updateUI();
+            
+            showToast(`${toBangla(deletedCount)} জন ছাত্র সফলভাবে ডিলিট করা হয়েছে!`, 'success');
         }
 
         // হাজিরা মার্ক করা
@@ -2955,6 +3489,10 @@
                     <button onclick="editStudent('${student.id}')" class="btn btn-primary flex-1">
                         <i class="fas fa-edit"></i> তথ্য এডিট
                     </button>
+                    <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
+                            class="btn btn-danger flex-1">
+                        <i class="fas fa-trash-alt"></i> ডিলিট করুন
+                    </button>
                     <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
                         <i class="fas fa-times"></i> বন্ধ করুন
                     </button>
@@ -2964,29 +3502,6 @@
             document.getElementById('reportTitle').textContent = 'ছাত্রের বিস্তারিত তথ্য';
             document.getElementById('reportContent').innerHTML = content;
             document.getElementById('reportModal').classList.remove('hidden');
-        }
-
-        // ছাত্র ডিলিট
-        function deleteStudent(studentId) {
-            const index = students.findIndex(s => s.id === studentId);
-            if (index !== -1) {
-                const studentName = students[index].name;
-                students.splice(index, 1);
-                
-                // সংশ্লিষ্ট হাজিরা ডেটাও ডিলিট করুন
-                attendance = attendance.filter(a => a.studentId !== studentId);
-                
-                // Delete from Firebase
-                deleteStudentFromFirebase(studentId);
-                
-                // Save locally
-                saveToLocal('students', students);
-                saveToLocal('attendance', attendance);
-                
-                updateUI();
-                
-                showToast(`${studentName} - ছাত্র ডিলিট করা হয়েছে!`, 'success');
-            }
         }
 
         // সবাইকে উপস্থিত মার্ক
@@ -3170,9 +3685,9 @@
                                 <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
                                     <i class="fas fa-edit"></i> এডিট
                                 </button>
-                                <button onclick="confirmAction('deleteStudent', 'এই ছাত্রকে ডিলিট করতে চান?', 'ছাত্র: ${student.name}\\nরোল: ${student.roll}\\n\\nডিলিটের পর পুনরুদ্ধার করা যাবে না!', '${student.id}')" 
+                                <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
                                         class="action-btn action-btn-delete">
-                                    <i class="fas fa-trash"></i> ডিলিট
+                                    <i class="fas fa-trash-alt"></i> ডিলিট
                                 </button>
                             </div>
                         </td>
@@ -3191,6 +3706,7 @@
                 table.innerHTML = '';
                 noStudents.classList.remove('hidden');
                 document.getElementById('totalStudentsCount').textContent = '০';
+                document.getElementById('bulkDeleteOptions').classList.add('hidden');
                 return;
             }
             
@@ -3199,12 +3715,18 @@
             
             let html = '';
             
-            filteredStudents.forEach(student => {
+            filteredStudents.forEach((student, index) => {
                 const classInfo = getClassLabel(student.class);
                 const teacherName = getClassTeacher(student.class);
+                const isSelected = selectedStudents.has(student.id);
                 
                 html += `
                     <tr>
+                        <td style="width: 50px;">
+                            <input type="checkbox" class="student-checkbox" 
+                                   onclick="toggleStudentSelection('${student.id}')" 
+                                   ${isSelected ? 'checked' : ''}>
+                        </td>
                         <td><span class="font-bold bg-gray-100 px-3 py-1 rounded-lg">${student.id || 'N/A'}</span></td>
                         <td><span class="font-bold text-gray-800">${toBangla(student.roll)}</span></td>
                         <td>
@@ -3232,8 +3754,9 @@
                                 <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
                                     <i class="fas fa-edit"></i> এডিট
                                 </button>
-                                <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view">
-                                    <i class="fas fa-eye"></i> বিস্তারিত
+                                <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
+                                        class="action-btn action-btn-delete">
+                                    <i class="fas fa-trash-alt"></i> ডিলিট
                                 </button>
                             </div>
                         </td>
@@ -3242,6 +3765,7 @@
             });
             
             table.innerHTML = html;
+            updateBulkDeleteOptions();
         }
 
         // শিক্ষক ব্যবস্থাপনা দেখাও
@@ -4008,12 +4532,47 @@
                     importConfirm(confirmationData);
                     break;
                 case 'clearData':
-                    clearAllData();
+                    showDeleteConfirmation('clearData', 'সমস্ত ডেটা ডিলিট করবেন?', 'clearData');
                     break;
             }
             
             pendingAction = null;
             confirmationData = null;
+        }
+
+        // সব ডেটা ডিলিট
+        function clearAllData() {
+            // Clear from Firebase
+            if (firebaseInitialized && isFirebaseConnected) {
+                // Delete all students
+                students.forEach(student => {
+                    deleteStudentFromFirebase(student.id);
+                });
+                
+                // Clear teachers
+                db.collection(TEACHERS_COLLECTION).doc('classTeachers').delete();
+                
+                // Clear settings
+                db.collection(SETTINGS_COLLECTION).doc('appSettings').delete();
+            }
+            
+            // Clear local data
+            students = [];
+            attendance = [];
+            teachers = {};
+            selectedStudents.clear();
+            
+            // Clear all filters and reload
+            currentFilterClass = '';
+            
+            // Save locally
+            saveToLocal('students', students);
+            saveToLocal('attendance', attendance);
+            saveToLocal('teachers', teachers);
+            
+            updateUI();
+            
+            showToast('সমস্ত ডেটা সফলভাবে ডিলিট করা হয়েছে!', 'success');
         }
 
         // মডেল কন্ট্রোল
@@ -4653,39 +5212,6 @@
             showToast('ডেটা সফলভাবে ইমপোর্ট করা হয়েছে!', 'success');
         }
         
-        function clearAllData() {
-            // Clear from Firebase
-            if (firebaseInitialized && isFirebaseConnected) {
-                // Delete all students
-                students.forEach(student => {
-                    deleteStudentFromFirebase(student.id);
-                });
-                
-                // Clear teachers
-                db.collection(TEACHERS_COLLECTION).doc('classTeachers').delete();
-                
-                // Clear settings
-                db.collection(SETTINGS_COLLECTION).doc('appSettings').delete();
-            }
-            
-            // Clear local data
-            students = [];
-            attendance = [];
-            teachers = {};
-            
-            // Clear all filters and reload
-            currentFilterClass = '';
-            
-            // Save locally
-            saveToLocal('students', students);
-            saveToLocal('attendance', attendance);
-            saveToLocal('teachers', teachers);
-            
-            updateUI();
-            
-            showToast('সমস্ত ডেটা ডিলিট করা হয়েছে!', 'success');
-        }
-        
         function showAddClassModal() {
             showToast('এই ফিচারটি শীঘ্রই আসছে!', 'info');
         }
@@ -5147,6 +5673,7 @@
                 closeTeacherModal();
                 closeReportModal();
                 cancelAction();
+                cancelDelete();
                 toggleMobileMenu(); // ESC-এ মেনু বন্ধ হবে
             }
             
@@ -5154,6 +5681,14 @@
             if (e.ctrlKey && e.key === 'i') {
                 e.preventDefault();
                 addToHomeScreen();
+            }
+            
+            // Delete shortcut
+            if (e.key === 'Delete' && currentPage === 'students') {
+                e.preventDefault();
+                if (selectedStudents.size > 0) {
+                    showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র ডিলিট করবেন?', 'bulk');
+                }
             }
         });
     </script>
