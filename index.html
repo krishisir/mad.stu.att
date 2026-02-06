@@ -1141,7 +1141,7 @@
                 </a>
                 <a href="#" class="nav-link" onclick="navigateToPage('students'); return false;">
                     <i class="fas fa-users"></i>
-                    ছাত্র তালিকা
+                    ছাত্র-ছাত্রী তালিকা
                 </a>
                 <a href="#" class="nav-link" onclick="navigateToPage('reports'); return false;">
                     <i class="fas fa-chart-bar"></i>
@@ -1187,7 +1187,7 @@
                         </div>
                         <div class="flex flex-col gap-3">
                             <button onclick="showAddStudentModal()" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> নতুন ছাত্র যোগ
+                                <i class="fas fa-user-plus"></i> নতুন ছাত্র-ছাত্রী যোগ
                             </button>
                             <button onclick="showClassSheets()" class="btn btn-info">
                                 <i class="fas fa-clipboard-list"></i> শ্রেণি হাজিরা সীট
@@ -1208,7 +1208,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-700">উপস্থিত</h3>
-                                <p class="text-gray-500 text-sm mt-1">আজকের উপস্থিত ছাত্র</p>
+                                <p class="text-gray-500 text-sm mt-1">আজকের উপস্থিত ছাত্র-ছাত্রী</p>
                             </div>
                             <div class="bg-gradient-to-r from-green-100 to-green-50 p-4 rounded-full">
                                 <i class="fas fa-user-check text-3xl text-green-600"></i>
@@ -1221,7 +1221,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-700">অনুপস্থিত</h3>
-                                <p class="text-gray-500 text-sm mt-1">আজকের অনুপস্থিত ছাত্র</p>
+                                <p class="text-gray-500 text-sm mt-1">আজকের অনুপস্থিত ছাত্র-ছাত্রী</p>
                             </div>
                             <div class="bg-gradient-to-r from-red-100 to-red-50 p-4 rounded-full">
                                 <i class="fas fa-user-times text-3xl text-red-600"></i>
@@ -1233,7 +1233,7 @@
                     <div class="stat-card" onclick="showAllStudents()">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-700">মোট ছাত্র</h3>
+                                <h3 class="text-lg font-semibold text-gray-700">মোট ছাত্র-ছাত্রী</h3>
                                 <p class="text-gray-500 text-sm mt-1">সকল ছাত্র-ছাত্রী</p>
                             </div>
                             <div class="bg-gradient-to-r from-blue-100 to-blue-50 p-4 rounded-full">
@@ -1298,7 +1298,7 @@
                                 </div>
                                 আজকের হাজিরা (<span id="todayDate2" class="text-blue-600">লোড হচ্ছে...</span>)
                             </h2>
-                            <p class="text-gray-600 text-sm mt-1">নিচের তালিকা থেকে ছাত্রদের হাজিরা মার্ক করুন</p>
+                            <p class="text-gray-600 text-sm mt-1">নিচের তালিকা থেকে ছাত্র-ছাত্রীদের হাজিরা মার্ক করুন</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <button onclick="confirmAction('markAllPresent', 'সবাইকে উপস্থিত মার্ক করতে চান?', 'এই কাজটি বাতিল করা যাবে না।')" 
@@ -1350,7 +1350,7 @@
 
                     <!-- সার্চ বক্স -->
                     <div class="relative mb-6">
-                        <input type="text" id="searchInputAttendance" class="search-box" placeholder="ছাত্রের নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents('attendance')">
+                        <input type="text" id="searchInputAttendance" class="search-box" placeholder="ছাত্র-ছাত্রীর নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents('attendance')">
                         <div class="absolute right-6 top-4 text-gray-400">
                             <i class="fas fa-search"></i>
                         </div>
@@ -1391,10 +1391,10 @@
                     <div id="noStudents" class="text-center py-12 hidden">
                         <div class="bg-gradient-to-r from-gray-100 to-gray-50 p-8 rounded-2xl inline-block">
                             <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র নেই</h3>
-                            <p class="text-gray-400 mb-6">প্রথমে ছাত্র যোগ করুন</p>
+                            <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র-ছাত্রী নেই</h3>
+                            <p class="text-gray-400 mb-6">প্রথমে ছাত্র-ছাত্রী যোগ করুন</p>
                             <button onclick="showAddStudentModal()" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> ছাত্র যোগ করুন
+                                <i class="fas fa-user-plus"></i> ছাত্র-ছাত্রী যোগ করুন
                             </button>
                         </div>
                     </div>
@@ -1414,11 +1414,11 @@
                                 </div>
                                 সকল ছাত্র-ছাত্রীর তালিকা
                             </h2>
-                            <p class="text-gray-600 text-sm mt-1">মোট ছাত্র: <span id="totalStudentsCount" class="font-bold">০</span></p>
+                            <p class="text-gray-600 text-sm mt-1">মোট ছাত্র-ছাত্রী: <span id="totalStudentsCount" class="font-bold">০</span></p>
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <button onclick="showAddStudentModal()" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> নতুন ছাত্র যোগ
+                                <i class="fas fa-user-plus"></i> নতুন ছাত্র-ছাত্রী যোগ
                             </button>
                             <button onclick="exportStudents()" class="btn btn-success">
                                 <i class="fas fa-download"></i> এক্সপোর্ট
@@ -1434,7 +1434,7 @@
 
                     <!-- সার্চ বক্স -->
                     <div class="relative mb-6">
-                        <input type="text" id="searchInputStudents" class="search-box" placeholder="ছাত্রের নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents('list')">
+                        <input type="text" id="searchInputStudents" class="search-box" placeholder="ছাত্র-ছাত্রীর নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents('list')">
                         <div class="absolute right-6 top-4 text-gray-400">
                             <i class="fas fa-search"></i>
                         </div>
@@ -1451,7 +1451,7 @@
                         </div>
                     </div>
 
-                    <!-- ছাত্র তালিকা টেবিল -->
+                    <!-- ছাত্র-ছাত্রী তালিকা টেবিল -->
                     <div class="overflow-x-auto">
                         <table>
                             <thead>
@@ -1484,7 +1484,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-red-800">বাল্ক ডিলিট অপশন</h4>
-                                    <p class="text-sm text-red-600">আপনি <span id="selectedCount" class="font-bold">0</span> টি ছাত্র নির্বাচন করেছেন</p>
+                                    <p class="text-sm text-red-600">আপনি <span id="selectedCount" class="font-bold">0</span> টি ছাত্র-ছাত্রী নির্বাচন করেছেন</p>
                                 </div>
                             </div>
                             <div class="flex flex-wrap gap-2">
@@ -1492,7 +1492,7 @@
                                     <i class="fas fa-times"></i> বাতিল
                                 </button>
                                 <button onclick="deleteSelectedStudents()" class="btn btn-danger">
-                                    <i class="fas fa-trash-alt"></i> নির্বাচিত ছাত্র ডিলিট করুন
+                                    <i class="fas fa-trash-alt"></i> নির্বাচিত ছাত্র-ছাত্রী ডিলিট করুন
                                 </button>
                             </div>
                         </div>
@@ -1501,10 +1501,10 @@
                     <div id="noStudentsList" class="text-center py-12 hidden">
                         <div class="bg-gradient-to-r from-gray-100 to-gray-50 p-8 rounded-2xl inline-block">
                             <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র নেই</h3>
-                            <p class="text-gray-400 mb-6">প্রথমে ছাত্র যোগ করুন</p>
+                            <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র-ছাত্রী নেই</h3>
+                            <p class="text-gray-400 mb-6">প্রথমে ছাত্র-ছাত্রী যোগ করুন</p>
                             <button onclick="showAddStudentModal()" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> ছাত্র যোগ করুন
+                                <i class="fas fa-user-plus"></i> ছাত্র-ছাত্রী যোগ করুন
                             </button>
                         </div>
                     </div>
@@ -1615,13 +1615,13 @@
                                     <i class="fas fa-user-graduate text-red-600 text-xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-bold text-gray-800">ছাত্র অনুযায়ী</h3>
-                                    <p class="text-sm text-gray-600">প্রতিটি ছাত্রের রিপোর্ট</p>
+                                    <h3 class="font-bold text-gray-800">ছাত্র-ছাত্রী অনুযায়ী</h3>
+                                    <p class="text-sm text-gray-600">প্রতিটি ছাত্র-ছাত্রীর রিপোর্ট</p>
                                 </div>
                             </div>
                             <div class="text-center">
                                 <div class="text-3xl font-bold text-red-600 mb-2" id="studentCount">০</div>
-                                <div class="text-gray-600">মোট ছাত্র</div>
+                                <div class="text-gray-600">মোট ছাত্র-ছাত্রী</div>
                             </div>
                         </div>
 
@@ -1757,7 +1757,7 @@
                                 <tr>
                                     <th>শ্রেণি</th>
                                     <th>শ্রেণি শিক্ষক</th>
-                                    <th>ছাত্র সংখ্যা</th>
+                                    <th>ছাত্র-ছাত্রী সংখ্যা</th>
                                     <th>আজ উপস্থিত</th>
                                     <th>উপস্থিতি হার</th>
                                     <th>অ্যাকশন</th>
@@ -1983,7 +1983,7 @@
     </div>
 
     <!-- Modals -->
-    <!-- ছাত্র যোগ/এডিট করার মডেল -->
+    <!-- ছাত্র-ছাত্রী যোগ/এডিট করার মডেল -->
     <div id="addStudentModal" class="modal hidden">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 pb-4 border-b">
@@ -1991,7 +1991,7 @@
                     <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-lg">
                         <i class="fas fa-user-plus text-white"></i>
                     </div>
-                    <span id="modalTitle">নতুন ছাত্র যোগ</span>
+                    <span id="modalTitle">নতুন ছাত্র-ছাত্রী যোগ</span>
                 </h2>
                 <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
                     <i class="fas fa-times text-2xl"></i>
@@ -2002,7 +2002,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                         <i class="fas fa-id-card text-blue-500"></i>
-                        ছাত্রের আইডি নং *
+                        ছাত্র-ছাত্রীর আইডি নং *
                     </label>
                     <input type="text" id="studentId" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" 
                            placeholder="যেমন: STD-001">
@@ -2023,7 +2023,7 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                         <i class="fas fa-user text-blue-500"></i>
-                        ছাত্রের নাম *
+                        ছাত্র-ছাত্রীর নাম *
                     </label>
                     <input type="text" id="studentName" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" 
                            placeholder="ছাত্র/ছাত্রীর পূর্ণ নাম লিখুন">
@@ -2098,7 +2098,7 @@
                 <button onclick="closeModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 flex-1">
                     <i class="fas fa-times"></i> বাতিল করুন
                 </button>
-                <button onclick="confirmAction('saveStudent', 'ছাত্রের তথ্য সংরক্ষণ করতে চান?', 'সংরক্ষণের পর পরিবর্তন করা যাবে।')" 
+                <button onclick="confirmAction('saveStudent', 'ছাত্র-ছাত্রীর তথ্য সংরক্ষণ করতে চান?', 'সংরক্ষণের পর পরিবর্তন করা যাবে।')" 
                         class="btn btn-primary flex-1">
                     <i class="fas fa-save"></i> সংরক্ষণ করুন
                 </button>
@@ -2263,12 +2263,12 @@
             <div class="delete-icon">
                 <i class="fas fa-trash-alt"></i>
             </div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-4" id="deleteTitle">ছাত্র ডিলিট করবেন?</h2>
-            <p class="text-gray-600 mb-6" id="deleteMessage">আপনি কি নিশ্চিত যে এই ছাত্রকে ডিলিট করতে চান?</p>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4" id="deleteTitle">ছাত্র-ছাত্রী ডিলিট করবেন?</h2>
+            <p class="text-gray-600 mb-6" id="deleteMessage">আপনি কি নিশ্চিত যে এই ছাত্র-ছাত্রীকে ডিলিট করতে চান?</p>
             
-            <!-- ছাত্রের তথ্য -->
+            <!-- ছাত্র-ছাত্রীর তথ্য -->
             <div class="delete-student-info" id="deleteStudentInfo">
-                <!-- ছাত্রের তথ্য এখানে লোড হবে -->
+                <!-- ছাত্র-ছাত্রীর তথ্য এখানে লোড হবে -->
             </div>
             
             <!-- সতর্কবার্তা -->
@@ -2280,11 +2280,11 @@
                 <ul class="delete-warning-list">
                     <li>
                         <i class="fas fa-times-circle"></i>
-                        <span>ডিলিটের পর ছাত্রের সকল তথ্য মুছে যাবে</span>
+                        <span>ডিলিটের পর ছাত্র-ছাত্রীর সকল তথ্য মুছে যাবে</span>
                     </li>
                     <li>
                         <i class="fas fa-calendar-times"></i>
-                        <span>ছাত্রের সকল হাজিরা রেকর্ড ডিলিট হবে</span>
+                        <span>ছাত্র-ছাত্রীর সকল হাজিরা রেকর্ড ডিলিট হবে</span>
                     </li>
                     <li>
                         <i class="fas fa-history"></i>
@@ -2412,9 +2412,9 @@
         let pendingAction = null;
         let currentFilterClass = '';
         let confirmationData = null;
-        let selectedStudents = new Set(); // বাল্ক ডিলিটের জন্য নির্বাচিত ছাত্র আইডি
+        let selectedStudents = new Set(); // বাল্ক ডিলিটের জন্য নির্বাচিত ছাত্র-ছাত্রী আইডি
         let deleteType = ''; // ডিলিটের ধরন (single, bulk, clearData)
-        let deleteStudentData = null; // ডিলিট করা ছাত্রের তথ্য
+        let deleteStudentData = null; // ডিলিট করা ছাত্র-ছাত্রীর তথ্য
         
         // অতীত তারিখের হাজিরা ভ্যারিয়েবল
         let selectedPastDate = null; // নির্বাচিত অতীত তারিখ
@@ -2822,7 +2822,7 @@
             const pageNames = {
                 'dashboard': 'ড্যাশবোর্ড',
                 'attendance': 'হাজিরা',
-                'students': 'ছাত্র তালিকা',
+                'students': 'ছাত্র-ছাত্রী তালিকা',
                 'reports': 'রিপোর্ট',
                 'classes': 'শ্রেণি ব্যবস্থাপনা',
                 'settings': 'সেটিংস'
@@ -3143,7 +3143,7 @@
             table.innerHTML = html;
         }
 
-        // ছাত্র তালিকা টেবিল রেন্ডার
+        // ছাত্র-ছাত্রী তালিকা টেবিল রেন্ডার
         function renderStudentsTable() {
             const table = document.getElementById('studentsTable');
             const noStudents = document.getElementById('noStudentsList');
@@ -3225,7 +3225,7 @@
             updateBulkDeleteOptions();
         }
 
-        // ছাত্র নির্বাচন টগল
+        // ছাত্র-ছাত্রী নির্বাচন টগল
         function toggleStudentSelection(studentId) {
             if (selectedStudents.has(studentId)) {
                 selectedStudents.delete(studentId);
@@ -3236,7 +3236,7 @@
             updateBulkDeleteOptions();
         }
 
-        // সব ছাত্র নির্বাচন/অনির্বাচন
+        // সব ছাত্র-ছাত্রী নির্বাচন/অনির্বাচন
         function toggleSelectAllStudents() {
             const selectAllCheckbox = document.getElementById('selectAllStudents');
             const studentCheckboxes = document.querySelectorAll('.student-checkbox');
@@ -3283,19 +3283,19 @@
         // বাল্ক ডিলিট অপশন দেখাও
         function showBulkDeleteOptions() {
             if (students.length === 0) {
-                showToast('ডিলিট করার কোন ছাত্র নেই!', 'warning');
+                showToast('ডিলিট করার কোন ছাত্র-ছাত্রী নেই!', 'warning');
                 return;
             }
             
             if (selectedStudents.size === 0) {
-                // যদি কোন ছাত্র নির্বাচিত না থাকে, সব ছাত্র নির্বাচন করুন
+                // যদি কোন ছাত্র-ছাত্রী নির্বাচিত না থাকে, সব ছাত্র-ছাত্রী নির্বাচন করুন
                 students.forEach(student => {
                     selectedStudents.add(student.id);
                 });
                 renderStudentsTable();
             }
             
-            showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্রদের ডিলিট করবেন?', 'bulk');
+            showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র-ছাত্রীদের ডিলিট করবেন?', 'bulk');
         }
 
         // বাল্ক ডিলিট বাতিল
@@ -3304,14 +3304,14 @@
             renderStudentsTable();
         }
 
-        // নির্বাচিত ছাত্র ডিলিট
+        // নির্বাচিত ছাত্র-ছাত্রী ডিলিট
         function deleteSelectedStudents() {
             if (selectedStudents.size === 0) {
-                showToast('কোন ছাত্র নির্বাচন করা হয়নি!', 'warning');
+                showToast('কোন ছাত্র-ছাত্রী নির্বাচন করা হয়নি!', 'warning');
                 return;
             }
             
-            showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্রদের ডিলিট করবেন?', 'bulk');
+            showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র-ছাত্রীদের ডিলিট করবেন?', 'bulk');
         }
 
         // উন্নত ডিলিট কনফার্মেশন মডেল দেখাও
@@ -3329,10 +3329,10 @@
                 const student = students.find(s => s.id === data);
                 if (student) {
                     deleteStudentData = student;
-                    title.textContent = 'ছাত্র ডিলিট করবেন?';
+                    title.textContent = 'ছাত্র-ছাত্রী ডিলিট করবেন?';
                     messageEl.textContent = `আপনি কি নিশ্চিত যে "${student.name}" কে ডিলিট করতে চান?`;
                     
-                    // ছাত্রের তথ্য দেখান
+                    // ছাত্র-ছাত্রীর তথ্য দেখান
                     studentInfo.innerHTML = `
                         <div class="delete-student-info-item">
                             <span class="delete-student-info-label">নাম:</span>
@@ -3354,10 +3354,10 @@
                     studentInfo.classList.remove('hidden');
                 }
             } else if (type === 'bulk') {
-                title.textContent = 'নির্বাচিত ছাত্র ডিলিট করবেন?';
-                messageEl.textContent = `আপনি কি নিশ্চিত যে ${selectedStudents.size} জন ছাত্রকে ডিলিট করতে চান?`;
+                title.textContent = 'নির্বাচিত ছাত্র-ছাত্রী ডিলিট করবেন?';
+                messageEl.textContent = `আপনি কি নিশ্চিত যে ${selectedStudents.size} জন ছাত্র/ছাত্রীকে ডিলিট করতে চান?`;
                 
-                // নির্বাচিত ছাত্রদের তালিকা দেখান
+                // নির্বাচিত ছাত্র-ছাত্রীদের তালিকা দেখান
                 let selectedStudentsList = '';
                 let count = 0;
                 students.forEach(student => {
@@ -3385,12 +3385,12 @@
                 studentInfo.classList.remove('hidden');
             } else if (type === 'clearData') {
                 title.textContent = 'সমস্ত ডেটা ডিলিট করবেন?';
-                messageEl.textContent = 'আপনি কি নিশ্চিত যে সমস্ত ডেটা (ছাত্র, হাজিরা, শিক্ষক) ডিলিট করতে চান?';
+                messageEl.textContent = 'আপনি কি নিশ্চিত যে সমস্ত ডেটা (ছাত্র-ছাত্রী, হাজিরা, শিক্ষক) ডিলিট করতে চান?';
                 
                 // ডেটা পরিসংখ্যান দেখান
                 studentInfo.innerHTML = `
                     <div class="delete-student-info-item">
-                        <span class="delete-student-info-label">ছাত্র:</span>
+                        <span class="delete-student-info-label">ছাত্র-ছাত্রী:</span>
                         <span class="delete-student-info-value">${students.length} জন</span>
                     </div>
                     <div class="delete-student-info-item">
@@ -3420,7 +3420,7 @@
             document.getElementById('deleteConfirmationModal').classList.add('hidden');
             
             if (deleteType === 'single') {
-                // একক ছাত্র ডিলিট
+                // একক ছাত্র-ছাত্রী ডিলিট
                 if (deleteStudentData && deleteStudentData.id) {
                     deleteSingleStudent(deleteStudentData.id);
                 }
@@ -3436,13 +3436,13 @@
             deleteStudentData = null;
         }
 
-        // একক ছাত্র ডিলিট
+        // একক ছাত্র-ছাত্রী ডিলিট
         function deleteSingleStudent(studentId) {
             const index = students.findIndex(s => s.id === studentId);
             if (index !== -1) {
                 const studentName = students[index].name;
                 
-                // ছাত্র ডিলিট
+                // ছাত্র-ছাত্রী ডিলিট
                 students.splice(index, 1);
                 
                 // সংশ্লিষ্ট হাজিরা ডেটা ডিলিট
@@ -3455,29 +3455,29 @@
                 saveToLocal('students', students);
                 saveToLocal('attendance', attendance);
                 
-                // নির্বাচিত ছাত্রদের তালিকা থেকে রিমুভ
+                // নির্বাচিত ছাত্র-ছাত্রীদের তালিকা থেকে রিমুভ
                 selectedStudents.delete(studentId);
                 
                 updateUI();
                 
-                showToast(`${studentName} - ছাত্র সফলভাবে ডিলিট করা হয়েছে!`, 'success');
+                showToast(`${studentName} - ছাত্র-ছাত্রী সফলভাবে ডিলিট করা হয়েছে!`, 'success');
             }
         }
 
         // বাল্ক ডিলিট
         function deleteBulkStudents() {
             if (selectedStudents.size === 0) {
-                showToast('কোন ছাত্র নির্বাচন করা হয়নি!', 'warning');
+                showToast('কোন ছাত্র-ছাত্রী নির্বাচন করা হয়নি!', 'warning');
                 return;
             }
             
             let deletedCount = 0;
             
-            // প্রতিটি নির্বাচিত ছাত্র ডিলিট করুন
+            // প্রতিটি নির্বাচিত ছাত্র-ছাত্রী ডিলিট করুন
             selectedStudents.forEach(studentId => {
                 const index = students.findIndex(s => s.id === studentId);
                 if (index !== -1) {
-                    // ছাত্র ডিলিট
+                    // ছাত্র-ছাত্রী ডিলিট
                     students.splice(index, 1);
                     
                     // সংশ্লিষ্ট হাজিরা ডেটা ডিলিট
@@ -3494,12 +3494,12 @@
             saveToLocal('students', students);
             saveToLocal('attendance', attendance);
             
-            // নির্বাচিত ছাত্রদের তালিকা ক্লিয়ার
+            // নির্বাচিত ছাত্র-ছাত্রীদের তালিকা ক্লিয়ার
             selectedStudents.clear();
             
             updateUI();
             
-            showToast(`${toBangla(deletedCount)} জন ছাত্র সফলভাবে ডিলিট করা হয়েছে!`, 'success');
+            showToast(`${toBangla(deletedCount)} জন ছাত্র-ছাত্রী সফলভাবে ডিলিট করা হয়েছে!`, 'success');
         }
 
         // হাজিরা মার্ক করা (বর্তমান তারিখের জন্য)
@@ -3551,13 +3551,13 @@
             updateDashboard();
         }
 
-        // ছাত্র এডিট
+        // ছাত্র-ছাত্রী এডিট
         function editStudent(studentId) {
             const student = students.find(s => s.id === studentId);
             if (!student) return;
             
             currentStudentId = studentId;
-            document.getElementById('modalTitle').textContent = 'ছাত্র তথ্য এডিট করুন';
+            document.getElementById('modalTitle').textContent = 'ছাত্র-ছাত্রীর তথ্য এডিট করুন';
             document.getElementById('studentId').value = student.id;
             document.getElementById('studentRoll').value = student.roll;
             document.getElementById('studentName').value = student.name;
@@ -3570,7 +3570,7 @@
             document.getElementById('addStudentModal').classList.remove('hidden');
         }
 
-        // ছাত্র ডিটেইলস দেখাও
+        // ছাত্র-ছাত্রী ডিটেইলস দেখাও
         function viewStudentDetails(studentId) {
             const student = students.find(s => s.id === studentId);
             if (!student) return;
@@ -3679,7 +3679,7 @@
                 </div>
             `;
             
-            document.getElementById('reportTitle').textContent = 'ছাত্রের বিস্তারিত তথ্য';
+            document.getElementById('reportTitle').textContent = 'ছাত্র-ছাত্রীর বিস্তারিত তথ্য';
             document.getElementById('reportContent').innerHTML = content;
             document.getElementById('reportModal').classList.remove('hidden');
         }
@@ -3728,7 +3728,7 @@
             showToast(`সবাইকে ${banglaDate} তারিখের জন্য উপস্থিত মার্ক করা হয়েছে!`, 'success');
         }
 
-        // ছাত্র সংরক্ষণ
+        // ছাত্র-ছাত্রী সংরক্ষণ
         function saveStudent() {
             const id = document.getElementById('studentId').value.trim();
             const roll = document.getElementById('studentRoll').value.trim();
@@ -3760,14 +3760,14 @@
                 // Add new student
                 students.push(studentData);
                 saveStudentToFirebase(studentData);
-                showToast('নতুন ছাত্র যোগ করা হয়েছে!', 'success');
+                showToast('নতুন ছাত্র-ছাত্রী যোগ করা হয়েছে!', 'success');
             } else {
                 // Update existing student
                 const index = students.findIndex(s => s.id === currentStudentId);
                 if (index !== -1) {
                     students[index] = studentData;
                     saveStudentToFirebase(studentData);
-                    showToast('ছাত্র তথ্য আপডেট করা হয়েছে!', 'success');
+                    showToast('ছাত্র-ছাত্রী তথ্য আপডেট করা হয়েছে!', 'success');
                 }
                 currentStudentId = null;
             }
@@ -3779,7 +3779,7 @@
             updateUI();
         }
 
-        // ছাত্র খুঁজা
+        // ছাত্র-ছাত্রী খুঁজা
         function searchStudents(page = 'attendance') {
             const searchInputId = page === 'attendance' ? 'searchInputAttendance' : 'searchInputStudents';
             const searchText = document.getElementById(searchInputId).value.toLowerCase();
@@ -4481,7 +4481,7 @@
                 content += `
                     <div class="text-center py-8 text-gray-500">
                         <i class="fas fa-user-times text-3xl mb-3"></i>
-                        <div>কোন ছাত্র উপস্থিত নেই</div>
+                        <div>কোন ছাত্র-ছাত্রী উপস্থিত নেই</div>
                     </div>
                 `;
             } else {
@@ -4555,7 +4555,7 @@
                         </div>
                         <div class="text-gray-600">উপস্থিতি হার</div>
                         <div class="text-sm text-gray-500 mt-2">
-                            ${presentStudents.length} / ${students.length} ছাত্র
+                            ${presentStudents.length} / ${students.length} ছাত্র-ছাত্রী
                         </div>
                     </div>
                 </div>
@@ -4576,7 +4576,7 @@
             document.getElementById('reportModal').classList.remove('hidden');
         }
 
-        // উপস্থিত ছাত্র দেখাও
+        // উপস্থিত ছাত্র-ছাত্রী দেখাও
         function showStudents(status) {
             const today = new Date().toDateString();
             const dayAttendance = attendance.filter(a => a.date === today);
@@ -4653,7 +4653,7 @@
             document.getElementById('reportModal').classList.remove('hidden');
         }
 
-        // সব ছাত্র দেখাও
+        // সব ছাত্র-ছাত্রী দেখাও
         function showAllStudents() {
             showStudents('all');
         }
@@ -4775,7 +4775,7 @@
 
         // মডেল কন্ট্রোল
         function showAddStudentModal() {
-            document.getElementById('modalTitle').textContent = 'নতুন ছাত্র যোগ';
+            document.getElementById('modalTitle').textContent = 'নতুন ছাত্র-ছাত্রী যোগ';
             document.getElementById('studentId').value = '';
             document.getElementById('studentRoll').value = '';
             document.getElementById('studentName').value = '';
@@ -5121,9 +5121,9 @@
             const teacherName = getClassTeacher(classValue);
             
             let content = `
-                <h3 class="text-lg font-bold mb-4">${classInfo.label} - ছাত্র তালিকা</h3>
+                <h3 class="text-lg font-bold mb-4">${classInfo.label} - ছাত্র-ছাত্রী তালিকা</h3>
                 <div class="text-sm text-purple-600 font-semibold mb-6">
-                    শ্রেণি শিক্ষক: ${teacherName} | মোট ছাত্র: ${toBangla(classStudents.length)}
+                    শ্রেণি শিক্ষক: ${teacherName} | মোট ছাত্র-ছাত্রী: ${toBangla(classStudents.length)}
                 </div>
                 <div class="max-h-96 overflow-y-auto">
             `;
@@ -5132,7 +5132,7 @@
                 content += `
                     <div class="text-center py-8 text-gray-500">
                         <i class="fas fa-user-graduate text-3xl mb-3"></i>
-                        <div>এই শ্রেণিতে কোন ছাত্র নেই</div>
+                        <div>এই শ্রেণিতে কোন ছাত্র-ছাত্রী নেই</div>
                     </div>
                 `;
             } else {
@@ -5183,7 +5183,7 @@
                 </div>
             `;
             
-            document.getElementById('reportTitle').textContent = `${classInfo.label} - ছাত্র তালিকা`;
+            document.getElementById('reportTitle').textContent = `${classInfo.label} - ছাত্র-ছাত্রী তালিকা`;
             document.getElementById('reportContent').innerHTML = content;
             document.getElementById('reportModal').classList.remove('hidden');
         }
@@ -5289,13 +5289,13 @@
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `ছাত্র-তালিকা-${dateStr}.csv`);
+            link.setAttribute('download', `ছাত্র-ছাত্রী তালিকা-${dateStr}.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            showToast('ছাত্র তালিকা ডাউনলোড করা হয়েছে!', 'success');
+            showToast('ছাত্র-ছাত্রী তালিকা ডাউনলোড করা হয়েছে!', 'success');
         }
         
         function exportAllData() {
@@ -5344,7 +5344,7 @@
                         }
                         
                         confirmAction('importConfirm', 'ডেটা ইমপোর্ট করতে চান?', 
-                            `নতুন ডেটা যোগ হবে:\nছাত্র: ${importedData.students.length}\nহাজিরা রেকর্ড: ${importedData.attendance.length}\n\nপুরানো ডেটা মুছে যাবে না।`, 
+                            `নতুন ডেটা যোগ হবে:\nছাত্র-ছাত্রী: ${importedData.students.length}\nহাজিরা রেকর্ড: ${importedData.attendance.length}\n\nপুরানো ডেটা মুছে যাবে না।`, 
                             importedData);
                     } catch (error) {
                         showToast('ফাইল পড়তে সমস্যা হয়েছে!', 'error');
@@ -5426,7 +5426,7 @@
                         <thead>
                             <tr>
                                 <th>শ্রেণি</th>
-                                <th>ছাত্র সংখ্যা</th>
+                                <th>ছাত্র-ছাত্রী সংখ্যা</th>
                                 <th>আজ উপস্থিত</th>
                                 <th>উপস্থিতি হার</th>
                                 <th>গড় উপস্থিতি</th>
@@ -5539,7 +5539,7 @@
                 content += `
                     <div class="text-center py-8 text-gray-500">
                         <i class="fas fa-user-graduate text-3xl mb-3"></i>
-                        <div>কোন ছাত্র নেই</div>
+                        <div>কোন ছাত্র-ছাত্রী নেই</div>
                     </div>
                 `;
             } else {
@@ -6096,7 +6096,7 @@
             if (e.key === 'Delete' && currentPage === 'students') {
                 e.preventDefault();
                 if (selectedStudents.size > 0) {
-                    showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র ডিলিট করবেন?', 'bulk');
+                    showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র-ছাত্রী ডিলিট করবেন?', 'bulk');
                 }
             }
             
