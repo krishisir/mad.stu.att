@@ -487,14 +487,15 @@
             margin-left: 5px;
         }
         
-        .help-section {
+        .contact-section {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border: 2px solid #0ea5e9;
             border-radius: 15px;
-            padding: 15px;
+            padding: 10px 15px;
             margin-top: 10px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 10px;
         }
         
@@ -642,6 +643,10 @@
             margin-left: 10px;
         }
         
+        .attendance-column {
+            width: 200px;
+        }
+        
         @media (max-width: 768px) {
             .dashboard-stats {
                 grid-template-columns: 1fr;
@@ -673,6 +678,15 @@
                 bottom: 10px;
                 left: 10px;
                 right: 10px;
+            }
+            
+            .attendance-column {
+                width: 150px;
+            }
+            
+            .contact-section {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
@@ -715,15 +729,11 @@
                 </div>
             </div>
             
-            <!-- সাহায্যের জন্য যোগাযোগ -->
-            <div class="help-section mt-4">
-                <div class="bg-blue-500 p-3 rounded-full">
-                    <i class="fas fa-phone-alt text-white"></i>
-                </div>
-                <div class="flex-1">
-                    <div class="font-bold text-blue-700">সাহায্যের জন্য যোগাযোগ করুন:</div>
-                    <div class="text-2xl font-bold text-blue-800">০১৮১১২৩৬৫৪৮</div>
-                    <div class="text-sm text-gray-600 mt-1">যেকোনো সমস্যা বা জিজ্ঞাসার জন্য এই নম্বরে কল করুন</div>
+            <!-- যোগাযোগ -->
+            <div class="contact-section mt-4">
+                <div>
+                    <div class="font-bold text-blue-700 text-sm">প্রয়োজনে যোগাযোগ করুন:</div>
+                    <div class="text-lg font-bold text-blue-800">০১৮১১২৩৬৫৪৮</div>
                 </div>
                 <button onclick="callSupport()" class="btn btn-success">
                     <i class="fas fa-phone"></i> কল করুন
@@ -837,14 +847,13 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ক্রমিক</th>
                             <th>আইডি নং</th>
                             <th>রোল</th>
                             <th>নাম</th>
+                            <th class="attendance-column">হাজিরা</th>
                             <th>শ্রেণি</th>
                             <th>পিতার নাম</th>
                             <th>মোবাইল</th>
-                            <th>হাজিরা</th>
                             <th>অ্যাকশন</th>
                         </tr>
                     </thead>
@@ -1413,7 +1422,7 @@
             document.getElementById('attendanceRate').textContent = toBangla(rate) + '%';
         }
 
-        // হাজিরা টেবিল রেন্ডার
+        // হাজিরা টেবিল রেন্ডার (ক্রমিক নং ছাড়া)
         function renderAttendanceTable() {
             const table = document.getElementById('attendanceTable');
             const noStudents = document.getElementById('noStudents');
@@ -1447,13 +1456,27 @@
                 
                 html += `
                     <tr class="${status === 'present' ? 'status-present' : 'status-absent'}">
-                        <td class="font-semibold">${toBangla(index + 1)}</td>
                         <td><span class="font-bold bg-gray-100 px-3 py-1 rounded-lg">${student.id || 'N/A'}</span></td>
                         <td><span class="font-bold text-gray-800">${toBangla(student.roll)}</span></td>
                         <td>
                             <div class="font-bold text-gray-800">${student.name}</div>
                             <div class="text-xs text-gray-500 mt-1">${student.father}</div>
                             ${isOffline ? '<div class="text-xs text-yellow-600 mt-1"><i class="fas fa-cloud-upload-alt"></i> অফলাইন ডেটা</div>' : ''}
+                        </td>
+                        <td class="attendance-column">
+                            <div class="flex flex-col md:flex-row gap-2">
+                                <button onclick="markAttendance('${student.id}', 'present')" 
+                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
+                                    <i class="fas fa-check"></i> উপস্থিত
+                                </button>
+                                <button onclick="markAttendance('${student.id}', 'absent')" 
+                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
+                                    <i class="fas fa-times"></i> অনুপস্থিত
+                                </button>
+                            </div>
+                            <div class="text-xs mt-2 text-center ${status === 'present' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}">
+                                ${status === 'present' ? '✓ উপস্থিত' : '✗ অনুপস্থিত'}
+                            </div>
                         </td>
                         <td>
                             <div>
@@ -1469,18 +1492,6 @@
                                     <span>${student.mobile}</span>
                                 </div>` : 
                                 '<span class="text-gray-400">N/A</span>'}
-                        </td>
-                        <td>
-                            <div class="flex flex-col md:flex-row gap-2">
-                                <button onclick="markAttendance('${student.id}', 'present')" 
-                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
-                                    <i class="fas fa-check"></i> উপস্থিত
-                                </button>
-                                <button onclick="markAttendance('${student.id}', 'absent')" 
-                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
-                                    <i class="fas fa-times"></i> অনুপস্থিত
-                                </button>
-                            </div>
                         </td>
                         <td>
                             <div class="action-buttons">
@@ -1733,7 +1744,7 @@
                 <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-xl border border-yellow-200 mb-6">
                     <h4 class="font-bold text-yellow-700 mb-2 flex items-center gap-2">
                         <i class="fas fa-phone-alt"></i>
-                        সাহায্যের জন্য যোগাযোগ
+                        প্রয়োজনে যোগাযোগ
                     </h4>
                     <div class="text-xl font-bold text-yellow-800">০১৮১১২৩৬৫৪৮</div>
                     <div class="text-sm text-yellow-600 mt-1">যেকোনো সমস্যা বা জিজ্ঞাসার জন্য এই নম্বরে কল করুন</div>
@@ -1928,7 +1939,7 @@
             renderClassFilters();
         }
 
-        // ছাত্র খুঁজা
+        // ছাত্র খুঁজা (ক্রমিক নং ছাড়া)
         function searchStudents() {
             const searchText = document.getElementById('searchInput').value.toLowerCase();
             
@@ -1962,13 +1973,27 @@
                 
                 html += `
                     <tr class="${status === 'present' ? 'status-present' : 'status-absent'}">
-                        <td class="font-semibold">${toBangla(index + 1)}</td>
                         <td><span class="font-bold bg-gray-100 px-3 py-1 rounded-lg">${student.id || 'N/A'}</span></td>
                         <td><span class="font-bold text-gray-800">${toBangla(student.roll)}</span></td>
                         <td>
                             <div class="font-bold text-gray-800">${student.name}</div>
                             <div class="text-xs text-gray-500 mt-1">${student.father}</div>
                             ${isOffline ? '<div class="text-xs text-yellow-600 mt-1"><i class="fas fa-cloud-upload-alt"></i> অফলাইন ডেটা</div>' : ''}
+                        </td>
+                        <td class="attendance-column">
+                            <div class="flex flex-col md:flex-row gap-2">
+                                <button onclick="markAttendance('${student.id}', 'present')" 
+                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
+                                    <i class="fas fa-check"></i> উপস্থিত
+                                </button>
+                                <button onclick="markAttendance('${student.id}', 'absent')" 
+                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
+                                    <i class="fas fa-times"></i> অনুপস্থিত
+                                </button>
+                            </div>
+                            <div class="text-xs mt-2 text-center ${status === 'present' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}">
+                                ${status === 'present' ? '✓ উপস্থিত' : '✗ অনুপস্থিত'}
+                            </div>
                         </td>
                         <td>
                             <div>
@@ -1984,18 +2009,6 @@
                                     <span>${student.mobile}</span>
                                 </div>` : 
                                 '<span class="text-gray-400">N/A</span>'}
-                        </td>
-                        <td>
-                            <div class="flex flex-col md:flex-row gap-2">
-                                <button onclick="markAttendance('${student.id}', 'present')" 
-                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
-                                    <i class="fas fa-check"></i> উপস্থিত
-                                </button>
-                                <button onclick="markAttendance('${student.id}', 'absent')" 
-                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
-                                    <i class="fas fa-times"></i> অনুপস্থিত
-                                </button>
-                            </div>
                         </td>
                         <td>
                             <div class="action-buttons">
@@ -2045,7 +2058,6 @@
                     <table class="min-w-full">
                         <thead>
                             <tr>
-                                <th>ক্রমিক</th>
                                 <th>রোল</th>
                                 <th>নাম</th>
                                 <th>পিতা</th>
@@ -2067,7 +2079,6 @@
                 
                 content += `
                     <tr class="border-b hover:bg-gray-50">
-                        <td class="py-3 px-4 text-center">${toBangla(index + 1)}</td>
                         <td class="py-3 px-4 text-center font-bold">${toBangla(student.roll)}</td>
                         <td class="py-3 px-4">${student.name} ${isOffline ? '<span class="text-xs text-yellow-600">(অফলাইন)</span>' : ''}</td>
                         <td class="py-3 px-4">${student.father}</td>
@@ -2114,7 +2125,7 @@
                     <div class="flex items-center gap-3">
                         <i class="fas fa-phone-alt text-blue-500"></i>
                         <div>
-                            <div class="text-sm text-blue-600">সাহায্যের জন্য যোগাযোগ:</div>
+                            <div class="text-sm text-blue-600">প্রয়োজনে যোগাযোগ:</div>
                             <div class="font-bold text-blue-800">০১৮১১২৩৬৫৪৮</div>
                         </div>
                     </div>
@@ -2182,7 +2193,7 @@
                     </div>
                     ${printContent}
                     <div class="contact-info">
-                        <p>সাহায্যের জন্য যোগাযোগ: ০১৮১১২৩৬৫৪৮</p>
+                        <p>প্রয়োজনে যোগাযোগ: ০১৮১১২৩৬৫৪৮</p>
                     </div>
                     <div class="footer">
                         <p>© ${new Date().getFullYear()} মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা</p>
@@ -2204,7 +2215,7 @@
             const className = selectedClass ? getClassLabel(selectedClass).label : 'সকল-শ্রেণি';
             const teacherName = selectedClass ? getClassTeacher(selectedClass) : 'প্রতিষ্ঠান প্রধান';
             
-            let csv = 'ক্রমিক,রোল,নাম,পিতা,শ্রেণি,আজকের হাজিরা,শ্রেণি শিক্ষক\n';
+            let csv = 'রোল,নাম,পিতা,শ্রেণি,আজকের হাজিরা,শ্রেণি শিক্ষক\n';
             
             let filteredStudents = students;
             if (selectedClass) {
@@ -2220,7 +2231,7 @@
                 const status = studentAttendance ? studentAttendance.status : 'absent';
                 const statusText = status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
                 
-                csv += `${index + 1},${student.roll},${student.name},${student.father},${getClassLabel(student.class).label},${statusText},${teacherName}\n`;
+                csv += `${student.roll},${student.name},${student.father},${getClassLabel(student.class).label},${statusText},${teacherName}\n`;
             });
             
             const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -2392,7 +2403,7 @@
                     <div class="flex items-center gap-3">
                         <i class="fas fa-phone-alt text-blue-500"></i>
                         <div>
-                            <div class="text-sm text-blue-600">সাহায্যের জন্য যোগাযোগ:</div>
+                            <div class="text-sm text-blue-600">প্রয়োজনে যোগাযোগ:</div>
                             <div class="font-bold text-blue-800">০১৮১১২৩৬৫৪৮</div>
                         </div>
                     </div>
@@ -2524,7 +2535,7 @@
                     <div class="flex items-center gap-3">
                         <i class="fas fa-phone-alt text-yellow-600"></i>
                         <div>
-                            <div class="text-sm text-yellow-700">সাহায্যের জন্য যোগাযোগ:</div>
+                            <div class="text-sm text-yellow-700">প্রয়োজনে যোগাযোগ:</div>
                             <div class="font-bold text-yellow-800">০১৮১১২৩৬৫৪৮</div>
                         </div>
                     </div>
@@ -2536,7 +2547,7 @@
             document.getElementById('reportModal').classList.remove('hidden');
         }
 
-        // উপস্থিত ছাত্র দেখাও
+        // উপস্থিত ছাত্র দেখাও (ক্রমিক নং ছাড়া)
         function showStudents(status) {
             const today = new Date().toDateString();
             const dayAttendance = attendance.filter(a => a.date === today);
@@ -2574,9 +2585,6 @@
                     <div class="flex items-center justify-between p-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded-xl mb-3 shadow-sm">
                         <div class="flex-1">
                             <div class="flex items-center gap-4">
-                                <div class="font-bold text-gray-800 bg-gradient-to-r from-gray-200 to-gray-300 w-8 h-8 rounded-full flex items-center justify-center">
-                                    ${toBangla(index + 1)}
-                                </div>
                                 <div>
                                     <div class="font-semibold text-gray-800">${student.name} ${isOffline ? '<span class="text-xs text-yellow-600">(অফলাইন)</span>' : ''}</div>
                                     <div class="text-sm text-gray-600 mt-1">
@@ -2605,7 +2613,7 @@
                     <div class="flex items-center gap-3">
                         <i class="fas fa-phone-alt text-blue-500"></i>
                         <div>
-                            <div class="text-sm text-blue-600">সাহায্যের জন্য যোগাযোগ:</div>
+                            <div class="text-sm text-blue-600">প্রয়োজনে যোগাযোগ:</div>
                             <div class="font-bold text-blue-800">০১৮১১২৩৬৫৪৮</div>
                         </div>
                     </div>
@@ -2636,13 +2644,13 @@
                 window.open('tel:01811236548');
             } else {
                 // কম্পিউটারে কল করার অপশন
-                document.getElementById('reportTitle').textContent = 'সাহায্যের জন্য যোগাযোগ';
+                document.getElementById('reportTitle').textContent = 'প্রয়োজনে যোগাযোগ';
                 document.getElementById('reportContent').innerHTML = `
                     <div class="text-center p-8">
                         <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-6 rounded-full inline-block mb-6">
                             <i class="fas fa-phone-alt text-white text-4xl"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-4">সাহায্যের জন্য কল করুন</h3>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">প্রয়োজনে কল করুন</h3>
                         <div class="text-4xl font-bold text-blue-600 mb-6">০১৮১১২৩৬৫৪৮</div>
                         <div class="text-gray-600 mb-8">
                             যেকোনো সমস্যা বা জিজ্ঞাসার জন্য উপরের নম্বরে কল করুন।
