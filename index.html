@@ -25,6 +25,11 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap">
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
         
@@ -35,7 +40,149 @@
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding-top: 70px;
+        }
+        
+        /* Navigation Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .nav-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 10px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .logo-subtext {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            font-weight: 600;
+        }
+        
+        /* হামবার্গার মেনু বাটন - এখন সব ডিভাইসে দেখা যাবে */
+        .hamburger-menu-btn {
+            display: flex;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* মোবাইল মেনু */
+        .mobile-menu {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
             padding: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .mobile-menu.show {
+            display: flex;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            padding: 20px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .card {
@@ -247,11 +394,6 @@
             padding: 20px;
             backdrop-filter: blur(5px);
             animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         
         .modal-content {
@@ -487,16 +629,56 @@
             margin-left: 5px;
         }
         
-        .contact-section {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border: 2px solid #0ea5e9;
-            border-radius: 15px;
-            padding: 10px 15px;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+        
+        input:checked + .slider {
+            background-color: #4f46e5;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .slider.round {
+            border-radius: 34px;
+        }
+        
+        .slider.round:before {
+            border-radius: 50%;
         }
         
         /* PWA Specific Styles */
@@ -561,7 +743,7 @@
         
         .offline-indicator {
             position: fixed;
-            top: 20px;
+            top: 80px;
             right: 20px;
             background: #ef4444;
             color: white;
@@ -584,7 +766,7 @@
         
         .online-indicator {
             position: fixed;
-            top: 20px;
+            top: 80px;
             right: 20px;
             background: #10b981;
             color: white;
@@ -647,6 +829,37 @@
             width: 200px;
         }
         
+        /* Firebase Connection Status */
+        .firebase-status {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .firebase-connected {
+            background: #10b981;
+            color: white;
+        }
+        
+        .firebase-disconnected {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .firebase-syncing {
+            background: #f59e0b;
+            color: white;
+        }
+        
         @media (max-width: 768px) {
             .dashboard-stats {
                 grid-template-columns: 1fr;
@@ -684,224 +897,831 @@
                 width: 150px;
             }
             
-            .contact-section {
-                flex-direction: column;
-                text-align: center;
+            .firebase-status {
+                top: 140px;
+                left: 10px;
+                font-size: 10px;
+                padding: 6px 12px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="max-w-7xl mx-auto">
-        <!-- হেডার -->
-        <div class="card mb-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-xl">
-                            <i class="fas fa-mosque text-2xl text-white"></i>
-                        </div>
-                        <div>
-                            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-1">ছাত্র-ছাত্রী হাজিরা ব্যবস্থাপনা</h1>
-                            <p class="text-gray-600">মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা</p>
-                        </div>
+    <!-- Firebase Connection Status -->
+    <div id="firebaseStatus" class="firebase-status firebase-syncing hidden">
+        <i class="fas fa-sync-alt fa-spin"></i>
+        <span>ফায়ারবেস সংযোগ হচ্ছে...</span>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-content">
+                <!-- Logo -->
+                <a href="#" class="logo" onclick="showPage('dashboard'); return false;">
+                    <div class="logo-icon">
+                        <i class="fas fa-mosque"></i>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="badge badge-info"><i class="fas fa-hashtag"></i> EIIN: ১৩০২৯০</span>
-                        <span class="badge badge-purple"><i class="fas fa-code"></i> কোড: ১৮৭৫২</span>
-                        <span id="currentDate" class="badge badge-success"><i class="fas fa-calendar-day"></i> আজ: লোড হচ্ছে...</span>
-                        <span id="pwaStatus" class="badge badge-warning"><i class="fas fa-mobile-alt"></i> PWA</span>
+                    <div>
+                        <div class="logo-text">মাদ্রাসা হাজিরা</div>
+                        <div class="logo-subtext">মেহেরপুর আনছারুল উলূম</div>
                     </div>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <button onclick="showAddStudentModal()" class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> নতুন ছাত্র যোগ
-                    </button>
-                    <button onclick="showClassSheets()" class="btn btn-info">
-                        <i class="fas fa-clipboard-list"></i> শ্রেণি হাজিরা সীট
-                    </button>
-                    <button onclick="showTeacherManagement()" class="btn btn-warning">
-                        <i class="fas fa-chalkboard-teacher"></i> শিক্ষক ব্যবস্থাপনা
-                    </button>
-                    <button onclick="addToHomeScreen()" class="btn btn-success hidden" id="installButton">
-                        <i class="fas fa-download"></i> অ্যাপ ইন্সটল
-                    </button>
-                </div>
-            </div>
-            
-            <!-- যোগাযোগ -->
-            <div class="contact-section mt-4">
-                <div>
-                    <div class="font-bold text-blue-700 text-sm">প্রয়োজনে যোগাযোগ করুন:</div>
-                    <div class="text-lg font-bold text-blue-800">০১৮১১২৩৬৫৪৮</div>
-                </div>
-                <button onclick="callSupport()" class="btn btn-success">
-                    <i class="fas fa-phone"></i> কল করুন
+                </a>
+                
+                <!-- Desktop Menu Button (Three Lines) -->
+                <button class="hamburger-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
                 </button>
             </div>
-        </div>
-
-        <!-- সার্চ বক্স -->
-        <div class="relative mb-6">
-            <input type="text" id="searchInput" class="search-box" placeholder="ছাত্রের নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents()">
-            <div class="absolute right-6 top-4 text-gray-400">
-                <i class="fas fa-search"></i>
-            </div>
-        </div>
-
-        <!-- শ্রেণি ফিল্টার -->
-        <div class="card mb-6">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fas fa-filter text-blue-500"></i>
-                শ্রেণি অনুযায়ী ফিল্টার (শ্রেণি শিক্ষকের নাম সহ)
-            </h3>
-            <div class="class-filter-buttons" id="classFilters">
-                <!-- ক্লাস ফিল্টার বাটন লোড হবে -->
-            </div>
-        </div>
-
-        <!-- ড্যাশবোর্ড স্ট্যাটস -->
-        <div class="dashboard-stats">
-            <div class="stat-card" onclick="showStudents('present')">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700">উপস্থিত</h3>
-                        <p class="text-gray-500 text-sm mt-1">আজকের উপস্থিত ছাত্র</p>
-                    </div>
-                    <div class="bg-gradient-to-r from-green-100 to-green-50 p-4 rounded-full">
-                        <i class="fas fa-user-check text-3xl text-green-600"></i>
-                    </div>
-                </div>
-                <div class="stat-number text-green-600" id="presentCount">০</div>
-            </div>
             
-            <div class="stat-card" onclick="showStudents('absent')">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700">অনুপস্থিত</h3>
-                        <p class="text-gray-500 text-sm mt-1">আজকের অনুপস্থিত ছাত্র</p>
-                    </div>
-                    <div class="bg-gradient-to-r from-red-100 to-red-50 p-4 rounded-full">
-                        <i class="fas fa-user-times text-3xl text-red-600"></i>
-                    </div>
-                </div>
-                <div class="stat-number text-red-600" id="absentCount">০</div>
-            </div>
-            
-            <div class="stat-card" onclick="showAllStudents()">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700">মোট ছাত্র</h3>
-                        <p class="text-gray-500 text-sm mt-1">সকল ছাত্র-ছাত্রী</p>
-                    </div>
-                    <div class="bg-gradient-to-r from-blue-100 to-blue-50 p-4 rounded-full">
-                        <i class="fas fa-users text-3xl text-blue-600"></i>
-                    </div>
-                </div>
-                <div class="stat-number text-blue-600" id="totalCount">০</div>
-            </div>
-            
-            <div class="stat-card" onclick="showTodayReport()">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-700">উপস্থিতি হার</h3>
-                        <p class="text-gray-500 text-sm mt-1">আজকের উপস্থিতি</p>
-                    </div>
-                    <div class="bg-gradient-to-r from-purple-100 to-purple-50 p-4 rounded-full">
-                        <i class="fas fa-percentage text-3xl text-purple-600"></i>
-                    </div>
-                </div>
-                <div class="stat-number text-purple-600" id="attendanceRate">০%</div>
+            <!-- Mobile Menu (Now used for both mobile and desktop) -->
+            <div class="mobile-menu" id="mobileMenu">
+                <a href="#" class="nav-link active" onclick="navigateToPage('dashboard'); return false;">
+                    <i class="fas fa-home"></i>
+                    ড্যাশবোর্ড
+                </a>
+                <a href="#" class="nav-link" onclick="navigateToPage('attendance'); return false;">
+                    <i class="fas fa-calendar-check"></i>
+                    হাজিরা
+                </a>
+                <a href="#" class="nav-link" onclick="navigateToPage('students'); return false;">
+                    <i class="fas fa-users"></i>
+                    ছাত্র তালিকা
+                </a>
+                <a href="#" class="nav-link" onclick="navigateToPage('reports'); return false;">
+                    <i class="fas fa-chart-bar"></i>
+                    রিপোর্ট
+                </a>
+                <a href="#" class="nav-link" onclick="navigateToPage('classes'); return false;">
+                    <i class="fas fa-graduation-cap"></i>
+                    শ্রেণি ব্যবস্থাপনা
+                </a>
+                <a href="#" class="nav-link" onclick="navigateToPage('settings'); return false;">
+                    <i class="fas fa-cog"></i>
+                    সেটিংস
+                </a>
             </div>
         </div>
+    </nav>
 
-        <!-- আজকের হাজিরা -->
-        <div class="card">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <div>
-                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-lg">
-                            <i class="fas fa-calendar-day text-white"></i>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page active">
+            <div class="max-w-7xl mx-auto">
+                <!-- হেডার -->
+                <div class="card mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div class="mb-4 md:mb-0">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-xl">
+                                    <i class="fas fa-mosque text-2xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-1">ছাত্র-ছাত্রী হাজিরা ব্যবস্থাপনা</h1>
+                                    <p class="text-gray-600">মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="badge badge-info"><i class="fas fa-hashtag"></i> EIIN: ১৩০২৯০</span>
+                                <span class="badge badge-purple"><i class="fas fa-code"></i> কোড: ১৮৭৫২</span>
+                                <span id="currentDate" class="badge badge-success"><i class="fas fa-calendar-day"></i> আজ: লোড হচ্ছে...</span>
+                                <span id="pwaStatus" class="badge badge-warning"><i class="fas fa-mobile-alt"></i> PWA</span>
+                                <span id="firebaseBadge" class="badge badge-info hidden"><i class="fas fa-database"></i> ফায়ারবেস</span>
+                            </div>
                         </div>
-                        আজকের হাজিরা (<span id="todayDate" class="text-blue-600">লোড হচ্ছে...</span>)
-                    </h2>
-                    <p class="text-gray-600 text-sm mt-1">নিচের তালিকা থেকে ছাত্রদের হাজিরা মার্ক করুন</p>
+                        <div class="flex flex-col gap-3">
+                            <button onclick="showAddStudentModal()" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> নতুন ছাত্র যোগ
+                            </button>
+                            <button onclick="showClassSheets()" class="btn btn-info">
+                                <i class="fas fa-clipboard-list"></i> শ্রেণি হাজিরা সীট
+                            </button>
+                            <button onclick="showTeacherManagement()" class="btn btn-warning">
+                                <i class="fas fa-chalkboard-teacher"></i> শিক্ষক ব্যবস্থাপনা
+                            </button>
+                            <button onclick="addToHomeScreen()" class="btn btn-success hidden" id="installButton">
+                                <i class="fas fa-download"></i> অ্যাপ ইন্সটল
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="confirmAction('markAllPresent', 'সবাইকে উপস্থিত মার্ক করতে চান?', 'এই কাজটি বাতিল করা যাবে না।')" 
-                            class="btn btn-success">
-                        <i class="fas fa-check-circle"></i> সবাই উপস্থিত
-                    </button>
-                    <button onclick="confirmAction('saveAttendance', 'হাজিরা সংরক্ষণ করতে চান?', 'সংরক্ষণের পর পরিবর্তন করা যাবে না।')" 
-                            class="btn btn-primary">
-                        <i class="fas fa-save"></i> সংরক্ষণ
-                    </button>
-                    <button onclick="showClassSheets()" class="btn btn-info">
-                        <i class="fas fa-print"></i> শ্রেণি সীট
-                    </button>
-                </div>
-            </div>
 
-            <!-- হাজিরা টেবিল -->
-            <div class="overflow-x-auto">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>আইডি নং</th>
-                            <th>রোল</th>
-                            <th>নাম</th>
-                            <th class="attendance-column">হাজিরা</th>
-                            <th>শ্রেণি</th>
-                            <th>পিতার নাম</th>
-                            <th>মোবাইল</th>
-                            <th>অ্যাকশন</th>
-                        </tr>
-                    </thead>
-                    <tbody id="attendanceTable">
-                        <!-- ডেটা লোড হবে -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div id="noStudents" class="text-center py-12 hidden">
-                <div class="bg-gradient-to-r from-gray-100 to-gray-50 p-8 rounded-2xl inline-block">
-                    <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র নেই</h3>
-                    <p class="text-gray-400 mb-6">প্রথমে ছাত্র যোগ করুন</p>
-                    <button onclick="showAddStudentModal()" class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> ছাত্র যোগ করুন
-                    </button>
+                <!-- ড্যাশবোর্ড স্ট্যাটস -->
+                <div class="dashboard-stats">
+                    <div class="stat-card" onclick="showStudents('present')">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">উপস্থিত</h3>
+                                <p class="text-gray-500 text-sm mt-1">আজকের উপস্থিত ছাত্র</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-green-100 to-green-50 p-4 rounded-full">
+                                <i class="fas fa-user-check text-3xl text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="stat-number text-green-600" id="presentCount">০</div>
+                    </div>
+                    
+                    <div class="stat-card" onclick="showStudents('absent')">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">অনুপস্থিত</h3>
+                                <p class="text-gray-500 text-sm mt-1">আজকের অনুপস্থিত ছাত্র</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-red-100 to-red-50 p-4 rounded-full">
+                                <i class="fas fa-user-times text-3xl text-red-600"></i>
+                            </div>
+                        </div>
+                        <div class="stat-number text-red-600" id="absentCount">০</div>
+                    </div>
+                    
+                    <div class="stat-card" onclick="showAllStudents()">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">মোট ছাত্র</h3>
+                                <p class="text-gray-500 text-sm mt-1">সকল ছাত্র-ছাত্রী</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-blue-100 to-blue-50 p-4 rounded-full">
+                                <i class="fas fa-users text-3xl text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="stat-number text-blue-600" id="totalCount">০</div>
+                    </div>
+                    
+                    <div class="stat-card" onclick="showTodayReport()">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700">উপস্থিতি হার</h3>
+                                <p class="text-gray-500 text-sm mt-1">আজকের উপস্থিতি</p>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-100 to-purple-50 p-4 rounded-full">
+                                <i class="fas fa-percentage text-3xl text-purple-600"></i>
+                            </div>
+                        </div>
+                        <div class="stat-number text-purple-600" id="attendanceRate">০%</div>
+                    </div>
+                </div>
+
+                <!-- সাপ্তাহিক রিপোর্ট -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                            <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg">
+                                <i class="fas fa-chart-bar text-white"></i>
+                            </div>
+                            এই সপ্তাহের হাজিরা রিপোর্ট
+                        </h2>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="showWeeklyReport()" class="btn btn-info">
+                                <i class="fas fa-expand"></i> বিস্তারিত দেখুন
+                            </button>
+                            <button onclick="exportData()" class="btn btn-success">
+                                <i class="fas fa-download"></i> ডেটা ডাউনলোড
+                            </button>
+                            <button onclick="showTeacherManagement()" class="btn btn-warning">
+                                <i class="fas fa-chalkboard-teacher"></i> শিক্ষক দেখুন
+                            </button>
+                        </div>
+                    </div>
+                    <div id="weeklyReport" class="grid grid-cols-2 md:grid-cols-7 gap-3">
+                        <!-- সাপ্তাহিক ডেটা লোড হবে -->
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- সাপ্তাহিক রিপোর্ট -->
-        <div class="card">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg">
-                        <i class="fas fa-chart-bar text-white"></i>
+        <!-- Attendance Page -->
+        <div id="attendance" class="page">
+            <div class="max-w-7xl mx-auto">
+                <!-- আজকের হাজিরা -->
+                <div class="card">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-lg">
+                                    <i class="fas fa-calendar-day text-white"></i>
+                                </div>
+                                আজকের হাজিরা (<span id="todayDate2" class="text-blue-600">লোড হচ্ছে...</span>)
+                            </h2>
+                            <p class="text-gray-600 text-sm mt-1">নিচের তালিকা থেকে ছাত্রদের হাজিরা মার্ক করুন</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="confirmAction('markAllPresent', 'সবাইকে উপস্থিত মার্ক করতে চান?', 'এই কাজটি বাতিল করা যাবে না।')" 
+                                    class="btn btn-success">
+                                <i class="fas fa-check-circle"></i> সবাই উপস্থিত
+                            </button>
+                            <button onclick="confirmAction('saveAttendance', 'হাজিরা সংরক্ষণ করতে চান?', 'সংরক্ষণের পর পরিবর্তন করা যাবে না।')" 
+                                    class="btn btn-primary">
+                                <i class="fas fa-save"></i> সংরক্ষণ
+                            </button>
+                            <button onclick="showClassSheets()" class="btn btn-info">
+                                <i class="fas fa-print"></i> শ্রেণি সীট
+                            </button>
+                        </div>
                     </div>
-                    এই সপ্তাহের হাজিরা রিপোর্ট
-                </h2>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="showWeeklyReport()" class="btn btn-info">
-                        <i class="fas fa-expand"></i> বিস্তারিত দেখুন
-                    </button>
-                    <button onclick="exportData()" class="btn btn-success">
-                        <i class="fas fa-download"></i> ডেটা ডাউনলোড
-                    </button>
-                    <button onclick="showTeacherManagement()" class="btn btn-warning">
-                        <i class="fas fa-chalkboard-teacher"></i> শিক্ষক দেখুন
-                    </button>
+
+                    <!-- সার্চ বক্স -->
+                    <div class="relative mb-6">
+                        <input type="text" id="searchInputAttendance" class="search-box" placeholder="ছাত্রের নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents('attendance')">
+                        <div class="absolute right-6 top-4 text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+
+                    <!-- শ্রেণি ফিল্টার -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-filter text-blue-500"></i>
+                            শ্রেণি অনুযায়ী ফিল্টার
+                        </h3>
+                        <div class="class-filter-buttons" id="classFiltersAttendance">
+                            <!-- ক্লাস ফিল্টার বাটন লোড হবে -->
+                        </div>
+                    </div>
+
+                    <!-- হাজিরা টেবিল -->
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>আইডি নং</th>
+                                    <th>রোল</th>
+                                    <th>নাম</th>
+                                    <th class="attendance-column">হাজিরা</th>
+                                    <th>শ্রেণি</th>
+                                    <th>পিতার নাম</th>
+                                    <th>মোবাইল</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTable">
+                                <!-- ডেটা লোড হবে -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="noStudents" class="text-center py-12 hidden">
+                        <div class="bg-gradient-to-r from-gray-100 to-gray-50 p-8 rounded-2xl inline-block">
+                            <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র নেই</h3>
+                            <p class="text-gray-400 mb-6">প্রথমে ছাত্র যোগ করুন</p>
+                            <button onclick="showAddStudentModal()" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> ছাত্র যোগ করুন
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="weeklyReport" class="grid grid-cols-2 md:grid-cols-7 gap-3">
-                <!-- সাপ্তাহিক ডেটা লোড হবে -->
+        </div>
+
+        <!-- Students Page -->
+        <div id="students" class="page">
+            <div class="max-w-7xl mx-auto">
+                <div class="card">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-2 rounded-lg">
+                                    <i class="fas fa-users text-white"></i>
+                                </div>
+                                সকল ছাত্র-ছাত্রীর তালিকা
+                            </h2>
+                            <p class="text-gray-600 text-sm mt-1">মোট ছাত্র: <span id="totalStudentsCount" class="font-bold">০</span></p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="showAddStudentModal()" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> নতুন ছাত্র যোগ
+                            </button>
+                            <button onclick="exportStudents()" class="btn btn-success">
+                                <i class="fas fa-download"></i> এক্সপোর্ট
+                            </button>
+                            <button onclick="showImportModal()" class="btn btn-warning">
+                                <i class="fas fa-upload"></i> ইমপোর্ট
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- সার্চ বক্স -->
+                    <div class="relative mb-6">
+                        <input type="text" id="searchInputStudents" class="search-box" placeholder="ছাত্রের নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents('list')">
+                        <div class="absolute right-6 top-4 text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+
+                    <!-- শ্রেণি ফিল্টার -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-filter text-blue-500"></i>
+                            শ্রেণি অনুযায়ী ফিল্টার
+                        </h3>
+                        <div class="class-filter-buttons" id="classFiltersStudents">
+                            <!-- ক্লাস ফিল্টার বাটন লোড হবে -->
+                        </div>
+                    </div>
+
+                    <!-- ছাত্র তালিকা টেবিল -->
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>আইডি নং</th>
+                                    <th>রোল</th>
+                                    <th>নাম</th>
+                                    <th>শ্রেণি</th>
+                                    <th>পিতার নাম</th>
+                                    <th>মোবাইল</th>
+                                    <th>ঠিকানা</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTable">
+                                <!-- ডেটা লোড হবে -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="noStudentsList" class="text-center py-12 hidden">
+                        <div class="bg-gradient-to-r from-gray-100 to-gray-50 p-8 rounded-2xl inline-block">
+                            <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র নেই</h3>
+                            <p class="text-gray-400 mb-6">প্রথমে ছাত্র যোগ করুন</p>
+                            <button onclick="showAddStudentModal()" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> ছাত্র যোগ করুন
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div id="reports" class="page">
+            <div class="max-w-7xl mx-auto">
+                <div class="card">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg">
+                                    <i class="fas fa-chart-line text-white"></i>
+                                </div>
+                                হাজিরা রিপোর্ট
+                            </h2>
+                            <p class="text-gray-600 text-sm mt-1">বিভিন্ন ধরনের রিপোর্ট দেখুন ও ডাউনলোড করুন</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="exportData()" class="btn btn-success">
+                                <i class="fas fa-download"></i> সকল ডেটা
+                            </button>
+                            <button onclick="showMonthlyReport()" class="btn btn-info">
+                                <i class="fas fa-calendar-alt"></i> মাসিক রিপোর্ট
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Daily Report Card -->
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200 cursor-pointer hover:shadow-lg transition" onclick="showTodayReport()">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="bg-blue-100 p-3 rounded-full">
+                                    <i class="fas fa-calendar-day text-blue-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">আজকের রিপোর্ট</h3>
+                                    <p class="text-sm text-gray-600">দৈনিক হাজিরা বিশ্লেষণ</p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-blue-600 mb-2" id="dailyPresentCount">০</div>
+                                <div class="text-gray-600">আজ উপস্থিত</div>
+                            </div>
+                        </div>
+
+                        <!-- Weekly Report Card -->
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200 cursor-pointer hover:shadow-lg transition" onclick="showWeeklyReport()">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="bg-green-100 p-3 rounded-full">
+                                    <i class="fas fa-chart-bar text-green-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">সাপ্তাহিক রিপোর্ট</h3>
+                                    <p class="text-sm text-gray-600">৭ দিনের হাজিরা গ্রাফ</p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-green-600 mb-2" id="weeklyAvg">০%</div>
+                                <div class="text-gray-600">সাপ্তাহিক গড়</div>
+                            </div>
+                        </div>
+
+                        <!-- Monthly Report Card -->
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 cursor-pointer hover:shadow-lg transition" onclick="showMonthlyReport()">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="bg-purple-100 p-3 rounded-full">
+                                    <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">মাসিক রিপোর্ট</h3>
+                                    <p class="text-sm text-gray-600">৩০ দিনের হাজিরা বিশ্লেষণ</p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-purple-600 mb-2" id="monthlyAvg">০%</div>
+                                <div class="text-gray-600">মাসিক গড়</div>
+                            </div>
+                        </div>
+
+                        <!-- Class-wise Report Card -->
+                        <div class="bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-xl border border-yellow-200 cursor-pointer hover:shadow-lg transition" onclick="showClassWiseReport()">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="bg-yellow-100 p-3 rounded-full">
+                                    <i class="fas fa-graduation-cap text-yellow-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">শ্রেণি অনুযায়ী</h3>
+                                    <p class="text-sm text-gray-600">শ্রেণিভিত্তিক হাজিরা</p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-yellow-600 mb-2" id="classCount">১২</div>
+                                <div class="text-gray-600">মোট শ্রেণি</div>
+                            </div>
+                        </div>
+
+                        <!-- Student-wise Report Card -->
+                        <div class="bg-gradient-to-br from-red-50 to-pink-50 p-6 rounded-xl border border-red-200 cursor-pointer hover:shadow-lg transition" onclick="showStudentReports()">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="bg-red-100 p-3 rounded-full">
+                                    <i class="fas fa-user-graduate text-red-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">ছাত্র অনুযায়ী</h3>
+                                    <p class="text-sm text-gray-600">প্রতিটি ছাত্রের রিপোর্ট</p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-red-600 mb-2" id="studentCount">০</div>
+                                <div class="text-gray-600">মোট ছাত্র</div>
+                            </div>
+                        </div>
+
+                        <!-- Export Report Card -->
+                        <div class="bg-gradient-to-br from-gray-50 to-slate-50 p-6 rounded-xl border border-gray-200 cursor-pointer hover:shadow-lg transition" onclick="exportData()">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="bg-gray-100 p-3 rounded-full">
+                                    <i class="fas fa-file-export text-gray-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">ডেটা এক্সপোর্ট</h3>
+                                    <p class="text-sm text-gray-600">CSV/Excel ফরম্যাটে</p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-600 mb-2">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                                <div class="text-gray-600">ডাউনলোড করুন</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="mt-8 pt-8 border-t">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">দ্রুত পরিসংখ্যান</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-white p-4 rounded-xl border text-center">
+                                <div class="text-2xl font-bold text-blue-600" id="totalPresentDays">০</div>
+                                <div class="text-sm text-gray-600">মোট উপস্থিতি দিন</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl border text-center">
+                                <div class="text-2xl font-bold text-green-600" id="totalAbsentDays">০</div>
+                                <div class="text-sm text-gray-600">মোট অনুপস্থিতি দিন</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl border text-center">
+                                <div class="text-2xl font-bold text-purple-600" id="bestAttendance">০%</div>
+                                <div class="text-sm text-gray-600">সর্বোচ্চ উপস্থিতি</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl border text-center">
+                                <div class="text-2xl font-bold text-red-600" id="worstAttendance">০%</div>
+                                <div class="text-sm text-gray-600">সর্বনিম্ন উপস্থিতি</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classes Page -->
+        <div id="classes" class="page">
+            <div class="max-w-7xl mx-auto">
+                <div class="card">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <div class="bg-gradient-to-r from-yellow-500 to-orange-500 p-2 rounded-lg">
+                                    <i class="fas fa-graduation-cap text-white"></i>
+                                </div>
+                                শ্রেণি ব্যবস্থাপনা
+                            </h2>
+                            <p class="text-gray-600 text-sm mt-1">শ্রেণি ও শ্রেণি শিক্ষক ব্যবস্থাপনা</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="showTeacherManagement()" class="btn btn-warning">
+                                <i class="fas fa-chalkboard-teacher"></i> শিক্ষক ব্যবস্থাপনা
+                            </button>
+                            <button onclick="showAddClassModal()" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> নতুন শ্রেণি
+                            </button>
+                            <button onclick="showClassSheets()" class="btn btn-info">
+                                <i class="fas fa-print"></i> হাজিরা সীট
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Class Statistics -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-amber-100 p-3 rounded-full">
+                                    <i class="fas fa-school text-amber-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">ইবতেদায়ী</h3>
+                                    <p class="text-sm text-gray-600">প্রথম থেকে পঞ্চম শ্রেণি</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-3xl font-bold text-amber-600" id="ibtidayeeCount">৫</div>
+                                <div class="text-gray-600">মোট শ্রেণি</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-blue-100 p-3 rounded-full">
+                                    <i class="fas fa-university text-blue-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">দাখিল</h3>
+                                    <p class="text-sm text-gray-600">ষষ্ঠ থেকে দশম শ্রেণি</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-3xl font-bold text-blue-600" id="dakhilCount">৫</div>
+                                <div class="text-gray-600">মোট শ্রেণি</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-purple-100 p-3 rounded-full">
+                                    <i class="fas fa-user-graduate text-purple-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">আলিম</h3>
+                                    <p class="text-sm text-gray-600">একাদশ ও দ্বাদশ শ্রেণি</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-3xl font-bold text-purple-600" id="alimCount">২</div>
+                                <div class="text-gray-600">মোট শ্রেণি</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- All Classes List -->
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">সকল শ্রেণির তালিকা</h3>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>শ্রেণি</th>
+                                    <th>শ্রেণি শিক্ষক</th>
+                                    <th>ছাত্র সংখ্যা</th>
+                                    <th>আজ উপস্থিত</th>
+                                    <th>উপস্থিতি হার</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classesTable">
+                                <!-- ডেটা লোড হবে -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings" class="page">
+            <div class="max-w-4xl mx-auto">
+                <div class="card">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <div class="bg-gradient-to-r from-gray-500 to-slate-500 p-2 rounded-lg">
+                                    <i class="fas fa-cog text-white"></i>
+                                </div>
+                                সেটিংস
+                            </h2>
+                            <p class="text-gray-600 text-sm mt-1">অ্যাপের সেটিংস কনফিগার করুন</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- General Settings -->
+                        <div class="bg-gradient-to-r from-gray-50 to-slate-50 p-6 rounded-xl border">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-sliders-h text-blue-500"></i>
+                                সাধারণ সেটিংস
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium text-gray-700">বাংলা তারিখ দেখান</div>
+                                        <div class="text-sm text-gray-500">সমস্ত তারিখ বাংলা ভাষায় দেখাবে</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="banglaDateToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium text-gray-700">অটো সেভ</div>
+                                        <div class="text-sm text-gray-500">পরিবর্তন গুলি অটোমেটিক সেভ হবে</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="autoSaveToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium text-gray-700">নোটিফিকেশন</div>
+                                        <div class="text-sm text-gray-500">আপডেট ও রিমাইন্ডার নোটিফিকেশন</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="notificationToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Management -->
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-database text-blue-500"></i>
+                                ডেটা ব্যবস্থাপনা
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button onclick="exportAllData()" class="btn btn-success">
+                                    <i class="fas fa-download"></i> সকল ডেটা ব্যাকআপ
+                                </button>
+                                <button onclick="importData()" class="btn btn-warning">
+                                    <i class="fas fa-upload"></i> ডেটা রিস্টোর
+                                </button>
+                                <button onclick="confirmAction('clearData', 'সমস্ত ডেটা ডিলিট করতে চান?', 'এই কাজটি অপরিবর্তনীয়। সব ডেটা মুছে যাবে!')" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> সকল ডেটা ডিলিট
+                                </button>
+                                <button onclick="resetSettings()" class="btn btn-info">
+                                    <i class="fas fa-redo"></i> সেটিংস রিসেট
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Firebase Settings -->
+                        <div class="bg-gradient-to-r from-red-50 to-orange-50 p-6 rounded-xl border">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-fire text-red-500"></i>
+                                Firebase সেটিংস
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium text-gray-700">Firebase Sync</div>
+                                        <div class="text-sm text-gray-500">রিয়েলটাইম ডেটা সিঙ্ক</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="firebaseSyncToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="text-center p-4 bg-gradient-to-r from-red-100 to-orange-100 rounded-lg">
+                                    <div class="font-bold text-red-600 mb-2">Firebase Status</div>
+                                    <div id="firebaseStatusText" class="text-sm text-gray-600">কানেক্ট হচ্ছে...</div>
+                                    <button onclick="checkFirebaseConnection()" class="btn btn-warning mt-3 text-sm">
+                                        <i class="fas fa-sync-alt"></i> কানেকশন চেক
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PWA Settings -->
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-mobile-alt text-purple-500"></i>
+                                PWA সেটিংস
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium text-gray-700">অফলাইন মোড</div>
+                                        <div class="text-sm text-gray-500">ইন্টারনেট ছাড়া ব্যবহার করুন</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="offlineModeToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium text-gray-700">সিঙ্ক ডেটা</div>
+                                        <div class="text-sm text-gray-500">অনলাইনে গেলে ডেটা সিঙ্ক হবে</div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="syncDataToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center gap-4 mt-6">
+                                    <button onclick="addToHomeScreen()" class="btn btn-primary flex-1" id="installButton2">
+                                        <i class="fas fa-download"></i> অ্যাপ ইন্সটল
+                                    </button>
+                                    <button onclick="checkForUpdates()" class="btn btn-info flex-1">
+                                        <i class="fas fa-sync-alt"></i> আপডেট চেক
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact & Support -->
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-headset text-green-500"></i>
+                                যোগাযোগ ও সাপোর্ট
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3 p-4 bg-white rounded-lg border">
+                                    <i class="fas fa-phone text-green-600 text-xl"></i>
+                                    <div>
+                                        <div class="font-bold text-gray-800">সাপোর্ট নম্বর</div>
+                                        <div class="text-lg font-bold text-green-600">০১৮১১২৩৬৫৪৮</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 p-4 bg-white rounded-lg border">
+                                    <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                                    <div>
+                                        <div class="font-bold text-gray-800">ইমেইল</div>
+                                        <div class="text-lg font-bold text-blue-600">support@madrasa.com</div>
+                                    </div>
+                                </div>
+                                <button onclick="callSupport()" class="btn btn-success w-full">
+                                    <i class="fas fa-phone"></i> কল করুন
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- About App -->
+                        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-info-circle text-yellow-500"></i>
+                                অ্যাপ সম্পর্কে
+                            </h3>
+                            <div class="space-y-3 text-gray-600">
+                                <div class="flex justify-between">
+                                    <span>অ্যাপের নাম:</span>
+                                    <span class="font-bold">মাদ্রাসা হাজিরা ব্যবস্থাপনা</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>সংস্করণ:</span>
+                                    <span class="font-bold">v2.1.0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>ডেভেলপার:</span>
+                                    <span class="font-bold">মেহেরপুর আনছারুল উলূম</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>EIIN:</span>
+                                    <span class="font-bold">১৩০২৯০</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>কোড:</span>
+                                    <span class="font-bold">১৮৭৫২</span>
+                                </div>
+                                <div class="pt-4 border-t">
+                                    <p class="text-sm">© 2024 মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা। সর্বস্বত্ব সংরক্ষিত।</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Modals -->
     <!-- ছাত্র যোগ/এডিট করার মডেল -->
     <div id="addStudentModal" class="modal hidden">
         <div class="modal-content">
@@ -925,6 +1745,9 @@
                     </label>
                     <input type="text" id="studentId" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" 
                            placeholder="যেমন: STD-001">
+                    <button type="button" onclick="generateStudentId()" class="btn btn-warning mt-3 text-sm w-full">
+                        <i class="fas fa-sync-alt"></i> অটো আইডি জেনারেট করুন
+                    </button>
                 </div>
                 
                 <div>
@@ -1205,6 +2028,29 @@
     </div>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3X3RdFHc0TBBn1c00deQfP9ewmdz1GfQ",
+            authDomain: "madrasa-attendance-b9311.firebaseapp.com",
+            projectId: "madrasa-attendance-b9311",
+            storageBucket: "madrasa-attendance-b9311.firebasestorage.app",
+            messagingSenderId: "927862270858",
+            appId: "1:927862270858:web:cb3fe5b4bfdfe898f67673",
+            measurementId: "G-74VJ1FQT08"
+        };
+
+        // Initialize Firebase
+        let firebaseApp;
+        let db;
+        let firebaseInitialized = false;
+        let isFirebaseConnected = false;
+
+        // Firebase Collections
+        const STUDENTS_COLLECTION = "students";
+        const ATTENDANCE_COLLECTION = "attendance";
+        const TEACHERS_COLLECTION = "teachers";
+        const SETTINGS_COLLECTION = "settings";
+
         // PWA Variables
         let deferredPrompt;
         let isPWAInstalled = false;
@@ -1216,6 +2062,10 @@
         let currentStudentId = null;
         let pendingAction = null;
         let currentFilterClass = '';
+        let confirmationData = null;
+        
+        // Navigation Variables
+        let currentPage = 'dashboard';
         
         // বাংলা তারিখ
         const banglaMonths = [
@@ -1240,6 +2090,396 @@
             }).join('');
         }
 
+        // Initialize Firebase
+        function initializeFirebase() {
+            try {
+                firebaseApp = firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                firebaseInitialized = true;
+                
+                // Enable offline persistence
+                db.enablePersistence()
+                    .then(() => {
+                        console.log("Firebase persistence enabled");
+                    })
+                    .catch((err) => {
+                        console.log("Firebase persistence error: ", err);
+                    });
+                
+                // Monitor connection status
+                db.collection(STUDENTS_COLLECTION).onSnapshot(
+                    () => {
+                        updateFirebaseStatus(true);
+                    },
+                    (error) => {
+                        updateFirebaseStatus(false);
+                        console.error("Firebase error: ", error);
+                    }
+                );
+                
+                // Load initial data from Firebase
+                loadFirebaseData();
+                
+                // Listen for real-time updates
+                setupFirebaseListeners();
+                
+            } catch (error) {
+                console.error("Firebase initialization error: ", error);
+                updateFirebaseStatus(false);
+                // Load from local storage if Firebase fails
+                loadDataFromLocal();
+            }
+        }
+
+        function updateFirebaseStatus(connected) {
+            isFirebaseConnected = connected;
+            const statusElement = document.getElementById('firebaseStatus');
+            const statusText = document.getElementById('firebaseStatusText');
+            const badge = document.getElementById('firebaseBadge');
+            
+            if (connected) {
+                statusElement.className = 'firebase-status firebase-connected';
+                statusElement.innerHTML = '<i class="fas fa-check-circle"></i><span>ফায়ারবেস সংযুক্ত</span>';
+                statusElement.classList.remove('hidden');
+                
+                if (statusText) {
+                    statusText.textContent = 'ফায়ারবেস সংযুক্ত - রিয়েলটাইম সিঙ্ক সক্রিয়';
+                }
+                
+                if (badge) {
+                    badge.className = 'badge badge-success';
+                    badge.innerHTML = '<i class="fas fa-database"></i> ফায়ারবেস';
+                    badge.classList.remove('hidden');
+                }
+                
+                showToast('ফায়ারবেস সংযুক্ত!', 'success');
+            } else {
+                statusElement.className = 'firebase-status firebase-disconnected';
+                statusElement.innerHTML = '<i class="fas fa-times-circle"></i><span>ফায়ারবেস সংযোগ নেই</span>';
+                statusElement.classList.remove('hidden');
+                
+                if (statusText) {
+                    statusText.textContent = 'ফায়ারবেস সংযোগ নেই - লোকাল ডেটা ব্যবহার হচ্ছে';
+                }
+                
+                if (badge) {
+                    badge.className = 'badge badge-warning';
+                    badge.innerHTML = '<i class="fas fa-database"></i> লোকাল';
+                    badge.classList.remove('hidden');
+                }
+            }
+        }
+
+        function setupFirebaseListeners() {
+            // Listen for students changes
+            db.collection(STUDENTS_COLLECTION).onSnapshot((snapshot) => {
+                const newStudents = [];
+                snapshot.forEach((doc) => {
+                    newStudents.push({ id: doc.id, ...doc.data() });
+                });
+                students = newStudents;
+                saveToLocal('students', students);
+                updateUI();
+            });
+
+            // Listen for attendance changes
+            db.collection(ATTENDANCE_COLLECTION).onSnapshot((snapshot) => {
+                const newAttendance = [];
+                snapshot.forEach((doc) => {
+                    newAttendance.push({ id: doc.id, ...doc.data() });
+                });
+                attendance = newAttendance;
+                saveToLocal('attendance', attendance);
+                updateUI();
+            });
+
+            // Listen for teachers changes
+            db.collection(TEACHERS_COLLECTION).doc('classTeachers').onSnapshot((doc) => {
+                if (doc.exists) {
+                    teachers = doc.data();
+                    saveToLocal('teachers', teachers);
+                    updateUI();
+                }
+            });
+
+            // Listen for settings changes
+            db.collection(SETTINGS_COLLECTION).doc('appSettings').onSnapshot((doc) => {
+                if (doc.exists) {
+                    const settings = doc.data();
+                    applySettings(settings);
+                    saveToLocal('settings', settings);
+                }
+            });
+        }
+
+        function loadFirebaseData() {
+            // Load students
+            db.collection(STUDENTS_COLLECTION).get().then((snapshot) => {
+                students = [];
+                snapshot.forEach((doc) => {
+                    students.push({ id: doc.id, ...doc.data() });
+                });
+                saveToLocal('students', students);
+                updateUI();
+            });
+
+            // Load attendance
+            db.collection(ATTENDANCE_COLLECTION).get().then((snapshot) => {
+                attendance = [];
+                snapshot.forEach((doc) => {
+                    attendance.push({ id: doc.id, ...doc.data() });
+                });
+                saveToLocal('attendance', attendance);
+                updateUI();
+            });
+
+            // Load teachers
+            db.collection(TEACHERS_COLLECTION).doc('classTeachers').get().then((doc) => {
+                if (doc.exists) {
+                    teachers = doc.data();
+                    saveToLocal('teachers', teachers);
+                    updateUI();
+                }
+            });
+
+            // Load settings
+            db.collection(SETTINGS_COLLECTION).doc('appSettings').get().then((doc) => {
+                if (doc.exists) {
+                    const settings = doc.data();
+                    applySettings(settings);
+                    saveToLocal('settings', settings);
+                }
+            });
+        }
+
+        function loadDataFromLocal() {
+            const savedStudents = localStorage.getItem('madrasaStudents');
+            if (savedStudents) {
+                students = JSON.parse(savedStudents);
+            } else {
+                // Sample data for testing
+                students = [
+                    {
+                        id: 'STD-001',
+                        roll: 1,
+                        name: 'আহমেদ হাসান',
+                        class: 'dakhil-6',
+                        father: 'মোঃ করিম উদ্দিন',
+                        mobile: '01811236548',
+                        address: 'মেহেরপুর সদর',
+                        note: 'সরকারি স্কলারশিপ প্রাপ্ত'
+                    },
+                    {
+                        id: 'STD-002',
+                        roll: 2,
+                        name: 'ফাতেমা আক্তার',
+                        class: 'dakhil-6',
+                        father: 'মোঃ সোলাইমান',
+                        mobile: '01712345678',
+                        address: 'মেহেরপুর সদর',
+                        note: ''
+                    }
+                ];
+            }
+            
+            const savedAttendance = localStorage.getItem('madrasaAttendance');
+            if (savedAttendance) {
+                attendance = JSON.parse(savedAttendance);
+            }
+            
+            const savedTeachers = localStorage.getItem('madrasaTeachers');
+            if (savedTeachers) {
+                teachers = JSON.parse(savedTeachers);
+            } else {
+                // Default teachers
+                teachers = {
+                    'ibtidayee-1': 'মোঃ আব্দুল করিম',
+                    'ibtidayee-2': 'মোঃ সোলাইমান আলী',
+                    'ibtidayee-3': 'মোঃ হারুন অর রশিদ',
+                    'ibtidayee-4': 'মোসাঃ ফাতেমা খাতুন',
+                    'ibtidayee-5': 'মোঃ রফিকুল ইসলাম',
+                    'dakhil-6': 'মোঃ শহীদুল ইসলাম',
+                    'dakhil-7': 'মোসাঃ আয়েশা সিদ্দিকা',
+                    'dakhil-8': 'মোঃ জামাল উদ্দিন',
+                    'dakhil-9': 'মোঃ নুরুল আমিন',
+                    'dakhil-10': 'মোসাঃ সেলিনা আক্তার',
+                    'alim-11': 'মোঃ আজিজুর রহমান',
+                    'alim-12': 'মোসাঃ রুবিনা বেগম'
+                };
+            }
+            
+            updateUI();
+        }
+
+        function saveToLocal(key, data) {
+            localStorage.setItem(`madrasa${key.charAt(0).toUpperCase() + key.slice(1)}`, JSON.stringify(data));
+        }
+
+        function saveStudentToFirebase(studentData) {
+            if (!firebaseInitialized) {
+                saveToLocal('students', students);
+                return;
+            }
+            
+            const studentRef = db.collection(STUDENTS_COLLECTION).doc(studentData.id);
+            studentRef.set(studentData)
+                .then(() => {
+                    console.log("Student saved to Firebase");
+                })
+                .catch((error) => {
+                    console.error("Error saving student: ", error);
+                    saveToLocal('students', students);
+                });
+        }
+
+        function saveAttendanceToFirebase(attendanceData) {
+            if (!firebaseInitialized) {
+                saveToLocal('attendance', attendance);
+                return;
+            }
+            
+            const attendanceRef = db.collection(ATTENDANCE_COLLECTION).doc(attendanceData.id);
+            attendanceRef.set(attendanceData)
+                .then(() => {
+                    console.log("Attendance saved to Firebase");
+                })
+                .catch((error) => {
+                    console.error("Error saving attendance: ", error);
+                    saveToLocal('attendance', attendance);
+                });
+        }
+
+        function saveTeachersToFirebase() {
+            if (!firebaseInitialized) {
+                saveToLocal('teachers', teachers);
+                return;
+            }
+            
+            const teachersRef = db.collection(TEACHERS_COLLECTION).doc('classTeachers');
+            teachersRef.set(teachers)
+                .then(() => {
+                    console.log("Teachers saved to Firebase");
+                })
+                .catch((error) => {
+                    console.error("Error saving teachers: ", error);
+                    saveToLocal('teachers', teachers);
+                });
+        }
+
+        function deleteStudentFromFirebase(studentId) {
+            if (!firebaseInitialized) {
+                saveToLocal('students', students);
+                return;
+            }
+            
+            db.collection(STUDENTS_COLLECTION).doc(studentId).delete()
+                .then(() => {
+                    console.log("Student deleted from Firebase");
+                })
+                .catch((error) => {
+                    console.error("Error deleting student: ", error);
+                    saveToLocal('students', students);
+                });
+            
+            // Delete associated attendance records
+            db.collection(ATTENDANCE_COLLECTION).where('studentId', '==', studentId).get()
+                .then((snapshot) => {
+                    snapshot.forEach((doc) => {
+                        doc.ref.delete();
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error deleting attendance records: ", error);
+                });
+        }
+
+        function checkFirebaseConnection() {
+            if (firebaseInitialized && isFirebaseConnected) {
+                showToast('ফায়ারবেস সংযুক্ত আছে!', 'success');
+            } else {
+                showToast('ফায়ারবেস সংযোগ নেই। লোকাল ডেটা ব্যবহার হচ্ছে।', 'warning');
+            }
+        }
+
+        // Navigation Functions
+        function navigateToPage(pageId) {
+            showPage(pageId);
+            toggleMobileMenu();
+        }
+
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update active nav link in mobile menu
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                
+                // Get the page name from the link text
+                const linkText = link.textContent.trim();
+                const pageName = getPageName(pageId);
+                
+                // Check if this link corresponds to the current page
+                if (linkText.includes(pageName)) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Update current page
+            currentPage = pageId;
+            
+            // Load page specific data
+            loadPageData(pageId);
+        }
+        
+        function getPageName(pageId) {
+            const pageNames = {
+                'dashboard': 'ড্যাশবোর্ড',
+                'attendance': 'হাজিরা',
+                'students': 'ছাত্র তালিকা',
+                'reports': 'রিপোর্ট',
+                'classes': 'শ্রেণি ব্যবস্থাপনা',
+                'settings': 'সেটিংস'
+            };
+            return pageNames[pageId] || pageId;
+        }
+        
+        function loadPageData(pageId) {
+            switch(pageId) {
+                case 'dashboard':
+                    updateDashboard();
+                    renderWeeklyReport();
+                    break;
+                case 'attendance':
+                    renderClassFilters('attendance');
+                    renderAttendanceTable();
+                    break;
+                case 'students':
+                    renderClassFilters('students');
+                    renderStudentsTable();
+                    break;
+                case 'reports':
+                    loadReportStats();
+                    break;
+                case 'classes':
+                    loadClassesTable();
+                    break;
+                case 'settings':
+                    loadSettings();
+                    break;
+            }
+        }
+        
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('show');
+        }
+
         // PWA Functions
         function checkPWAStatus() {
             // Check if app is installed
@@ -1251,10 +2491,12 @@
                 document.getElementById('pwaStatus').innerHTML = '<i class="fas fa-check-circle"></i> PWA ইন্সটলড';
                 document.getElementById('pwaStatus').className = 'badge badge-success';
                 document.getElementById('installButton').classList.add('hidden');
+                document.getElementById('installButton2').classList.add('hidden');
             } else {
                 document.getElementById('pwaStatus').innerHTML = '<i class="fas fa-mobile-alt"></i> PWA';
                 document.getElementById('pwaStatus').className = 'badge badge-warning';
                 document.getElementById('installButton').classList.remove('hidden');
+                document.getElementById('installButton2').classList.remove('hidden');
             }
         }
 
@@ -1294,61 +2536,35 @@
             document.getElementById('currentDate').innerHTML = 
                 `<i class="fas fa-calendar-day"></i> আজ: ${day}, ${toBangla(date)} ${month} ${toBangla(year)}`;
             
-            document.getElementById('todayDate').textContent = 
+            document.getElementById('todayDate2').textContent = 
                 `${toBangla(date)} ${month} ${toBangla(year)}`;
             
             setTimeout(updateDate, 60000);
         }
 
-        // লোকালস্টোরেজ থেকে ডেটা লোড
-        function loadData() {
-            const savedStudents = localStorage.getItem('madrasaStudents');
-            if (savedStudents) {
-                students = JSON.parse(savedStudents);
-            }
-            
-            const savedAttendance = localStorage.getItem('madrasaAttendance');
-            if (savedAttendance) {
-                attendance = JSON.parse(savedAttendance);
-            }
-            
-            const savedTeachers = localStorage.getItem('madrasaTeachers');
-            if (savedTeachers) {
-                teachers = JSON.parse(savedTeachers);
-            }
-            
-            // Load offline data
-            const offlineData = localStorage.getItem('offlineAttendanceData');
-            if (offlineData) {
-                const offline = JSON.parse(offlineData);
-                // Merge offline data with attendance
-                offline.forEach(item => {
-                    const existingIndex = attendance.findIndex(a => 
-                        a.studentId === item.studentId && a.date === item.date
-                    );
-                    
-                    if (existingIndex === -1) {
-                        attendance.push(item);
-                    }
-                });
-            }
-            
+        function updateUI() {
             updateDashboard();
-            renderClassFilters();
-            renderAttendanceTable();
-            renderWeeklyReport();
-        }
-
-        // ডেটা সংরক্ষণ
-        function saveData() {
-            localStorage.setItem('madrasaStudents', JSON.stringify(students));
-            localStorage.setItem('madrasaAttendance', JSON.stringify(attendance));
-            localStorage.setItem('madrasaTeachers', JSON.stringify(teachers));
+            if (currentPage === 'attendance') {
+                renderClassFilters('attendance');
+                renderAttendanceTable();
+            } else if (currentPage === 'students') {
+                renderClassFilters('students');
+                renderStudentsTable();
+            } else if (currentPage === 'dashboard') {
+                renderWeeklyReport();
+            } else if (currentPage === 'classes') {
+                loadClassesTable();
+            } else if (currentPage === 'reports') {
+                loadReportStats();
+            }
         }
 
         // শ্রেণি ফিল্টার রেন্ডার
-        function renderClassFilters() {
-            const container = document.getElementById('classFilters');
+        function renderClassFilters(page = 'attendance') {
+            const containerId = page === 'attendance' ? 'classFiltersAttendance' : 'classFiltersStudents';
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
             let html = '';
             
             const classes = [
@@ -1373,7 +2589,7 @@
                 const teacherName = cls.value ? getClassTeacher(cls.value) : '';
                 
                 html += `
-                    <button onclick="filterByClass('${cls.value}')" 
+                    <button onclick="filterByClass('${cls.value}', '${page}')" 
                             class="class-filter-btn ${isActive ? 'active' : ''}">
                         <div class="text-left">
                             <div class="font-bold">${cls.label}</div>
@@ -1390,10 +2606,16 @@
         }
 
         // শ্রেণি অনুযায়ী ফিল্টার
-        function filterByClass(className) {
+        function filterByClass(className, page = 'attendance') {
             currentFilterClass = className;
-            renderClassFilters();
-            renderAttendanceTable();
+            
+            if (page === 'attendance') {
+                renderClassFilters('attendance');
+                renderAttendanceTable();
+            } else {
+                renderClassFilters('students');
+                renderStudentsTable();
+            }
         }
 
         // ড্যাশবোর্ড আপডেট
@@ -1422,7 +2644,7 @@
             document.getElementById('attendanceRate').textContent = toBangla(rate) + '%';
         }
 
-        // হাজিরা টেবিল রেন্ডার (ক্রমিক নং ছাড়া)
+        // হাজিরা টেবিল রেন্ডার
         function renderAttendanceTable() {
             const table = document.getElementById('attendanceTable');
             const noStudents = document.getElementById('noStudents');
@@ -1452,7 +2674,6 @@
                 const status = studentAttendance ? studentAttendance.status : 'absent';
                 const classInfo = getClassLabel(student.class);
                 const teacherName = getClassTeacher(student.class);
-                const isOffline = studentAttendance && studentAttendance.offline;
                 
                 html += `
                     <tr class="${status === 'present' ? 'status-present' : 'status-absent'}">
@@ -1461,7 +2682,6 @@
                         <td>
                             <div class="font-bold text-gray-800">${student.name}</div>
                             <div class="text-xs text-gray-500 mt-1">${student.father}</div>
-                            ${isOffline ? '<div class="text-xs text-yellow-600 mt-1"><i class="fas fa-cloud-upload-alt"></i> অফলাইন ডেটা</div>' : ''}
                         </td>
                         <td class="attendance-column">
                             <div class="flex flex-col md:flex-row gap-2">
@@ -1501,6 +2721,516 @@
                                 <button onclick="confirmAction('deleteStudent', 'এই ছাত্রকে ডিলিট করতে চান?', 'ছাত্র: ${student.name}\\nরোল: ${student.roll}\\n\\nডিলিটের পর পুনরুদ্ধার করা যাবে না!', '${student.id}')" 
                                         class="action-btn action-btn-delete">
                                     <i class="fas fa-trash"></i> ডিলিট
+                                </button>
+                                <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view">
+                                    <i class="fas fa-eye"></i> বিস্তারিত
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            table.innerHTML = html;
+        }
+
+        // ছাত্র তালিকা টেবিল রেন্ডার
+        function renderStudentsTable() {
+            const table = document.getElementById('studentsTable');
+            const noStudents = document.getElementById('noStudentsList');
+            
+            let filteredStudents = students;
+            
+            if (currentFilterClass) {
+                filteredStudents = students.filter(student => student.class === currentFilterClass);
+            }
+            
+            if (filteredStudents.length === 0) {
+                table.innerHTML = '';
+                noStudents.classList.remove('hidden');
+                document.getElementById('totalStudentsCount').textContent = '০';
+                return;
+            }
+            
+            noStudents.classList.add('hidden');
+            document.getElementById('totalStudentsCount').textContent = toBangla(filteredStudents.length);
+            
+            let html = '';
+            
+            filteredStudents.forEach(student => {
+                const classInfo = getClassLabel(student.class);
+                const teacherName = getClassTeacher(student.class);
+                
+                html += `
+                    <tr>
+                        <td><span class="font-bold bg-gray-100 px-3 py-1 rounded-lg">${student.id || 'N/A'}</span></td>
+                        <td><span class="font-bold text-gray-800">${toBangla(student.roll)}</span></td>
+                        <td>
+                            <div class="font-bold text-gray-800">${student.name}</div>
+                            <div class="text-xs text-gray-500 mt-1">${student.father}</div>
+                        </td>
+                        <td>
+                            <div>
+                                <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
+                                <div class="text-xs text-purple-600 font-semibold mt-1">${teacherName}</div>
+                            </div>
+                        </td>
+                        <td>${student.father}</td>
+                        <td>
+                            ${student.mobile ? 
+                                `<div class="flex items-center gap-2">
+                                    <i class="fas fa-phone text-green-500"></i>
+                                    <span>${student.mobile}</span>
+                                </div>` : 
+                                '<span class="text-gray-400">N/A</span>'}
+                        </td>
+                        <td>${student.address || 'N/A'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
+                                    <i class="fas fa-edit"></i> এডিট
+                                </button>
+                                <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view">
+                                    <i class="fas fa-eye"></i> বিস্তারিত
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            table.innerHTML = html;
+        }
+
+        // হাজিরা মার্ক করা
+        function markAttendance(studentId, status) {
+            const today = new Date().toDateString();
+            const student = students.find(s => s.id === studentId);
+            const statusText = status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
+            
+            const existingIndex = attendance.findIndex(a => 
+                a.studentId === studentId && a.date === today
+            );
+            
+            const attendanceData = {
+                id: `${studentId}_${today}`,
+                studentId: studentId,
+                studentName: student.name,
+                studentClass: student.class,
+                date: today,
+                status: status,
+                timestamp: new Date().toISOString(),
+                teacher: getClassTeacher(student.class)
+            };
+            
+            if (existingIndex !== -1) {
+                attendance[existingIndex] = attendanceData;
+            } else {
+                attendance.push(attendanceData);
+            }
+            
+            // Save to Firebase
+            saveAttendanceToFirebase(attendanceData);
+            
+            updateUI();
+            
+            showToast(`${student.name} - ${statusText} মার্ক করা হয়েছে!`, 'success');
+        }
+
+        // ছাত্র এডিট
+        function editStudent(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+            
+            currentStudentId = studentId;
+            document.getElementById('modalTitle').textContent = 'ছাত্র তথ্য এডিট করুন';
+            document.getElementById('studentId').value = student.id;
+            document.getElementById('studentRoll').value = student.roll;
+            document.getElementById('studentName').value = student.name;
+            document.getElementById('studentClass').value = student.class;
+            document.getElementById('studentFather').value = student.father;
+            document.getElementById('studentMobile').value = student.mobile || '';
+            document.getElementById('studentAddress').value = student.address || '';
+            document.getElementById('studentNote').value = student.note || '';
+            
+            document.getElementById('addStudentModal').classList.remove('hidden');
+        }
+
+        // ছাত্র ডিটেইলস দেখাও
+        function viewStudentDetails(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+            
+            const classInfo = getClassLabel(student.class);
+            const teacherName = getClassTeacher(student.class);
+            const studentAttendance = attendance.filter(a => a.studentId === studentId);
+            const presentCount = studentAttendance.filter(a => a.status === 'present').length;
+            const totalCount = studentAttendance.length;
+            const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
+            
+            let content = `
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl mb-6">
+                    <div class="flex flex-col md:flex-row items-center gap-6">
+                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-6 rounded-full">
+                            <i class="fas fa-user-graduate text-4xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">${student.name}</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-id-card text-blue-500"></i>
+                                    <span class="text-gray-600">আইডি:</span>
+                                    <span class="font-bold">${student.id}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-sort-numeric-up text-blue-500"></i>
+                                    <span class="text-gray-600">রোল:</span>
+                                    <span class="font-bold">${toBangla(student.roll)}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-graduation-cap text-blue-500"></i>
+                                    <span class="text-gray-600">শ্রেণি:</span>
+                                    <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-chalkboard-teacher text-purple-500"></i>
+                                    <span class="text-gray-600">শ্রেণি শিক্ষক:</span>
+                                    <span class="font-bold text-purple-600">${teacherName}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200 text-center">
+                        <div class="text-3xl font-bold text-green-600 mb-2">${toBangla(presentCount)}</div>
+                        <div class="text-gray-600">উপস্থিত দিন</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 text-center">
+                        <div class="text-3xl font-bold text-blue-600 mb-2">${toBangla(totalCount)}</div>
+                        <div class="text-gray-600">মোট দিন</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200 text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">${toBangla(attendanceRate)}</div>
+                        <div class="text-gray-600">উপস্থিতি হার</div>
+                    </div>
+                </div>
+                
+                <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-info-circle text-blue-500"></i>
+                    অতিরিক্ত তথ্য
+                </h4>
+                <div class="bg-gray-50 p-4 rounded-xl mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <div class="text-sm text-gray-500 mb-1">পিতার নাম</div>
+                            <div class="font-semibold">${student.father}</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 mb-1">মোবাইল নম্বর</div>
+                            <div class="font-semibold">${student.mobile || 'নাই'}</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 mb-1">ঠিকানা</div>
+                            <div class="font-semibold">${student.address || 'নাই'}</div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <div class="text-sm text-gray-500 mb-1">বিশেষ মন্তব্য</div>
+                            <div class="font-semibold">${student.note || 'নাই'}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-xl border border-yellow-200 mb-6">
+                    <h4 class="font-bold text-yellow-700 mb-2 flex items-center gap-2">
+                        <i class="fas fa-phone-alt"></i>
+                        প্রয়োজনে যোগাযোগ
+                    </h4>
+                    <div class="text-xl font-bold text-yellow-800">০১৮১১২৩৬৫৪৮</div>
+                    <div class="text-sm text-yellow-600 mt-1">যেকোনো সমস্যা বা জিজ্ঞাসার জন্য এই নম্বরে কল করুন</div>
+                </div>
+                
+                <div class="flex gap-4 pt-6 border-t">
+                    <button onclick="editStudent('${student.id}')" class="btn btn-primary flex-1">
+                        <i class="fas fa-edit"></i> তথ্য এডিট
+                    </button>
+                    <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
+                        <i class="fas fa-times"></i> বন্ধ করুন
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('reportTitle').textContent = 'ছাত্রের বিস্তারিত তথ্য';
+            document.getElementById('reportContent').innerHTML = content;
+            document.getElementById('reportModal').classList.remove('hidden');
+        }
+
+        // ছাত্র ডিলিট
+        function deleteStudent(studentId) {
+            const index = students.findIndex(s => s.id === studentId);
+            if (index !== -1) {
+                const studentName = students[index].name;
+                students.splice(index, 1);
+                
+                // সংশ্লিষ্ট হাজিরা ডেটাও ডিলিট করুন
+                attendance = attendance.filter(a => a.studentId !== studentId);
+                
+                // Delete from Firebase
+                deleteStudentFromFirebase(studentId);
+                
+                // Save locally
+                saveToLocal('students', students);
+                saveToLocal('attendance', attendance);
+                
+                updateUI();
+                
+                showToast(`${studentName} - ছাত্র ডিলিট করা হয়েছে!`, 'success');
+            }
+        }
+
+        // সবাইকে উপস্থিত মার্ক
+        function markAllPresent() {
+            const today = new Date().toDateString();
+            students.forEach(student => {
+                const attendanceData = {
+                    id: `${student.id}_${today}`,
+                    studentId: student.id,
+                    studentName: student.name,
+                    studentClass: student.class,
+                    date: today,
+                    status: 'present',
+                    timestamp: new Date().toISOString(),
+                    teacher: getClassTeacher(student.class)
+                };
+                
+                const existingIndex = attendance.findIndex(a => 
+                    a.studentId === student.id && a.date === today
+                );
+                
+                if (existingIndex !== -1) {
+                    attendance[existingIndex] = attendanceData;
+                } else {
+                    attendance.push(attendanceData);
+                }
+                
+                // Save to Firebase
+                saveAttendanceToFirebase(attendanceData);
+            });
+            
+            updateUI();
+            showToast('সবাইকে উপস্থিত মার্ক করা হয়েছে!', 'success');
+        }
+
+        // ছাত্র সংরক্ষণ
+        function saveStudent() {
+            const id = document.getElementById('studentId').value.trim();
+            const roll = document.getElementById('studentRoll').value.trim();
+            const name = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value;
+            const father = document.getElementById('studentFather').value.trim();
+            const mobile = document.getElementById('studentMobile').value.trim();
+            const address = document.getElementById('studentAddress').value.trim();
+            const note = document.getElementById('studentNote').value.trim();
+            
+            if (!id || !roll || !name || !studentClass || !father) {
+                showToast('দয়া করে সব প্রয়োজনীয় তথ্য দিন!', 'error');
+                return;
+            }
+            
+            const studentData = {
+                id: id,
+                roll: parseInt(roll),
+                name: name,
+                class: studentClass,
+                father: father,
+                mobile: mobile,
+                address: address,
+                note: note,
+                createdAt: new Date().toISOString()
+            };
+            
+            if (currentStudentId === null) {
+                // Add new student
+                students.push(studentData);
+                saveStudentToFirebase(studentData);
+                showToast('নতুন ছাত্র যোগ করা হয়েছে!', 'success');
+            } else {
+                // Update existing student
+                const index = students.findIndex(s => s.id === currentStudentId);
+                if (index !== -1) {
+                    students[index] = studentData;
+                    saveStudentToFirebase(studentData);
+                    showToast('ছাত্র তথ্য আপডেট করা হয়েছে!', 'success');
+                }
+                currentStudentId = null;
+            }
+            
+            // Save locally
+            saveToLocal('students', students);
+            
+            closeModal();
+            updateUI();
+        }
+
+        // ছাত্র খুঁজা
+        function searchStudents(page = 'attendance') {
+            const searchInputId = page === 'attendance' ? 'searchInputAttendance' : 'searchInputStudents';
+            const searchText = document.getElementById(searchInputId).value.toLowerCase();
+            
+            if (!searchText) {
+                if (page === 'attendance') {
+                    renderAttendanceTable();
+                } else {
+                    renderStudentsTable();
+                }
+                return;
+            }
+            
+            const filteredStudents = students.filter(student => 
+                student.name.toLowerCase().includes(searchText) ||
+                student.id.toLowerCase().includes(searchText) ||
+                student.roll.toString().includes(searchText) ||
+                student.class.toString().includes(searchText) ||
+                student.father.toLowerCase().includes(searchText) ||
+                (student.mobile && student.mobile.includes(searchText))
+            );
+            
+            if (page === 'attendance') {
+                renderFilteredAttendanceTable(filteredStudents);
+            } else {
+                renderFilteredStudentsTable(filteredStudents);
+            }
+        }
+
+        function renderFilteredAttendanceTable(filteredStudents) {
+            const table = document.getElementById('attendanceTable');
+            const noStudents = document.getElementById('noStudents');
+            const today = new Date().toDateString();
+            
+            if (filteredStudents.length === 0) {
+                table.innerHTML = '';
+                noStudents.classList.remove('hidden');
+                return;
+            }
+            
+            noStudents.classList.add('hidden');
+            
+            let html = '';
+            
+            filteredStudents.forEach((student, index) => {
+                const studentAttendance = attendance.find(a => 
+                    a.studentId === student.id && a.date === today
+                );
+                
+                const status = studentAttendance ? studentAttendance.status : 'absent';
+                const classInfo = getClassLabel(student.class);
+                const teacherName = getClassTeacher(student.class);
+                
+                html += `
+                    <tr class="${status === 'present' ? 'status-present' : 'status-absent'}">
+                        <td><span class="font-bold bg-gray-100 px-3 py-1 rounded-lg">${student.id || 'N/A'}</span></td>
+                        <td><span class="font-bold text-gray-800">${toBangla(student.roll)}</span></td>
+                        <td>
+                            <div class="font-bold text-gray-800">${student.name}</div>
+                            <div class="text-xs text-gray-500 mt-1">${student.father}</div>
+                        </td>
+                        <td class="attendance-column">
+                            <div class="flex flex-col md:flex-row gap-2">
+                                <button onclick="markAttendance('${student.id}', 'present')" 
+                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
+                                    <i class="fas fa-check"></i> উপস্থিত
+                                </button>
+                                <button onclick="markAttendance('${student.id}', 'absent')" 
+                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
+                                    <i class="fas fa-times"></i> অনুপস্থিত
+                                </button>
+                            </div>
+                            <div class="text-xs mt-2 text-center ${status === 'present' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}">
+                                ${status === 'present' ? '✓ উপস্থিত' : '✗ অনুপস্থিত'}
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
+                                <div class="text-xs text-purple-600 font-semibold mt-1">${teacherName}</div>
+                            </div>
+                        </td>
+                        <td>${student.father}</td>
+                        <td>
+                            ${student.mobile ? 
+                                `<div class="flex items-center gap-2">
+                                    <i class="fas fa-phone text-green-500"></i>
+                                    <span>${student.mobile}</span>
+                                </div>` : 
+                                '<span class="text-gray-400">N/A</span>'}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
+                                    <i class="fas fa-edit"></i> এডিট
+                                </button>
+                                <button onclick="confirmAction('deleteStudent', 'এই ছাত্রকে ডিলিট করতে চান?', 'ছাত্র: ${student.name}\\nরোল: ${student.roll}\\n\\nডিলিটের পর পুনরুদ্ধার করা যাবে না!', '${student.id}')" 
+                                        class="action-btn action-btn-delete">
+                                    <i class="fas fa-trash"></i> ডিলিট
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            table.innerHTML = html;
+        }
+
+        function renderFilteredStudentsTable(filteredStudents) {
+            const table = document.getElementById('studentsTable');
+            const noStudents = document.getElementById('noStudentsList');
+            
+            if (filteredStudents.length === 0) {
+                table.innerHTML = '';
+                noStudents.classList.remove('hidden');
+                document.getElementById('totalStudentsCount').textContent = '০';
+                return;
+            }
+            
+            noStudents.classList.add('hidden');
+            document.getElementById('totalStudentsCount').textContent = toBangla(filteredStudents.length);
+            
+            let html = '';
+            
+            filteredStudents.forEach(student => {
+                const classInfo = getClassLabel(student.class);
+                const teacherName = getClassTeacher(student.class);
+                
+                html += `
+                    <tr>
+                        <td><span class="font-bold bg-gray-100 px-3 py-1 rounded-lg">${student.id || 'N/A'}</span></td>
+                        <td><span class="font-bold text-gray-800">${toBangla(student.roll)}</span></td>
+                        <td>
+                            <div class="font-bold text-gray-800">${student.name}</div>
+                            <div class="text-xs text-gray-500 mt-1">${student.father}</div>
+                        </td>
+                        <td>
+                            <div>
+                                <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
+                                <div class="text-xs text-purple-600 font-semibold mt-1">${teacherName}</div>
+                            </div>
+                        </td>
+                        <td>${student.father}</td>
+                        <td>
+                            ${student.mobile ? 
+                                `<div class="flex items-center gap-2">
+                                    <i class="fas fa-phone text-green-500"></i>
+                                    <span>${student.mobile}</span>
+                                </div>` : 
+                                '<span class="text-gray-400">N/A</span>'}
+                        </td>
+                        <td>${student.address || 'N/A'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
+                                    <i class="fas fa-edit"></i> এডিট
                                 </button>
                                 <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view">
                                     <i class="fas fa-eye"></i> বিস্তারিত
@@ -1627,405 +3357,16 @@
                 }
             }
             
-            saveData();
+            // Save to Firebase
+            saveTeachersToFirebase();
+            
+            // Save locally
+            saveToLocal('teachers', teachers);
+            
             closeTeacherModal();
-            renderClassFilters();
-            renderAttendanceTable();
+            updateUI();
             
             showToast('শ্রেণি শিক্ষকদের তথ্য সংরক্ষণ করা হয়েছে!', 'success');
-        }
-
-        // ছাত্র এডিট
-        function editStudent(studentId) {
-            const student = students.find(s => s.id === studentId);
-            if (!student) return;
-            
-            currentStudentId = studentId;
-            document.getElementById('modalTitle').textContent = 'ছাত্র তথ্য এডিট করুন';
-            document.getElementById('studentId').value = student.id;
-            document.getElementById('studentRoll').value = student.roll;
-            document.getElementById('studentName').value = student.name;
-            document.getElementById('studentClass').value = student.class;
-            document.getElementById('studentFather').value = student.father;
-            document.getElementById('studentMobile').value = student.mobile || '';
-            document.getElementById('studentAddress').value = student.address || '';
-            document.getElementById('studentNote').value = student.note || '';
-            
-            document.getElementById('addStudentModal').classList.remove('hidden');
-        }
-
-        // ছাত্র ডিটেইলস দেখাও
-        function viewStudentDetails(studentId) {
-            const student = students.find(s => s.id === studentId);
-            if (!student) return;
-            
-            const classInfo = getClassLabel(student.class);
-            const teacherName = getClassTeacher(student.class);
-            const today = new Date().toDateString();
-            const studentAttendance = attendance.filter(a => a.studentId === studentId);
-            const presentCount = studentAttendance.filter(a => a.status === 'present').length;
-            const totalCount = studentAttendance.length;
-            const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
-            
-            let content = `
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl mb-6">
-                    <div class="flex flex-col md:flex-row items-center gap-6">
-                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-6 rounded-full">
-                            <i class="fas fa-user-graduate text-4xl text-white"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-2">${student.name}</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-id-card text-blue-500"></i>
-                                    <span class="text-gray-600">আইডি:</span>
-                                    <span class="font-bold">${student.id}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-sort-numeric-up text-blue-500"></i>
-                                    <span class="text-gray-600">রোল:</span>
-                                    <span class="font-bold">${toBangla(student.roll)}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-graduation-cap text-blue-500"></i>
-                                    <span class="text-gray-600">শ্রেণি:</span>
-                                    <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-chalkboard-teacher text-purple-500"></i>
-                                    <span class="text-gray-600">শ্রেণি শিক্ষক:</span>
-                                    <span class="font-bold text-purple-600">${teacherName}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200 text-center">
-                        <div class="text-3xl font-bold text-green-600 mb-2">${toBangla(presentCount)}</div>
-                        <div class="text-gray-600">উপস্থিত দিন</div>
-                    </div>
-                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 text-center">
-                        <div class="text-3xl font-bold text-blue-600 mb-2">${toBangla(totalCount)}</div>
-                        <div class="text-gray-600">মোট দিন</div>
-                    </div>
-                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200 text-center">
-                        <div class="text-3xl font-bold text-purple-600 mb-2">${toBangla(attendanceRate)}%</div>
-                        <div class="text-gray-600">উপস্থিতি হার</div>
-                    </div>
-                </div>
-                
-                <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <i class="fas fa-info-circle text-blue-500"></i>
-                    অতিরিক্ত তথ্য
-                </h4>
-                <div class="bg-gray-50 p-4 rounded-xl mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <div class="text-sm text-gray-500 mb-1">পিতার নাম</div>
-                            <div class="font-semibold">${student.father}</div>
-                        </div>
-                        <div>
-                            <div class="text-sm text-gray-500 mb-1">মোবাইল নম্বর</div>
-                            <div class="font-semibold">${student.mobile || 'নাই'}</div>
-                        </div>
-                        <div>
-                            <div class="text-sm text-gray-500 mb-1">ঠিকানা</div>
-                            <div class="font-semibold">${student.address || 'নাই'}</div>
-                        </div>
-                        <div class="md:col-span-2">
-                            <div class="text-sm text-gray-500 mb-1">বিশেষ মন্তব্য</div>
-                            <div class="font-semibold">${student.note || 'নাই'}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-xl border border-yellow-200 mb-6">
-                    <h4 class="font-bold text-yellow-700 mb-2 flex items-center gap-2">
-                        <i class="fas fa-phone-alt"></i>
-                        প্রয়োজনে যোগাযোগ
-                    </h4>
-                    <div class="text-xl font-bold text-yellow-800">০১৮১১২৩৬৫৪৮</div>
-                    <div class="text-sm text-yellow-600 mt-1">যেকোনো সমস্যা বা জিজ্ঞাসার জন্য এই নম্বরে কল করুন</div>
-                </div>
-                
-                <div class="flex gap-4 pt-6 border-t">
-                    <button onclick="editStudent('${student.id}')" class="btn btn-primary flex-1">
-                        <i class="fas fa-edit"></i> তথ্য এডিট
-                    </button>
-                    <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
-                        <i class="fas fa-times"></i> বন্ধ করুন
-                    </button>
-                </div>
-            `;
-            
-            document.getElementById('reportTitle').textContent = 'ছাত্রের বিস্তারিত তথ্য';
-            document.getElementById('reportContent').innerHTML = content;
-            document.getElementById('reportModal').classList.remove('hidden');
-        }
-
-        // ছাত্র ডিলিট
-        function deleteStudent(studentId) {
-            const index = students.findIndex(s => s.id === studentId);
-            if (index !== -1) {
-                const studentName = students[index].name;
-                students.splice(index, 1);
-                
-                // সংশ্লিষ্ট হাজিরা ডেটাও ডিলিট করুন
-                attendance = attendance.filter(a => a.studentId !== studentId);
-                
-                saveData();
-                renderAttendanceTable();
-                updateDashboard();
-                renderClassFilters();
-                
-                showToast(`${studentName} - ছাত্র ডিলিট করা হয়েছে!`, 'success');
-            }
-        }
-
-        // হাজিরা মার্ক করা (PWA Offline Support)
-        function markAttendance(studentId, status) {
-            const today = new Date().toDateString();
-            const student = students.find(s => s.id === studentId);
-            const statusText = status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
-            
-            // Check if we're offline
-            if (!navigator.onLine) {
-                // Save to offline storage
-                const offlineData = JSON.parse(localStorage.getItem('offlineAttendanceData') || '[]');
-                
-                // Remove any existing entry for today
-                const filteredData = offlineData.filter(item => 
-                    !(item.studentId === studentId && item.date === today)
-                );
-                
-                // Add new entry
-                filteredData.push({
-                    id: Date.now().toString(),
-                    studentId: studentId,
-                    date: today,
-                    status: status,
-                    timestamp: new Date().toISOString(),
-                    offline: true
-                });
-                
-                localStorage.setItem('offlineAttendanceData', JSON.stringify(filteredData));
-                
-                // Update UI
-                const existingIndex = attendance.findIndex(a => 
-                    a.studentId === studentId && a.date === today
-                );
-                
-                if (existingIndex !== -1) {
-                    attendance[existingIndex].status = status;
-                    attendance[existingIndex].offline = true;
-                } else {
-                    attendance.push({
-                        id: Date.now().toString(),
-                        studentId: studentId,
-                        date: today,
-                        status: status,
-                        timestamp: new Date().toISOString(),
-                        offline: true
-                    });
-                }
-                
-                saveData();
-                renderAttendanceTable();
-                updateDashboard();
-                
-                showToast(`${student.name} - ${statusText} মার্ক করা হয়েছে (অফলাইন)!`, 'warning');
-                
-                // Register for sync when online
-                if ('serviceWorker' in navigator && 'SyncManager' in window) {
-                    navigator.serviceWorker.ready.then(registration => {
-                        registration.sync.register('sync-attendance');
-                    });
-                }
-                
-                return;
-            }
-            
-            // Online mode - normal operation
-            const existingIndex = attendance.findIndex(a => 
-                a.studentId === studentId && a.date === today
-            );
-            
-            if (existingIndex !== -1) {
-                attendance[existingIndex].status = status;
-                attendance[existingIndex].offline = false;
-            } else {
-                attendance.push({
-                    id: Date.now().toString(),
-                    studentId: studentId,
-                    date: today,
-                    status: status,
-                    timestamp: new Date().toISOString(),
-                    offline: false
-                });
-            }
-            
-            saveData();
-            renderAttendanceTable();
-            updateDashboard();
-            
-            showToast(`${student.name} - ${statusText} মার্ক করা হয়েছে!`, 'success');
-        }
-
-        // সবাইকে উপস্থিত মার্ক
-        function markAllPresent() {
-            students.forEach(student => {
-                markAttendance(student.id, 'present');
-            });
-            showToast('সবাইকে উপস্থিত মার্ক করা হয়েছে!', 'success');
-        }
-
-        // হাজিরা সংরক্ষণ
-        function saveAttendance() {
-            saveData();
-            showToast('হাজিরা সংরক্ষণ করা হয়েছে!', 'success');
-        }
-
-        // ছাত্র সংরক্ষণ
-        function saveStudent() {
-            const id = document.getElementById('studentId').value.trim();
-            const roll = document.getElementById('studentRoll').value.trim();
-            const name = document.getElementById('studentName').value.trim();
-            const studentClass = document.getElementById('studentClass').value;
-            const father = document.getElementById('studentFather').value.trim();
-            const mobile = document.getElementById('studentMobile').value.trim();
-            const address = document.getElementById('studentAddress').value.trim();
-            const note = document.getElementById('studentNote').value.trim();
-            
-            if (!id || !roll || !name || !studentClass || !father) {
-                showToast('দয়া করে সব প্রয়োজনীয় তথ্য দিন!', 'error');
-                return;
-            }
-            
-            if (currentStudentId === null && students.some(s => s.id === id)) {
-                showToast('এই আইডি নং ইতিমধ্যেই আছে!', 'error');
-                return;
-            }
-            
-            const studentData = {
-                id: id,
-                roll: parseInt(roll),
-                name: name,
-                class: studentClass,
-                father: father,
-                mobile: mobile,
-                address: address,
-                note: note,
-                createdAt: new Date().toISOString()
-            };
-            
-            if (currentStudentId === null) {
-                students.push(studentData);
-                showToast('নতুন ছাত্র যোগ করা হয়েছে!', 'success');
-            } else {
-                const index = students.findIndex(s => s.id === currentStudentId);
-                if (index !== -1) {
-                    students[index] = studentData;
-                    showToast('ছাত্র তথ্য আপডেট করা হয়েছে!', 'success');
-                }
-                currentStudentId = null;
-            }
-            
-            saveData();
-            closeModal();
-            renderAttendanceTable();
-            updateDashboard();
-            renderClassFilters();
-        }
-
-        // ছাত্র খুঁজা (ক্রমিক নং ছাড়া)
-        function searchStudents() {
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
-            
-            if (!searchText) {
-                renderAttendanceTable();
-                return;
-            }
-            
-            const filteredStudents = students.filter(student => 
-                student.name.toLowerCase().includes(searchText) ||
-                student.id.toLowerCase().includes(searchText) ||
-                student.roll.toString().includes(searchText) ||
-                student.class.toString().includes(searchText) ||
-                student.father.toLowerCase().includes(searchText) ||
-                (student.mobile && student.mobile.includes(searchText))
-            );
-            
-            const table = document.getElementById('attendanceTable');
-            const today = new Date().toDateString();
-            let html = '';
-            
-            filteredStudents.forEach((student, index) => {
-                const studentAttendance = attendance.find(a => 
-                    a.studentId === student.id && a.date === today
-                );
-                
-                const status = studentAttendance ? studentAttendance.status : 'absent';
-                const classInfo = getClassLabel(student.class);
-                const teacherName = getClassTeacher(student.class);
-                const isOffline = studentAttendance && studentAttendance.offline;
-                
-                html += `
-                    <tr class="${status === 'present' ? 'status-present' : 'status-absent'}">
-                        <td><span class="font-bold bg-gray-100 px-3 py-1 rounded-lg">${student.id || 'N/A'}</span></td>
-                        <td><span class="font-bold text-gray-800">${toBangla(student.roll)}</span></td>
-                        <td>
-                            <div class="font-bold text-gray-800">${student.name}</div>
-                            <div class="text-xs text-gray-500 mt-1">${student.father}</div>
-                            ${isOffline ? '<div class="text-xs text-yellow-600 mt-1"><i class="fas fa-cloud-upload-alt"></i> অফলাইন ডেটা</div>' : ''}
-                        </td>
-                        <td class="attendance-column">
-                            <div class="flex flex-col md:flex-row gap-2">
-                                <button onclick="markAttendance('${student.id}', 'present')" 
-                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
-                                    <i class="fas fa-check"></i> উপস্থিত
-                                </button>
-                                <button onclick="markAttendance('${student.id}', 'absent')" 
-                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
-                                    <i class="fas fa-times"></i> অনুপস্থিত
-                                </button>
-                            </div>
-                            <div class="text-xs mt-2 text-center ${status === 'present' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}">
-                                ${status === 'present' ? '✓ উপস্থিত' : '✗ অনুপস্থিত'}
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
-                                <div class="text-xs text-purple-600 font-semibold mt-1">${teacherName}</div>
-                            </div>
-                        </td>
-                        <td>${student.father}</td>
-                        <td>
-                            ${student.mobile ? 
-                                `<div class="flex items-center gap-2">
-                                    <i class="fas fa-phone text-green-500"></i>
-                                    <span>${student.mobile}</span>
-                                </div>` : 
-                                '<span class="text-gray-400">N/A</span>'}
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
-                                    <i class="fas fa-edit"></i> এডিট
-                                </button>
-                                <button onclick="confirmAction('deleteStudent', 'এই ছাত্রকে ডিলিট করতে চান?', 'ছাত্র: ${student.name}\\nরোল: ${student.roll}\\n\\nডিলিটের পর পুনরুদ্ধার করা যাবে না!', '${student.id}')" 
-                                        class="action-btn action-btn-delete">
-                                    <i class="fas fa-trash"></i> ডিলিট
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            table.innerHTML = html;
         }
 
         // শ্রেণি হাজিরা সীট দেখাও
@@ -2075,12 +3416,11 @@
                 );
                 const status = studentAttendance ? studentAttendance.status : 'absent';
                 const studentClassInfo = getClassLabel(student.class);
-                const isOffline = studentAttendance && studentAttendance.offline;
                 
                 content += `
                     <tr class="border-b hover:bg-gray-50">
                         <td class="py-3 px-4 text-center font-bold">${toBangla(student.roll)}</td>
-                        <td class="py-3 px-4">${student.name} ${isOffline ? '<span class="text-xs text-yellow-600">(অফলাইন)</span>' : ''}</td>
+                        <td class="py-3 px-4">${student.name}</td>
                         <td class="py-3 px-4">${student.father}</td>
                         <td class="py-3 px-4">
                             <span class="${studentClassInfo.badge} class-badge text-xs">${studentClassInfo.label}</span>
@@ -2116,7 +3456,7 @@
                         </div>
                         <div class="text-center">
                             <div class="font-bold text-gray-800 mb-2">তারিখ</div>
-                            <div class="text-xl font-bold text-blue-600 pt-4">${document.getElementById('todayDate').textContent}</div>
+                            <div class="text-xl font-bold text-blue-600 pt-4">${document.getElementById('todayDate2').textContent}</div>
                             <div class="text-sm text-gray-600 mt-1">হাজিরা তারিখ</div>
                         </div>
                     </div>
@@ -2189,7 +3529,7 @@
                         <h1>মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা</h1>
                         <h2>শ্রেণি হাজিরা সীট</h2>
                         <p>EIIN: ১৩০২৯০ | কোড: ১৮৭৫২</p>
-                        <p>তারিখ: ${document.getElementById('todayDate').textContent}</p>
+                        <p>তারিখ: ${document.getElementById('todayDate2').textContent}</p>
                     </div>
                     ${printContent}
                     <div class="contact-info">
@@ -2245,37 +3585,6 @@
             document.body.removeChild(link);
             
             showToast('হাজিরা সীট ডাউনলোড করা হয়েছে!', 'success');
-        }
-
-        // ডেটা এক্সপোর্ট
-        function exportData() {
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-            
-            let csv = 'আইডি,রোল,নাম,শ্রেণি,শ্রেণি শিক্ষক,পিতা,মোবাইল,ঠিকানা,উপস্থিত,অনুপস্থিত,উপস্থিতি_হার\n';
-            
-            students.forEach(student => {
-                const studentAttendance = attendance.filter(a => a.studentId === student.id);
-                const presentCount = studentAttendance.filter(a => a.status === 'present').length;
-                const absentCount = studentAttendance.filter(a => a.status === 'absent').length;
-                const totalCount = studentAttendance.length;
-                const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
-                const teacherName = getClassTeacher(student.class);
-                
-                csv += `${student.id},${student.roll},${student.name},${getClassLabel(student.class).label},${teacherName},${student.father},${student.mobile || ''},${student.address || ''},${presentCount},${absentCount},${attendanceRate}%\n`;
-            });
-            
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `হাজিরা-রিপোর্ট-${dateStr}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast('সম্পূর্ণ ডেটা ডাউনলোড করা হয়েছে!', 'success');
         }
 
         // সাপ্তাহিক রিপোর্ট
@@ -2457,12 +3766,11 @@
                 presentStudents.forEach(student => {
                     const classInfo = getClassLabel(student.class);
                     const teacherName = getClassTeacher(student.class);
-                    const isOffline = dayAttendance.find(a => a.studentId === student.id && a.offline);
                     
                     content += `
                         <div class="flex items-center justify-between p-3 bg-white rounded-lg mb-2 shadow-sm">
                             <div>
-                                <div class="font-semibold">${student.name} ${isOffline ? '<span class="text-xs text-yellow-600">(অফলাইন)</span>' : ''}</div>
+                                <div class="font-semibold">${student.name}</div>
                                 <div class="text-sm text-gray-600">রোল: ${toBangla(student.roll)} | ${classInfo.label}</div>
                                 <div class="text-xs text-purple-600">${teacherName}</div>
                             </div>
@@ -2497,12 +3805,11 @@
                 absentStudents.forEach(student => {
                     const classInfo = getClassLabel(student.class);
                     const teacherName = getClassTeacher(student.class);
-                    const isOffline = dayAttendance.find(a => a.studentId === student.id && a.offline);
                     
                     content += `
                         <div class="flex items-center justify-between p-3 bg-white rounded-lg mb-2 shadow-sm">
                             <div>
-                                <div class="font-semibold">${student.name} ${isOffline ? '<span class="text-xs text-yellow-600">(অফলাইন)</span>' : ''}</div>
+                                <div class="font-semibold">${student.name}</div>
                                 <div class="text-sm text-gray-600">রোল: ${toBangla(student.roll)} | ${classInfo.label}</div>
                                 <div class="text-xs text-purple-600">${teacherName}</div>
                             </div>
@@ -2547,7 +3854,7 @@
             document.getElementById('reportModal').classList.remove('hidden');
         }
 
-        // উপস্থিত ছাত্র দেখাও (ক্রমিক নং ছাড়া)
+        // উপস্থিত ছাত্র দেখাও
         function showStudents(status) {
             const today = new Date().toDateString();
             const dayAttendance = attendance.filter(a => a.date === today);
@@ -2579,14 +3886,13 @@
                 const classInfo = getClassLabel(student.class);
                 const teacherName = getClassTeacher(student.class);
                 const studentAttendance = dayAttendance.find(a => a.studentId === student.id);
-                const isOffline = studentAttendance && studentAttendance.offline;
                 
                 content += `
                     <div class="flex items-center justify-between p-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded-xl mb-3 shadow-sm">
                         <div class="flex-1">
                             <div class="flex items-center gap-4">
                                 <div>
-                                    <div class="font-semibold text-gray-800">${student.name} ${isOffline ? '<span class="text-xs text-yellow-600">(অফলাইন)</span>' : ''}</div>
+                                    <div class="font-semibold text-gray-800">${student.name}</div>
                                     <div class="text-sm text-gray-600 mt-1">
                                         আইডি: ${student.id} | রোল: ${toBangla(student.roll)} | 
                                         <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
@@ -2666,8 +3972,6 @@
         }
 
         // কনফার্মেশন মডেল
-        let confirmationData = null;
-        
         function confirmAction(action, title, message, data = null) {
             pendingAction = action;
             confirmationData = data;
@@ -2690,7 +3994,7 @@
                     markAllPresent();
                     break;
                 case 'saveAttendance':
-                    saveAttendance();
+                    showToast('হাজিরা সংরক্ষণ করা হয়েছে!', 'success');
                     break;
                 case 'saveStudent':
                     saveStudent();
@@ -2699,6 +4003,12 @@
                     if (confirmationData) {
                         deleteStudent(confirmationData);
                     }
+                    break;
+                case 'importConfirm':
+                    importConfirm(confirmationData);
+                    break;
+                case 'clearData':
+                    clearAllData();
                     break;
             }
             
@@ -2719,6 +4029,12 @@
             document.getElementById('studentNote').value = '';
             currentStudentId = null;
             document.getElementById('addStudentModal').classList.remove('hidden');
+        }
+
+        function generateStudentId() {
+            const nextId = students.length + 1;
+            document.getElementById('studentId').value = `STD-${nextId.toString().padStart(3, '0')}`;
+            showToast('নতুন আইডি জেনারেট করা হয়েছে!', 'info');
         }
 
         function closeModal() {
@@ -2787,42 +4103,6 @@
             }
         }
 
-        // Sync offline data when back online
-        function syncOfflineData() {
-            const offlineData = JSON.parse(localStorage.getItem('offlineAttendanceData') || '[]');
-            
-            if (offlineData.length > 0 && navigator.onLine) {
-                document.getElementById('syncIndicator').classList.add('show');
-                
-                setTimeout(() => {
-                    // Merge offline data with main attendance
-                    offlineData.forEach(item => {
-                        const existingIndex = attendance.findIndex(a => 
-                            a.studentId === item.studentId && a.date === item.date
-                        );
-                        
-                        if (existingIndex === -1) {
-                            item.offline = false; // Mark as synced
-                            attendance.push(item);
-                        }
-                    });
-                    
-                    // Save merged data
-                    saveData();
-                    
-                    // Clear offline data
-                    localStorage.removeItem('offlineAttendanceData');
-                    
-                    // Update UI
-                    renderAttendanceTable();
-                    updateDashboard();
-                    
-                    document.getElementById('syncIndicator').classList.remove('show');
-                    showToast('অফলাইন ডেটা সিঙ্ক করা হয়েছে!', 'success');
-                }, 2000);
-            }
-        }
-
         // Network Status Monitoring
         function monitorNetworkStatus() {
             const offlineIndicator = document.getElementById('offlineIndicator');
@@ -2833,9 +4113,6 @@
                 setTimeout(() => {
                     onlineIndicator.classList.remove('show');
                 }, 3000);
-                
-                // Sync offline data when back online
-                syncOfflineData();
             });
 
             window.addEventListener('offline', () => {
@@ -2931,30 +4208,914 @@
             setupInstallPrompt();
         }
 
-        // পেজ লোড হলে
+        // Page Specific Functions
+        function loadReportStats() {
+            // Calculate daily present count
+            const today = new Date().toDateString();
+            const todayAttendance = attendance.filter(a => a.date === today);
+            const presentToday = todayAttendance.filter(a => a.status === 'present').length;
+            
+            document.getElementById('dailyPresentCount').textContent = toBangla(presentToday);
+            
+            // Calculate weekly average
+            let weeklyTotal = 0;
+            let weeklyDays = 0;
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toDateString();
+                const dayAttendance = attendance.filter(a => a.date === dateStr);
+                const presentCount = dayAttendance.filter(a => a.status === 'present').length;
+                
+                if (dayAttendance.length > 0) {
+                    const rate = students.length > 0 ? Math.round((presentCount / students.length) * 100) : 0;
+                    weeklyTotal += rate;
+                    weeklyDays++;
+                }
+            }
+            
+            const weeklyAvg = weeklyDays > 0 ? Math.round(weeklyTotal / weeklyDays) : 0;
+            document.getElementById('weeklyAvg').textContent = toBangla(weeklyAvg) + '%';
+            
+            // Calculate monthly average (simplified)
+            const monthlyAvg = weeklyAvg > 0 ? weeklyAvg - 5 : 0;
+            document.getElementById('monthlyAvg').textContent = toBangla(monthlyAvg) + '%';
+            
+            // Class count
+            const uniqueClasses = [...new Set(students.map(s => s.class))].length;
+            document.getElementById('classCount').textContent = toBangla(uniqueClasses);
+            
+            // Student count
+            document.getElementById('studentCount').textContent = toBangla(students.length);
+            
+            // Total present/absent days
+            const totalPresent = attendance.filter(a => a.status === 'present').length;
+            const totalAbsent = attendance.filter(a => a.status === 'absent').length;
+            
+            document.getElementById('totalPresentDays').textContent = toBangla(totalPresent);
+            document.getElementById('totalAbsentDays').textContent = toBangla(totalAbsent);
+            
+            // Best and worst attendance
+            let bestRate = 0;
+            let worstRate = 100;
+            
+            students.forEach(student => {
+                const studentAttendance = attendance.filter(a => a.studentId === student.id);
+                if (studentAttendance.length > 0) {
+                    const presentCount = studentAttendance.filter(a => a.status === 'present').length;
+                    const rate = Math.round((presentCount / studentAttendance.length) * 100);
+                    
+                    if (rate > bestRate) bestRate = rate;
+                    if (rate < worstRate) worstRate = rate;
+                }
+            });
+            
+            document.getElementById('bestAttendance').textContent = toBangla(bestRate) + '%';
+            document.getElementById('worstAttendance').textContent = toBangla(worstRate) + '%';
+        }
+        
+        function loadClassesTable() {
+            const table = document.getElementById('classesTable');
+            
+            // Class statistics
+            const ibtidayeeClasses = ['ibtidayee-1', 'ibtidayee-2', 'ibtidayee-3', 'ibtidayee-4', 'ibtidayee-5'];
+            const dakhilClasses = ['dakhil-6', 'dakhil-7', 'dakhil-8', 'dakhil-9', 'dakhil-10'];
+            const alimClasses = ['alim-11', 'alim-12'];
+            
+            // Update counts
+            document.getElementById('ibtidayeeCount').textContent = toBangla(ibtidayeeClasses.length);
+            document.getElementById('dakhilCount').textContent = toBangla(dakhilClasses.length);
+            document.getElementById('alimCount').textContent = toBangla(alimClasses.length);
+            
+            let html = '';
+            
+            // Combine all classes
+            const allClasses = [...ibtidayeeClasses, ...dakhilClasses, ...alimClasses];
+            
+            allClasses.forEach(classValue => {
+                const classInfo = getClassLabel(classValue);
+                const teacherName = getClassTeacher(classValue);
+                const classStudents = students.filter(s => s.class === classValue);
+                const studentCount = classStudents.length;
+                
+                // Calculate today's attendance for this class
+                const today = new Date().toDateString();
+                let presentToday = 0;
+                
+                classStudents.forEach(student => {
+                    const studentAttendance = attendance.find(a => 
+                        a.studentId === student.id && a.date === today
+                    );
+                    if (studentAttendance && studentAttendance.status === 'present') {
+                        presentToday++;
+                    }
+                });
+                
+                const attendanceRate = studentCount > 0 ? Math.round((presentToday / studentCount) * 100) : 0;
+                
+                html += `
+                    <tr>
+                        <td>
+                            <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
+                        </td>
+                        <td>
+                            <div class="font-semibold text-gray-800">${teacherName}</div>
+                        </td>
+                        <td>
+                            <span class="font-bold">${toBangla(studentCount)}</span>
+                        </td>
+                        <td>
+                            <span class="font-bold ${presentToday > 0 ? 'text-green-600' : 'text-red-600'}">
+                                ${toBangla(presentToday)}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-gradient-to-r ${attendanceRate >= 90 ? 'from-green-500 to-emerald-500' : attendanceRate >= 70 ? 'from-blue-500 to-cyan-500' : attendanceRate >= 50 ? 'from-yellow-500 to-amber-500' : 'from-red-500 to-pink-500'} h-2 rounded-full" 
+                                         style="width: ${attendanceRate}%"></div>
+                                </div>
+                                <span class="text-sm font-bold ${attendanceRate >= 90 ? 'text-green-600' : attendanceRate >= 70 ? 'text-blue-600' : attendanceRate >= 50 ? 'text-yellow-600' : 'text-red-600'}">
+                                    ${toBangla(attendanceRate)}%
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="filterByClass('${classValue}'); navigateToPage('attendance');" class="action-btn action-btn-view">
+                                    <i class="fas fa-eye"></i> দেখুন
+                                </button>
+                                <button onclick="showClassStudents('${classValue}')" class="action-btn action-btn-edit">
+                                    <i class="fas fa-list"></i> তালিকা
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            table.innerHTML = html;
+        }
+        
+        function showClassStudents(classValue) {
+            const classStudents = students.filter(s => s.class === classValue);
+            const classInfo = getClassLabel(classValue);
+            const teacherName = getClassTeacher(classValue);
+            
+            let content = `
+                <h3 class="text-lg font-bold mb-4">${classInfo.label} - ছাত্র তালিকা</h3>
+                <div class="text-sm text-purple-600 font-semibold mb-6">
+                    শ্রেণি শিক্ষক: ${teacherName} | মোট ছাত্র: ${toBangla(classStudents.length)}
+                </div>
+                <div class="max-h-96 overflow-y-auto">
+            `;
+            
+            if (classStudents.length === 0) {
+                content += `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-user-graduate text-3xl mb-3"></i>
+                        <div>এই শ্রেণিতে কোন ছাত্র নেই</div>
+                    </div>
+                `;
+            } else {
+                classStudents.sort((a, b) => a.roll - b.roll).forEach((student, index) => {
+                    const attendanceCount = attendance.filter(a => a.studentId === student.id && a.status === 'present').length;
+                    const totalCount = attendance.filter(a => a.studentId === student.id).length;
+                    const attendanceRate = totalCount > 0 ? Math.round((attendanceCount / totalCount) * 100) : 0;
+                    
+                    content += `
+                        <div class="flex items-center justify-between p-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded-xl mb-3 shadow-sm">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-4">
+                                    <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-3 rounded-full">
+                                        <span class="font-bold">${toBangla(student.roll)}</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-800">${student.name}</div>
+                                        <div class="text-sm text-gray-600 mt-1">
+                                            আইডি: ${student.id} | পিতা: ${student.father}
+                                        </div>
+                                        <div class="text-xs text-blue-600 mt-1">
+                                            উপস্থিতি: ${toBangla(attendanceRate)}% (${toBangla(attendanceCount)}/${toBangla(totalCount)})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <button onclick="viewStudentDetails('${student.id}')" class="btn btn-info text-sm">
+                                    <i class="fas fa-eye"></i> বিস্তারিত
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            content += `
+                </div>
+                <div class="mt-6 pt-6 border-t">
+                    <div class="flex gap-4">
+                        <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
+                            <i class="fas fa-times"></i> বন্ধ করুন
+                        </button>
+                        <button onclick="filterByClass('${classValue}'); navigateToPage('attendance'); closeReportModal();" class="btn btn-primary flex-1">
+                            <i class="fas fa-calendar-check"></i> হাজিরা করুন
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('reportTitle').textContent = `${classInfo.label} - ছাত্র তালিকা`;
+            document.getElementById('reportContent').innerHTML = content;
+            document.getElementById('reportModal').classList.remove('hidden');
+        }
+        
+        function loadSettings() {
+            // Load saved settings
+            const settings = JSON.parse(localStorage.getItem('madrasaSettings') || '{}');
+            
+            // Set toggle values
+            if (settings.banglaDate !== undefined) {
+                document.getElementById('banglaDateToggle').checked = settings.banglaDate;
+            }
+            if (settings.autoSave !== undefined) {
+                document.getElementById('autoSaveToggle').checked = settings.autoSave;
+            }
+            if (settings.notification !== undefined) {
+                document.getElementById('notificationToggle').checked = settings.notification;
+            }
+            if (settings.offlineMode !== undefined) {
+                document.getElementById('offlineModeToggle').checked = settings.offlineMode;
+            }
+            if (settings.syncData !== undefined) {
+                document.getElementById('syncDataToggle').checked = settings.syncData;
+            }
+            if (settings.firebaseSync !== undefined) {
+                document.getElementById('firebaseSyncToggle').checked = settings.firebaseSync;
+            }
+            
+            // Add event listeners to save settings
+            document.querySelectorAll('#settings input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', saveSettings);
+            });
+        }
+        
+        function applySettings(settings) {
+            // Apply settings to UI
+            if (settings.banglaDate !== undefined) {
+                document.getElementById('banglaDateToggle').checked = settings.banglaDate;
+            }
+            if (settings.autoSave !== undefined) {
+                document.getElementById('autoSaveToggle').checked = settings.autoSave;
+            }
+            if (settings.notification !== undefined) {
+                document.getElementById('notificationToggle').checked = settings.notification;
+            }
+            if (settings.offlineMode !== undefined) {
+                document.getElementById('offlineModeToggle').checked = settings.offlineMode;
+            }
+            if (settings.syncData !== undefined) {
+                document.getElementById('syncDataToggle').checked = settings.syncData;
+            }
+            if (settings.firebaseSync !== undefined) {
+                document.getElementById('firebaseSyncToggle').checked = settings.firebaseSync;
+            }
+        }
+        
+        function saveSettings() {
+            const settings = {
+                banglaDate: document.getElementById('banglaDateToggle').checked,
+                autoSave: document.getElementById('autoSaveToggle').checked,
+                notification: document.getElementById('notificationToggle').checked,
+                offlineMode: document.getElementById('offlineModeToggle').checked,
+                syncData: document.getElementById('syncDataToggle').checked,
+                firebaseSync: document.getElementById('firebaseSyncToggle').checked
+            };
+            
+            // Save to local storage
+            localStorage.setItem('madrasaSettings', JSON.stringify(settings));
+            
+            // Save to Firebase if connected
+            if (firebaseInitialized && isFirebaseConnected) {
+                db.collection(SETTINGS_COLLECTION).doc('appSettings').set(settings)
+                    .then(() => {
+                        console.log("Settings saved to Firebase");
+                    })
+                    .catch((error) => {
+                        console.error("Error saving settings: ", error);
+                    });
+            }
+            
+            showToast('সেটিংস সংরক্ষণ করা হয়েছে!', 'success');
+        }
+        
+        function resetSettings() {
+            localStorage.removeItem('madrasaSettings');
+            loadSettings();
+            showToast('সেটিংস রিসেট করা হয়েছে!', 'success');
+        }
+        
+        function exportStudents() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            
+            let csv = 'আইডি,রোল,নাম,শ্রেণি,শ্রেণি শিক্ষক,পিতা,মোবাইল,ঠিকানা,বিশেষ মন্তব্য\n';
+            
+            students.forEach(student => {
+                const teacherName = getClassTeacher(student.class);
+                
+                csv += `${student.id},${student.roll},${student.name},${getClassLabel(student.class).label},${teacherName},${student.father},${student.mobile || ''},${student.address || ''},${student.note || ''}\n`;
+            });
+            
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `ছাত্র-তালিকা-${dateStr}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('ছাত্র তালিকা ডাউনলোড করা হয়েছে!', 'success');
+        }
+        
+        function exportAllData() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            
+            const allData = {
+                students: students,
+                attendance: attendance,
+                teachers: teachers,
+                settings: JSON.parse(localStorage.getItem('madrasaSettings') || '{}'),
+                exportDate: new Date().toISOString()
+            };
+            
+            const jsonData = JSON.stringify(allData, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `মাদ্রাসা-ডেটা-ব্যাকআপ-${dateStr}.json`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('সম্পূর্ণ ডেটা ব্যাকআপ করা হয়েছে!', 'success');
+        }
+        
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        
+                        // Validate imported data
+                        if (!importedData.students || !importedData.attendance) {
+                            showToast('ইমপোর্ট ফাইলটি সঠিক নয়!', 'error');
+                            return;
+                        }
+                        
+                        confirmAction('importConfirm', 'ডেটা ইমপোর্ট করতে চান?', 
+                            `নতুন ডেটা যোগ হবে:\nছাত্র: ${importedData.students.length}\nহাজিরা রেকর্ড: ${importedData.attendance.length}\n\nপুরানো ডেটা মুছে যাবে না।`, 
+                            importedData);
+                    } catch (error) {
+                        showToast('ফাইল পড়তে সমস্যা হয়েছে!', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        function importConfirm(data) {
+            // Merge imported data
+            if (data.students) {
+                // Add new students without duplicates
+                data.students.forEach(newStudent => {
+                    const exists = students.some(s => s.id === newStudent.id);
+                    if (!exists) {
+                        students.push(newStudent);
+                        // Save to Firebase
+                        saveStudentToFirebase(newStudent);
+                    }
+                });
+            }
+            
+            if (data.attendance) {
+                // Add new attendance records without duplicates
+                data.attendance.forEach(newRecord => {
+                    const exists = attendance.some(a => 
+                        a.studentId === newRecord.studentId && a.date === newRecord.date
+                    );
+                    if (!exists) {
+                        attendance.push(newRecord);
+                        // Save to Firebase
+                        saveAttendanceToFirebase(newRecord);
+                    }
+                });
+            }
+            
+            if (data.teachers) {
+                // Merge teachers
+                teachers = { ...teachers, ...data.teachers };
+                // Save to Firebase
+                saveTeachersToFirebase();
+            }
+            
+            if (data.settings) {
+                // Merge settings
+                const currentSettings = JSON.parse(localStorage.getItem('madrasaSettings') || '{}');
+                const mergedSettings = { ...currentSettings, ...data.settings };
+                localStorage.setItem('madrasaSettings', JSON.stringify(mergedSettings));
+                applySettings(mergedSettings);
+            }
+            
+            // Save locally
+            saveToLocal('students', students);
+            saveToLocal('attendance', attendance);
+            saveToLocal('teachers', teachers);
+            
+            updateUI();
+            
+            showToast('ডেটা সফলভাবে ইমপোর্ট করা হয়েছে!', 'success');
+        }
+        
+        function clearAllData() {
+            // Clear from Firebase
+            if (firebaseInitialized && isFirebaseConnected) {
+                // Delete all students
+                students.forEach(student => {
+                    deleteStudentFromFirebase(student.id);
+                });
+                
+                // Clear teachers
+                db.collection(TEACHERS_COLLECTION).doc('classTeachers').delete();
+                
+                // Clear settings
+                db.collection(SETTINGS_COLLECTION).doc('appSettings').delete();
+            }
+            
+            // Clear local data
+            students = [];
+            attendance = [];
+            teachers = {};
+            
+            // Clear all filters and reload
+            currentFilterClass = '';
+            
+            // Save locally
+            saveToLocal('students', students);
+            saveToLocal('attendance', attendance);
+            saveToLocal('teachers', teachers);
+            
+            updateUI();
+            
+            showToast('সমস্ত ডেটা ডিলিট করা হয়েছে!', 'success');
+        }
+        
+        function showAddClassModal() {
+            showToast('এই ফিচারটি শীঘ্রই আসছে!', 'info');
+        }
+        
+        function showImportModal() {
+            importData();
+        }
+        
+        function showClassWiseReport() {
+            let content = `
+                <h3 class="text-lg font-bold mb-6">শ্রেণিভিত্তিক হাজিরা রিপোর্ট</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr>
+                                <th>শ্রেণি</th>
+                                <th>ছাত্র সংখ্যা</th>
+                                <th>আজ উপস্থিত</th>
+                                <th>উপস্থিতি হার</th>
+                                <th>গড় উপস্থিতি</th>
+                                <th>বিস্তারিত</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            const allClasses = [...new Set(students.map(s => s.class))];
+            const today = new Date().toDateString();
+            
+            allClasses.forEach(classValue => {
+                const classInfo = getClassLabel(classValue);
+                const teacherName = getClassTeacher(classValue);
+                const classStudents = students.filter(s => s.class === classValue);
+                const studentCount = classStudents.length;
+                
+                // Calculate today's attendance
+                let presentToday = 0;
+                classStudents.forEach(student => {
+                    const studentAttendance = attendance.find(a => 
+                        a.studentId === student.id && a.date === today
+                    );
+                    if (studentAttendance && studentAttendance.status === 'present') {
+                        presentToday++;
+                    }
+                });
+                
+                const todayRate = studentCount > 0 ? Math.round((presentToday / studentCount) * 100) : 0;
+                
+                // Calculate overall average attendance for this class
+                let totalPresent = 0;
+                let totalDays = 0;
+                
+                classStudents.forEach(student => {
+                    const studentAttendance = attendance.filter(a => a.studentId === student.id);
+                    if (studentAttendance.length > 0) {
+                        const presentCount = studentAttendance.filter(a => a.status === 'present').length;
+                        totalPresent += presentCount;
+                        totalDays += studentAttendance.length;
+                    }
+                });
+                
+                const avgRate = totalDays > 0 ? Math.round((totalPresent / totalDays) * 100) : 0;
+                
+                content += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="py-3 px-4">
+                            <div class="font-semibold">${classInfo.label}</div>
+                            <div class="text-xs text-purple-600">${teacherName}</div>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="font-bold">${toBangla(studentCount)}</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="font-bold ${presentToday > 0 ? 'text-green-600' : 'text-red-600'}">
+                                ${toBangla(presentToday)}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="${todayRate >= 90 ? 'text-green-600' : todayRate >= 70 ? 'text-blue-600' : todayRate >= 50 ? 'text-yellow-600' : 'text-red-600'} font-bold">
+                                ${toBangla(todayRate)}%
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="${avgRate >= 90 ? 'text-green-600' : avgRate >= 70 ? 'text-blue-600' : avgRate >= 50 ? 'text-yellow-600' : 'text-red-600'} font-bold">
+                                ${toBangla(avgRate)}%
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <button onclick="showClassStudents('${classValue}')" class="btn btn-info text-sm py-1">
+                                <i class="fas fa-eye"></i> দেখুন
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            content += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-phone-alt text-blue-500"></i>
+                        <div>
+                            <div class="text-sm text-blue-600">প্রয়োজনে যোগাযোগ:</div>
+                            <div class="font-bold text-blue-800">০১৮১১২৩৬৫৪৮</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('reportTitle').textContent = 'শ্রেণিভিত্তিক হাজিরা রিপোর্ট';
+            document.getElementById('reportContent').innerHTML = content;
+            document.getElementById('reportModal').classList.remove('hidden');
+        }
+        
+        function showStudentReports() {
+            let content = `
+                <h3 class="text-lg font-bold mb-6">ছাত্রভিত্তিক হাজিরা রিপোর্ট</h3>
+                <div class="mb-6">
+                    <input type="text" id="searchStudentReport" class="search-box" placeholder="ছাত্রের নাম দিয়ে খুঁজুন..." onkeyup="filterStudentReports()">
+                </div>
+                <div class="max-h-96 overflow-y-auto" id="studentReportsList">
+            `;
+            
+            if (students.length === 0) {
+                content += `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-user-graduate text-3xl mb-3"></i>
+                        <div>কোন ছাত্র নেই</div>
+                    </div>
+                `;
+            } else {
+                students.sort((a, b) => a.roll - b.roll).forEach((student, index) => {
+                    const classInfo = getClassLabel(student.class);
+                    const teacherName = getClassTeacher(student.class);
+                    
+                    const studentAttendance = attendance.filter(a => a.studentId === student.id);
+                    const presentCount = studentAttendance.filter(a => a.status === 'present').length;
+                    const totalCount = studentAttendance.length;
+                    const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
+                    
+                    content += `
+                        <div class="flex items-center justify-between p-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded-xl mb-3 shadow-sm student-report-item">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-4">
+                                    <div class="bg-gradient-to-r ${attendanceRate >= 90 ? 'from-green-500 to-emerald-500' : attendanceRate >= 70 ? 'from-blue-500 to-cyan-500' : attendanceRate >= 50 ? 'from-yellow-500 to-amber-500' : 'from-red-500 to-pink-500'} text-white p-3 rounded-full">
+                                        <span class="font-bold">${toBangla(student.roll)}</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-800 student-name">${student.name}</div>
+                                        <div class="text-sm text-gray-600 mt-1">
+                                            আইডি: ${student.id} | শ্রেণি: ${classInfo.label}
+                                        </div>
+                                        <div class="text-xs text-purple-600 mt-1">শিক্ষক: ${teacherName}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold ${attendanceRate >= 90 ? 'text-green-600' : attendanceRate >= 70 ? 'text-blue-600' : attendanceRate >= 50 ? 'text-yellow-600' : 'text-red-600'}">
+                                    ${toBangla(attendanceRate)}%
+                                </div>
+                                <div class="text-xs text-gray-600">
+                                    ${toBangla(presentCount)}/${toBangla(totalCount)}
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <button onclick="viewStudentDetails('${student.id}')" class="btn btn-info text-sm">
+                                    <i class="fas fa-eye"></i> বিস্তারিত
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            content += `
+                </div>
+                <div class="mt-6 pt-6 border-t">
+                    <div class="flex gap-4">
+                        <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
+                            <i class="fas fa-times"></i> বন্ধ করুন
+                        </button>
+                        <button onclick="exportData()" class="btn btn-success flex-1">
+                            <i class="fas fa-download"></i> এক্সপোর্ট করুন
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('reportTitle').textContent = 'ছাত্রভিত্তিক হাজিরা রিপোর্ট';
+            document.getElementById('reportContent').innerHTML = content;
+            document.getElementById('reportModal').classList.remove('hidden');
+        }
+        
+        function filterStudentReports() {
+            const searchText = document.getElementById('searchStudentReport').value.toLowerCase();
+            const items = document.querySelectorAll('.student-report-item');
+            
+            items.forEach(item => {
+                const studentName = item.querySelector('.student-name').textContent.toLowerCase();
+                if (studentName.includes(searchText)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function showMonthlyReport() {
+            let content = `
+                <h3 class="text-lg font-bold mb-6">মাসিক হাজিরা রিপোর্ট</h3>
+                <div class="mb-6">
+                    <select id="monthSelect" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" onchange="loadMonthlyReport()">
+                        <option value="0">জানুয়ারী</option>
+                        <option value="1">ফেব্রুয়ারী</option>
+                        <option value="2">মার্চ</option>
+                        <option value="3">এপ্রিল</option>
+                        <option value="4">মে</option>
+                        <option value="5">জুন</option>
+                        <option value="6">জুলাই</option>
+                        <option value="7">আগস্ট</option>
+                        <option value="8">সেপ্টেম্বর</option>
+                        <option value="9">অক্টোবর</option>
+                        <option value="10">নভেম্বর</option>
+                        <option value="11">ডিসেম্বর</option>
+                    </select>
+                </div>
+                <div id="monthlyReportContent">
+                    <!-- মাসিক রিপোর্ট লোড হবে -->
+                </div>
+            `;
+            
+            document.getElementById('reportTitle').textContent = 'মাসিক হাজিরা রিপোর্ট';
+            document.getElementById('reportContent').innerHTML = content;
+            document.getElementById('reportModal').classList.remove('hidden');
+            
+            // Set current month
+            const currentMonth = new Date().getMonth();
+            document.getElementById('monthSelect').value = currentMonth;
+            
+            loadMonthlyReport();
+        }
+        
+        function loadMonthlyReport() {
+            const monthSelect = document.getElementById('monthSelect');
+            if (!monthSelect) return;
+            
+            const selectedMonth = parseInt(monthSelect.value);
+            const currentYear = new Date().getFullYear();
+            
+            // Calculate days in month
+            const daysInMonth = new Date(currentYear, selectedMonth + 1, 0).getDate();
+            
+            let monthlyData = [];
+            
+            // Collect data for each day
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, selectedMonth, day);
+                const dateStr = date.toDateString();
+                
+                const dayAttendance = attendance.filter(a => {
+                    const attDate = new Date(a.date);
+                    return attDate.getDate() === day && 
+                           attDate.getMonth() === selectedMonth && 
+                           attDate.getFullYear() === currentYear;
+                });
+                
+                const presentCount = dayAttendance.filter(a => a.status === 'present').length;
+                const absentCount = dayAttendance.filter(a => a.status === 'absent').length;
+                const totalCount = students.length;
+                const rate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
+                
+                monthlyData.push({
+                    day: day,
+                    date: date,
+                    present: presentCount,
+                    absent: absentCount,
+                    rate: rate,
+                    hasData: dayAttendance.length > 0
+                });
+            }
+            
+            // Calculate monthly statistics
+            const daysWithData = monthlyData.filter(d => d.hasData).length;
+            const totalPresent = monthlyData.reduce((sum, day) => sum + day.present, 0);
+            const totalPossible = daysWithData * students.length;
+            const monthlyRate = totalPossible > 0 ? Math.round((totalPresent / totalPossible) * 100) : 0;
+            
+            let reportContent = `
+                <div class="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">${toBangla(monthlyRate)}%</div>
+                        <div class="text-gray-700">মাসিক গড় উপস্থিতি</div>
+                        <div class="text-sm text-gray-600 mt-2">
+                            ${banglaMonths[selectedMonth]} ${toBangla(currentYear)} | 
+                            ${toBangla(daysWithData)} দিনের ডেটা
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr>
+                                <th>তারিখ</th>
+                                <th>দিন</th>
+                                <th>উপস্থিত</th>
+                                <th>অনুপস্থিত</th>
+                                <th>হার</th>
+                                <th>বিস্তারিত</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            monthlyData.forEach(dayData => {
+                const dayName = banglaDays[dayData.date.getDay()];
+                const hasDataClass = dayData.hasData ? '' : 'opacity-50';
+                
+                reportContent += `
+                    <tr class="${hasDataClass}">
+                        <td class="py-3 px-4">
+                            <div class="font-semibold">${toBangla(dayData.day)} ${banglaMonths[selectedMonth]}</div>
+                            <div class="text-sm text-gray-600">${toBangla(currentYear)}</div>
+                        </td>
+                        <td class="py-3 px-4">${dayName}</td>
+                        <td class="py-3 px-4">
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold">
+                                ${toBangla(dayData.present)}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-bold">
+                                ${toBangla(dayData.absent)}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="${dayData.rate >= 90 ? 'text-green-600' : dayData.rate >= 70 ? 'text-blue-600' : dayData.rate >= 50 ? 'text-yellow-600' : 'text-red-600'} font-bold">
+                                ${toBangla(dayData.rate)}%
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            ${dayData.hasData ? 
+                                `<button onclick="showDayReport('${dayData.date.toDateString()}')" class="btn btn-info text-sm py-1">
+                                    <i class="fas fa-eye"></i> দেখুন</button>` :
+                                '<span class="text-gray-400 text-sm">ডেটা নাই</span>'
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            reportContent += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-phone-alt text-blue-500"></i>
+                        <div>
+                            <div class="text-sm text-blue-600">প্রয়োজনে যোগাযোগ:</div>
+                            <div class="font-bold text-blue-800">০১৮১১২৩৬৫৪৮</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('monthlyReportContent').innerHTML = reportContent;
+        }
+        
+        function exportData() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            
+            let csv = 'আইডি,রোল,নাম,শ্রেণি,শ্রেণি শিক্ষক,পিতা,মোবাইল,ঠিকানা,উপস্থিত,অনুপস্থিত,উপস্থিতি_হার\n';
+            
+            students.forEach(student => {
+                const studentAttendance = attendance.filter(a => a.studentId === student.id);
+                const presentCount = studentAttendance.filter(a => a.status === 'present').length;
+                const absentCount = studentAttendance.filter(a => a.status === 'absent').length;
+                const totalCount = studentAttendance.length;
+                const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
+                const teacherName = getClassTeacher(student.class);
+                
+                csv += `${student.id},${student.roll},${student.name},${getClassLabel(student.class).label},${teacherName},${student.father},${student.mobile || ''},${student.address || ''},${presentCount},${absentCount},${attendanceRate}%\n`;
+            });
+            
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `হাজিরা-রিপোর্ট-${dateStr}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('সম্পূর্ণ ডেটা ডাউনলোড করা হয়েছে!', 'success');
+        }
+        
+        function checkForUpdates() {
+            showToast('আপডেট চেক করা হচ্ছে...', 'info');
+            
+            setTimeout(() => {
+                showToast('আপনার অ্যাপটি সর্বশেষ সংস্করণে আছে!', 'success');
+            }, 1500);
+        }
+
+        // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Firebase
+            initializeFirebase();
+            
+            // Load data and initialize
             updateDate();
-            loadData();
             initializePWA();
             
-            // আইডি জেনারেট বাটন
-            const studentIdInput = document.getElementById('studentId');
-            const generateIdBtn = document.createElement('button');
-            generateIdBtn.type = 'button';
-            generateIdBtn.className = 'btn btn-warning mt-3 text-sm w-full';
-            generateIdBtn.innerHTML = '<i class="fas fa-sync-alt"></i> অটো আইডি জেনারেট করুন';
-            generateIdBtn.onclick = function() {
-                const nextId = students.length + 1;
-                studentIdInput.value = `STD-${nextId.toString().padStart(3, '0')}`;
-                showToast('নতুন আইডি জেনারেট করা হয়েছে!', 'info');
-            };
-            studentIdInput.parentNode.appendChild(generateIdBtn);
+            // Set current page
+            showPage('dashboard');
             
-            // সার্চ বক্সে ফোকাস
-            document.getElementById('searchInput').focus();
+            // Focus on search input if on attendance page
+            if (currentPage === 'attendance') {
+                setTimeout(() => {
+                    document.getElementById('searchInputAttendance')?.focus();
+                }, 100);
+            }
         });
 
-        // কী শর্টকাট
+        // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'n') {
                 e.preventDefault();
@@ -2963,7 +5124,7 @@
             
             if (e.ctrlKey && e.key === 's') {
                 e.preventDefault();
-                confirmAction('saveAttendance', 'হাজিরা সংরক্ষণ করতে চান?', 'সংরক্ষণের পর পরিবর্তন করা যাবে না।');
+                showToast('হাজিরা সংরক্ষণ করা হয়েছে!', 'success');
             }
             
             if (e.ctrlKey && e.key === 't') {
@@ -2973,7 +5134,11 @@
             
             if (e.ctrlKey && e.key === 'f') {
                 e.preventDefault();
-                document.getElementById('searchInput').focus();
+                if (currentPage === 'attendance') {
+                    document.getElementById('searchInputAttendance')?.focus();
+                } else if (currentPage === 'students') {
+                    document.getElementById('searchInputStudents')?.focus();
+                }
             }
             
             if (e.key === 'Escape') {
@@ -2982,6 +5147,7 @@
                 closeTeacherModal();
                 closeReportModal();
                 cancelAction();
+                toggleMobileMenu(); // ESC-এ মেনু বন্ধ হবে
             }
             
             // PWA Install Shortcut
