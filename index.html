@@ -91,37 +91,6 @@
             opacity: 0.8;
         }
         
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .nav-item {
-            position: relative;
-        }
-        
-        .nav-link {
-            color: white;
-            padding: 12px 18px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .nav-link.active {
-            background: rgba(255,255,255,0.2);
-            font-weight: 600;
-        }
-        
         /* হামবার্গার মেনু বাটন - এখন সব ডিভাইসে দেখা যাবে */
         .hamburger-menu-btn {
             display: flex;
@@ -133,6 +102,7 @@
             padding: 8px;
             align-items: center;
             justify-content: center;
+            z-index: 1001;
         }
         
         /* মোবাইল মেনু */
@@ -146,7 +116,7 @@
             display: none;
             flex-direction: column;
             gap: 10px;
-            z-index: 999;
+            z-index: 1000;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         
@@ -485,18 +455,22 @@
         
         .toast-success {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
         }
         
         .toast-error {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
         }
         
         .toast-warning {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
         }
         
         .toast-info {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
         }
         
         .class-badge {
@@ -1057,6 +1031,29 @@
             display: inline-block;
         }
         
+        /* মোবাইল নেভিগেশন লিংক */
+        .nav-link {
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            font-weight: 600;
+        }
+        
         @media (max-width: 768px) {
             .dashboard-stats {
                 grid-template-columns: 1fr;
@@ -1113,7 +1110,7 @@
         <div class="nav-container">
             <div class="nav-content">
                 <!-- Logo -->
-                <a href="#" class="logo" onclick="showPage('dashboard'); return false;">
+                <a href="#" class="logo" onclick="showPage('dashboard'); hideMobileMenu(); return false;">
                     <div class="logo-icon">
                         <i class="fas fa-mosque"></i>
                     </div>
@@ -1129,29 +1126,34 @@
                 </button>
             </div>
             
-            <!-- Mobile Menu (Now used for both mobile and desktop) -->
+            <!-- Mobile Menu -->
             <div class="mobile-menu" id="mobileMenu">
-                <a href="#" class="nav-link active" onclick="navigateToPage('dashboard'); return false;">
+                <a href="#" class="nav-link active" onclick="showPage('dashboard'); hideMobileMenu(); return false;">
                     <i class="fas fa-home"></i>
                     ড্যাশবোর্ড
                 </a>
-                <a href="#" class="nav-link" onclick="navigateToPage('attendance'); return false;">
-                    <i class="fas fa-calendar-check"></i>
-                    হাজিরা
+                <!-- পরিবর্তন: শিক্ষক ব্যবস্থাপনা থ্রি-লাইন মেনুতে স্থানান্তর -->
+                <a href="#" class="nav-link" onclick="showTeacherManagement(); hideMobileMenu(); return false;">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    শিক্ষক ব্যবস্থাপনা
                 </a>
-                <a href="#" class="nav-link" onclick="navigateToPage('students'); return false;">
+                <a href="#" class="nav-link" onclick="showPage('attendance'); hideMobileMenu(); return false;">
+                    <i class="fas fa-calendar-check"></i>
+                    ছাত্র-ছাত্রী হাজিরা
+                </a>
+                <a href="#" class="nav-link" onclick="showPage('students'); hideMobileMenu(); return false;">
                     <i class="fas fa-users"></i>
                     ছাত্র-ছাত্রী তালিকা
                 </a>
-                <a href="#" class="nav-link" onclick="navigateToPage('reports'); return false;">
+                <a href="#" class="nav-link" onclick="showPage('reports'); hideMobileMenu(); return false;">
                     <i class="fas fa-chart-bar"></i>
                     রিপোর্ট
                 </a>
-                <a href="#" class="nav-link" onclick="navigateToPage('classes'); return false;">
+                <a href="#" class="nav-link" onclick="showPage('classes'); hideMobileMenu(); return false;">
                     <i class="fas fa-graduation-cap"></i>
                     শ্রেণি ব্যবস্থাপনা
                 </a>
-                <a href="#" class="nav-link" onclick="navigateToPage('settings'); return false;">
+                <a href="#" class="nav-link" onclick="showPage('settings'); hideMobileMenu(); return false;">
                     <i class="fas fa-cog"></i>
                     সেটিংস
                 </a>
@@ -1186,14 +1188,16 @@
                             </div>
                         </div>
                         <div class="flex flex-col gap-3">
-                            <button onclick="showAddStudentModal()" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> নতুন ছাত্র-ছাত্রী যোগ
+                            <!-- পরিবর্তন: শিক্ষক ব্যবস্থাপনা বাটন (ডেসবোর্ডে স্থানান্তর) -->
+                            <button onclick="showTeacherManagement()" class="btn btn-warning">
+                                <i class="fas fa-chalkboard-teacher"></i> শিক্ষক ব্যবস্থাপনা
                             </button>
                             <button onclick="showClassSheets()" class="btn btn-info">
                                 <i class="fas fa-clipboard-list"></i> শ্রেণি হাজিরা সীট
                             </button>
-                            <button onclick="showTeacherManagement()" class="btn btn-warning">
-                                <i class="fas fa-chalkboard-teacher"></i> শিক্ষক ব্যবস্থাপনা
+                            <!-- পরিবর্তন: ছাত্র-ছাত্রী হাজিরা বাটন -->
+                            <button onclick="showPage('attendance')" class="btn btn-primary">
+                                <i class="fas fa-calendar-check"></i> ছাত্র-ছাত্রী হাজিরা
                             </button>
                             <button onclick="addToHomeScreen()" class="btn btn-success hidden" id="installButton">
                                 <i class="fas fa-download"></i> অ্যাপ ইন্সটল
@@ -1273,8 +1277,9 @@
                             <button onclick="exportData()" class="btn btn-success">
                                 <i class="fas fa-download"></i> ডেটা ডাউনলোড
                             </button>
-                            <button onclick="showTeacherManagement()" class="btn btn-warning">
-                                <i class="fas fa-chalkboard-teacher"></i> শিক্ষক দেখুন
+                            <!-- পরিবর্তন: ছাত্র-ছাত্রী হাজিরা বাটন -->
+                            <button onclick="showPage('attendance')" class="btn btn-primary">
+                                <i class="fas fa-calendar-check"></i> ছাত্র-ছাত্রী হাজিরা
                             </button>
                         </div>
                     </div>
@@ -1686,10 +1691,11 @@
                             <p class="text-gray-600 text-sm mt-1">শ্রেণি ও শ্রেণি শিক্ষক ব্যবস্থাপনা</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="showTeacherManagement()" class="btn btn-warning">
-                                <i class="fas fa-chalkboard-teacher"></i> শিক্ষক ব্যবস্থাপনা
+                            <!-- পরিবর্তন: ছাত্র-ছাত্রী হাজিরা বাটন -->
+                            <button onclick="showPage('attendance')" class="btn btn-primary">
+                                <i class="fas fa-calendar-check"></i> ছাত্র-ছাত্রী হাজিরা
                             </button>
-                            <button onclick="showAddClassModal()" class="btn btn-primary">
+                            <button onclick="showAddClassModal()" class="btn btn-warning">
                                 <i class="fas fa-plus"></i> নতুন শ্রেণি
                             </button>
                             <button onclick="showClassSheets()" class="btn btn-info">
@@ -2782,12 +2788,7 @@
             }
         }
 
-        // Navigation Functions
-        function navigateToPage(pageId) {
-            showPage(pageId);
-            toggleMobileMenu();
-        }
-
+        // Navigation Functions - সংশোধিত
         function showPage(pageId) {
             // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
@@ -2816,6 +2817,9 @@
             
             // Load page specific data
             loadPageData(pageId);
+            
+            // Auto-hide mobile menu if open
+            hideMobileMenu();
         }
         
         function getPageName(pageId) {
@@ -2859,6 +2863,11 @@
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
             mobileMenu.classList.toggle('show');
+        }
+        
+        function hideMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.remove('show');
         }
 
         // PWA Functions
@@ -3967,6 +3976,7 @@
         function showTeacherManagement() {
             renderTeacherInputs();
             document.getElementById('teacherManagementModal').classList.remove('hidden');
+            hideMobileMenu();
         }
 
         // শিক্ষক ইনপুট রেন্ডার
@@ -4092,6 +4102,7 @@
         function showClassSheets() {
             document.getElementById('classSheetsModal').classList.remove('hidden');
             loadClassSheet();
+            hideMobileMenu();
         }
 
         // শ্রেণি সীট লোড
@@ -4444,6 +4455,7 @@
             document.getElementById('reportTitle').textContent = 'সাপ্তাহিক হাজিরা রিপোর্ট';
             document.getElementById('reportContent').innerHTML = content;
             document.getElementById('reportModal').classList.remove('hidden');
+            hideMobileMenu();
         }
 
         // নির্দিষ্ট দিনের রিপোর্ট
@@ -4574,6 +4586,7 @@
             document.getElementById('reportTitle').textContent = `${banglaDate} - হাজিরা রিপোর্ট`;
             document.getElementById('reportContent').innerHTML = content;
             document.getElementById('reportModal').classList.remove('hidden');
+            hideMobileMenu();
         }
 
         // উপস্থিত ছাত্র-ছাত্রী দেখাও
@@ -4651,6 +4664,7 @@
             document.getElementById('reportTitle').textContent = `${statusText} ছাত্র-ছাত্রীর তালিকা`;
             document.getElementById('reportContent').innerHTML = content;
             document.getElementById('reportModal').classList.remove('hidden');
+            hideMobileMenu();
         }
 
         // সব ছাত্র-ছাত্রী দেখাও
@@ -4700,6 +4714,7 @@
             document.getElementById('confirmationTitle').textContent = title;
             document.getElementById('confirmationMessage').textContent = message;
             document.getElementById('confirmationModal').classList.remove('hidden');
+            hideMobileMenu();
         }
 
         function cancelAction() {
@@ -4786,6 +4801,7 @@
             document.getElementById('studentNote').value = '';
             currentStudentId = null;
             document.getElementById('addStudentModal').classList.remove('hidden');
+            hideMobileMenu();
         }
 
         function generateStudentId() {
@@ -5100,7 +5116,7 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button onclick="filterByClass('${classValue}'); navigateToPage('attendance');" class="action-btn action-btn-view">
+                                <button onclick="filterByClass('${classValue}'); showPage('attendance');" class="action-btn action-btn-view">
                                     <i class="fas fa-eye"></i> দেখুন
                                 </button>
                                 <button onclick="showClassStudents('${classValue}')" class="action-btn action-btn-edit">
@@ -5176,7 +5192,7 @@
                         <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
                             <i class="fas fa-times"></i> বন্ধ করুন
                         </button>
-                        <button onclick="filterByClass('${classValue}'); navigateToPage('attendance'); closeReportModal();" class="btn btn-primary flex-1">
+                        <button onclick="filterByClass('${classValue}'); showPage('attendance'); closeReportModal();" class="btn btn-primary flex-1">
                             <i class="fas fa-calendar-check"></i> হাজিরা করুন
                         </button>
                     </div>
@@ -5874,6 +5890,7 @@
         
         function showPastDateCorrection() {
             document.getElementById('pastDateCorrectionModal').classList.remove('hidden');
+            hideMobileMenu();
         }
         
         function closePastDateCorrectionModal() {
@@ -6083,7 +6100,7 @@
                 cancelDelete();
                 closePastDateCorrectionModal();
                 closePastDateSelector();
-                toggleMobileMenu(); // ESC-এ মেনু বন্ধ হবে
+                hideMobileMenu(); // ESC-এ মেনু বন্ধ হবে
             }
             
             // PWA Install Shortcut
