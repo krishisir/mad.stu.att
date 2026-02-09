@@ -17,7 +17,8 @@
     <link rel="manifest" href="manifest.json">
     
     <!-- iOS Icons -->
-    <link rel="apple-touch-icon" sizes="512x512" href="https://i.ibb.co.com/m52WMKg6/android-chrome-512x512.png">    
+    <link rel="apple-touch-icon" sizes="512x512" href="https://i.ibb.co.com/m52WMKg6/android-chrome-512x512.png">
+    
     <!-- External Resources -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -35,12 +36,33 @@
         
         * {
             font-family: 'Hind Siliguri', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding-top: 70px;
+            overflow-x: hidden;
+        }
+        
+        /* Glassmorphism Effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
         
         /* Navigation Styles */
@@ -49,9 +71,11 @@
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.95) 0%, rgba(55, 48, 163, 0.95) 100%);
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
         .nav-container {
@@ -73,25 +97,39 @@
             gap: 12px;
             color: white;
             text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: translateY(-2px);
         }
         
         .logo-icon {
-            background: rgba(255,255,255,0.2);
-            padding: 8px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 12px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
         
         .logo-text {
             font-size: 20px;
             font-weight: 700;
+            background: linear-gradient(135deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .logo-subtext {
             font-size: 12px;
-            opacity: 0.8;
+            opacity: 0.9;
         }
         
-        /* হামবার্গার মেনু বাটন - এখন সব ডিভাইসে দেখা যাবে */
         .hamburger-menu-btn {
             display: flex;
             background: none;
@@ -103,26 +141,34 @@
             align-items: center;
             justify-content: center;
             z-index: 1001;
+            transition: transform 0.3s ease;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        /* মোবাইল মেনু */
+        .hamburger-menu-btn:hover {
+            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
         .mobile-menu {
             position: fixed;
             top: 70px;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.98) 0%, rgba(55, 48, 163, 0.98) 100%);
             padding: 20px;
             display: none;
             flex-direction: column;
             gap: 10px;
             z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: slideDown 0.3s ease;
         }
         
         .mobile-menu.show {
             display: flex;
-            animation: slideDown 0.3s ease;
         }
         
         @keyframes slideDown {
@@ -136,61 +182,125 @@
             }
         }
         
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+        
         /* Main Content Styles */
         .main-content {
             padding: 20px;
-        }
-        
-        .page {
-            display: none;
-        }
-        
-        .page.active {
-            display: block;
             animation: fadeIn 0.5s ease;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page {
+            display: none;
+            animation: pageTransition 0.4s ease;
+        }
+        
+        @keyframes pageTransition {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .page.active {
+            display: block;
         }
         
         .card {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 20px;
             padding: 25px;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
+            margin-bottom: 25px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
         }
         
         .btn {
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 14px 28px;
+            border-radius: 14px;
             font-weight: 600;
             cursor: pointer;
             border: none;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
             gap: 10px;
             font-size: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, #3730a3 0%, #312e81 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
         }
         
         .btn-success {
@@ -199,9 +309,9 @@
         }
         
         .btn-success:hover {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #0da271 0%, #047857 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
         }
         
         .btn-danger {
@@ -211,8 +321,8 @@
         
         .btn-danger:hover {
             background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
         }
         
         .btn-warning {
@@ -222,8 +332,8 @@
         
         .btn-warning:hover {
             background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
         }
         
         .btn-info {
@@ -232,20 +342,25 @@
         }
         
         .btn-info:hover {
-            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
         }
         
         .badge {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .badge:hover {
+            transform: translateY(-2px);
         }
         
         .badge-success {
@@ -275,79 +390,115 @@
         
         .search-box {
             width: 100%;
-            padding: 14px 24px;
+            padding: 16px 24px;
             border: 2px solid #e5e7eb;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 16px;
             margin-bottom: 20px;
             background: white;
-            transition: all 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         
         .search-box:focus {
             outline: none;
             border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
         }
         
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+            animation: tableAppear 0.5s ease;
+        }
+        
+        @keyframes tableAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         th {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            padding: 18px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 20px;
             text-align: left;
             font-weight: 700;
             color: #374151;
             border-bottom: 2px solid #d1d5db;
             font-size: 15px;
+            position: sticky;
+            top: 0;
         }
         
         td {
-            padding: 16px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 18px;
+            border-bottom: 1px solid #f1f5f9;
             vertical-align: middle;
+            transition: background-color 0.2s ease;
+        }
+        
+        tr {
+            transition: all 0.3s ease;
         }
         
         tr:hover {
             background: #f8fafc;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
         
         .status-present {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
-            color: #065f46 !important;
-            border-left: 5px solid #10b981 !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-present::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(180deg, #10b981 0%, #34d399 100%);
         }
         
         .status-absent {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%) !important;
-            color: #991b1b !important;
-            border-left: 5px solid #ef4444 !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-absent::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(180deg, #ef4444 0%, #f87171 100%);
         }
         
         .attendance-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
             border: 2px solid;
             font-weight: 600;
             cursor: pointer;
-            margin: 3px;
-            transition: all 0.2s;
+            margin: 4px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 14px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
         
         .attendance-btn:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
         
         .modal {
@@ -356,52 +507,59 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 2000;
             padding: 20px;
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .modal-content {
             background: white;
-            border-radius: 20px;
-            padding: 35px;
+            border-radius: 24px;
+            padding: 40px;
             width: 100%;
             max-width: 700px;
             max-height: 90vh;
             overflow-y: auto;
-            animation: slideUp 0.4s ease;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
         
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
+        @keyframes modalSlideUp {
+            from { transform: translateY(50px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
         
         .hidden {
-            display: none;
+            display: none !important;
         }
         
         .dashboard-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
         }
         
         .stat-card {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            transition: all 0.4s;
-            border: 2px solid transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             position: relative;
             overflow: hidden;
         }
@@ -412,73 +570,87 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 5px;
+            height: 6px;
             background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .stat-card:hover {
-            transform: translateY(-8px);
-            border-color: #4f46e5;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
         }
         
         .stat-number {
-            font-size: 38px;
+            font-size: 42px;
             font-weight: bold;
-            margin: 15px 0;
+            margin: 20px 0;
             background: linear-gradient(135deg, #374151 0%, #111827 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover .stat-number {
+            transform: scale(1.1);
         }
         
         .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            padding: 18px 25px;
-            border-radius: 12px;
+            padding: 20px 28px;
+            border-radius: 16px;
             color: white;
             font-weight: 600;
             z-index: 10000;
             display: flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: slideInRight 0.3s ease;
+            gap: 14px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: toastSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             max-width: 400px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
-        @keyframes slideInRight {
+        @keyframes toastSlideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
         
         .toast-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.9) 100%);
         }
         
         .toast-error {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(220, 38, 38, 0.9) 100%);
         }
         
         .toast-warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.9) 0%, rgba(217, 119, 6, 0.9) 100%);
         }
         
         .toast-info {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(29, 78, 216, 0.9) 100%);
         }
         
         .class-badge {
-            padding: 6px 15px;
+            padding: 8px 18px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
             display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .class-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
         
         .class-ibtidayee {
@@ -502,27 +674,34 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
         .confirmation-content {
             background: white;
-            border-radius: 20px;
-            padding: 40px;
+            border-radius: 24px;
+            padding: 50px;
             max-width: 500px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            animation: confirmationPop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes confirmationPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
         
         .confirmation-buttons {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             margin-top: 30px;
             justify-content: center;
         }
@@ -530,53 +709,67 @@
         .class-filter-buttons {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 15px;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 20px;
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
         .class-filter-btn {
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 2px solid transparent;
             background: white;
             color: #4b5563;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
         
         .class-filter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
         
         .class-filter-btn.active {
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
             border-color: #4f46e5;
+            animation: buttonPulse 2s infinite;
+        }
+        
+        @keyframes buttonPulse {
+            0% { box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(79, 70, 229, 0.6); }
+            100% { box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
         }
         
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
         
         .action-btn {
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 10px 16px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            font-size: 13px;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
         
         .action-btn-edit {
@@ -589,27 +782,233 @@
             color: white;
         }
         
-        .action-btn-delete:hover {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-        }
-        
         .action-btn-view {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
         }
         
-        .teacher-badge {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            margin-left: 5px;
+        /* Floating Elements */
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
         }
         
-        /* Toggle Switch */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* Shimmer Effect */
+        .shimmer {
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                rgba(255, 255, 255, 0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #4f46e5;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #4f46e5, #8b5cf6);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
+                transparent);
+            animation: progress 2s infinite;
+        }
+        
+        @keyframes progress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Page Load Animation */
+        .page-load {
+            animation: pageLoad 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes pageLoad {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Card Hover Effects */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Ripple Effect */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.6);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .ripple:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(40, 40);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .confirmation-buttons {
+                flex-direction: column;
+            }
+            
+            .class-filter-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .stat-number {
+                font-size: 32px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .search-box {
+                padding: 14px 20px;
+            }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #7c3aed 100%);
+        }
+        
+        /* Print Styles */
+        @media print {
+            .navbar, .btn, .action-buttons, .search-box, .class-filter-buttons {
+                display: none !important;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            body {
+                padding-top: 0;
+                background: white;
+            }
+        }
+        
+        /* Switch toggle */
         .switch {
             position: relative;
             display: inline-block;
@@ -649,6 +1048,10 @@
             background-color: #4f46e5;
         }
         
+        input:focus + .slider {
+            box-shadow: 0 0 1px #4f46e5;
+        }
+        
         input:checked + .slider:before {
             transform: translateX(26px);
         }
@@ -661,221 +1064,54 @@
             border-radius: 50%;
         }
         
-        /* PWA Specific Styles */
-        .pwa-install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            z-index: 10000;
-            display: none;
-            animation: slideUp 0.3s ease;
-        }
-        
-        .pwa-install-prompt.show {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .pwa-install-prompt-content {
-            flex: 1;
-        }
-        
-        .pwa-install-prompt-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .pwa-install-prompt-description {
-            font-size: 13px;
-            opacity: 0.9;
-        }
-        
-        .pwa-install-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .pwa-install-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s;
-        }
-        
-        .pwa-install-primary {
-            background: white;
-            color: #4f46e5;
-        }
-        
-        .pwa-install-secondary {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-        
-        .offline-indicator {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: #ef4444;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 10000;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-            display: none;
-        }
-        
-        .offline-indicator.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .online-indicator {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: #10b981;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 10000;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            display: none;
-        }
-        
-        .online-indicator.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .sync-indicator {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: #f59e0b;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 10000;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-            display: none;
-        }
-        
-        .sync-indicator.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .pwa-button {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 8px 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 13px;
-            margin-left: 10px;
-        }
-        
-        .attendance-column {
-            width: 200px;
-        }
-        
-        /* Firebase Connection Status */
-        .firebase-status {
-            position: fixed;
-            top: 80px;
-            left: 20px;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 10000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        
-        .firebase-connected {
-            background: #10b981;
-            color: white;
-        }
-        
-        .firebase-disconnected {
-            background: #ef4444;
-            color: white;
-        }
-        
-        .firebase-syncing {
-            background: #f59e0b;
-            color: white;
-        }
-        
-        /* উন্নত ডিলিট মডেল স্টাইল */
+        /* Delete Confirmation Modal */
         .delete-confirmation-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            backdrop-filter: blur(5px);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
         .delete-confirmation-content {
             background: white;
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 40px;
             max-width: 500px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            animation: slideUp 0.3s ease;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .delete-icon {
-            font-size: 60px;
-            color: #ef4444;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .delete-icon i {
+            font-size: 36px;
+            color: white;
         }
         
         .delete-student-info {
-            background: #fef2f2;
-            border-radius: 10px;
-            padding: 15px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
             margin: 20px 0;
             text-align: left;
         }
@@ -883,23 +1119,28 @@
         .delete-student-info-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .delete-student-info-item:last-child {
+            border-bottom: none;
         }
         
         .delete-student-info-label {
-            font-weight: 600;
-            color: #4b5563;
+            color: #6b7280;
+            font-weight: 500;
         }
         
         .delete-student-info-value {
-            font-weight: 700;
             color: #111827;
+            font-weight: 600;
         }
         
         .delete-warning {
-            background: #fffbeb;
-            border: 2px solid #f59e0b;
-            border-radius: 10px;
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
             padding: 15px;
             margin: 20px 0;
             text-align: left;
@@ -908,33 +1149,31 @@
         .delete-warning-title {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: 700;
+            gap: 8px;
             color: #92400e;
+            font-weight: bold;
             margin-bottom: 10px;
         }
         
         .delete-warning-icon {
-            color: #f59e0b;
+            color: #d97706;
         }
         
         .delete-warning-list {
-            list-style-type: none;
-            padding-left: 0;
-            margin: 0;
+            list-style: none;
+            padding: 0;
         }
         
         .delete-warning-list li {
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 8px;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
             color: #92400e;
         }
         
         .delete-warning-list li i {
-            color: #f59e0b;
-            margin-top: 3px;
+            color: #dc2626;
         }
         
         .delete-buttons {
@@ -945,28 +1184,25 @@
         
         .delete-btn {
             flex: 1;
-            padding: 12px 24px;
+            padding: 15px;
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             border: none;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-size: 16px;
         }
         
         .delete-cancel-btn {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            background: #6b7280;
             color: white;
         }
         
         .delete-cancel-btn:hover {
-            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: #4b5563;
         }
         
         .delete-confirm-btn {
@@ -976,142 +1212,148 @@
         
         .delete-confirm-btn:hover {
             background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(239, 68, 68, 0.3);
         }
         
-        /* বাটন এনিমেশন */
-        .pulse-animation {
-            animation: pulse 2s infinite;
+        /* PWA Install Prompt */
+        .pwa-install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            z-index: 10001;
+            display: none;
+            flex-direction: column;
+            animation: slideUp 0.3s ease;
         }
         
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-            }
+        .pwa-install-prompt.show {
+            display: flex;
         }
         
-        /* অতীত তারিখের হাজিরা বাটন */
-        .past-date-btn {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .pwa-install-prompt-content {
+            padding: 20px;
+        }
+        
+        .pwa-install-prompt-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+        
+        .pwa-install-prompt-description {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .pwa-install-buttons {
+            display: flex;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .pwa-install-btn {
+            flex: 1;
+            padding: 16px;
             border: none;
-            border-radius: 10px;
-            padding: 10px 15px;
+            background: none;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
         }
         
-        .past-date-btn:hover {
-            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-            transform: translateY(-2px);
+        .pwa-install-secondary {
+            border-right: 1px solid #e5e7eb;
+            color: #6b7280;
         }
         
-        .date-picker-container {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        .pwa-install-primary {
+            color: #4f46e5;
         }
         
-        .selected-date-display {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        /* Network Status */
+        .offline-indicator, .online-indicator, .sync-indicator {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 10px 16px;
+            border-radius: 12px;
             color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-top: 10px;
-            display: inline-block;
-        }
-        
-        /* মোবাইল নেভিগেশন লিংক */
-        .nav-link {
-            color: white;
-            padding: 12px 18px;
-            border-radius: 10px;
+            font-weight: 500;
+            z-index: 999;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s;
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: slideDownSmall 0.3s ease;
+            display: none;
         }
         
-        .nav-link:hover {
-            background: rgba(255,255,255,0.1);
+        .offline-indicator.show, .online-indicator.show, .sync-indicator.show {
+            display: flex;
         }
         
-        .nav-link.active {
-            background: rgba(255,255,255,0.2);
-            font-weight: 600;
+        .offline-indicator {
+            background: #ef4444;
         }
         
-        @media (max-width: 768px) {
-            .dashboard-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .modal-content {
-                padding: 25px;
-            }
-            
-            .confirmation-buttons {
-                flex-direction: column;
-            }
-            
-            .delete-buttons {
-                flex-direction: column;
-            }
-            
-            .class-filter-buttons {
-                flex-direction: column;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                gap: 4px;
-            }
-            
-            .pwa-install-prompt {
-                bottom: 10px;
-                left: 10px;
-                right: 10px;
-            }
-            
-            .attendance-column {
-                width: 150px;
-            }
-            
-            .firebase-status {
-                top: 140px;
-                left: 10px;
-                font-size: 10px;
-                padding: 6px 12px;
-            }
+        .online-indicator {
+            background: #10b981;
+        }
+        
+        .sync-indicator {
+            background: #3b82f6;
+        }
+        
+        @keyframes slideDownSmall {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Loading Overlay */
+        .fixed {
+            position: fixed;
+        }
+        
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        
+        .bg-black {
+            background-color: black;
+        }
+        
+        .bg-opacity-50 {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .z-9999 {
+            z-index: 9999;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
-<body>
+<body class="page-load">
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-content">
                 <!-- Logo -->
                 <a href="#" class="logo" onclick="showPage('dashboard'); hideMobileMenu(); return false;">
-                    <div class="logo-icon">
+                    <div class="logo-icon floating-element">
                         <i class="fas fa-mosque"></i>
                     </div>
                     <div>
@@ -1120,8 +1362,8 @@
                     </div>
                 </a>
                 
-                <!-- Desktop Menu Button (Three Lines) -->
-                <button class="hamburger-menu-btn" onclick="toggleMobileMenu()">
+                <!-- Desktop Menu Button -->
+                <button class="hamburger-menu-btn ripple" onclick="toggleMobileMenu()">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
@@ -1132,7 +1374,6 @@
                     <i class="fas fa-home"></i>
                     ড্যাশবোর্ড
                 </a>
-                <!-- পরিবর্তন: শিক্ষক ব্যবস্থাপনা থ্রি-লাইন মেনুতে স্থানান্তর -->
                 <a href="#" class="nav-link" onclick="showTeacherManagement(); hideMobileMenu(); return false;">
                     <i class="fas fa-chalkboard-teacher"></i>
                     শিক্ষক ব্যবস্থাপনা
@@ -1166,103 +1407,100 @@
         <!-- Dashboard Page -->
         <div id="dashboard" class="page active">
             <div class="max-w-7xl mx-auto">
-                <!-- হেডার -->
-                <div class="card mb-6">
+                <!-- Header -->
+                <div class="card glass-card">
                     <div class="flex flex-col md:flex-row justify-between items-center">
                         <div class="mb-4 md:mb-0">
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-xl">
+                                <div class="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-xl floating-element">
                                     <i class="fas fa-mosque text-2xl text-white"></i>
                                 </div>
                                 <div>
-                                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-1">ছাত্র-ছাত্রী হাজিরা ব্যবস্থাপনা</h1>
-                                    <p class="text-gray-600">মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা, গোলাপগঞ্জ, সিলেট</p>
+                                    <h1 class="text-2xl md:text-3xl font-bold gradient-text mb-1">ছাত্র-ছাত্রী হাজিরা ব্যবস্থাপনা</h1>
+                                    <p class="text-gray-600">মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা, গোলাপগঞ্জ, সিলেট।</p>
                                 </div>
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 <span class="badge badge-info"><i class="fas fa-hashtag"></i> EIIN: ১৩০২৯০</span>
                                 <span class="badge badge-purple"><i class="fas fa-code"></i> কোড: ১৮৭৫২</span>
                                 <span id="currentDate" class="badge badge-success"><i class="fas fa-calendar-day"></i> আজ: লোড হচ্ছে...</span>
-                                <span id="pwaStatus" class="badge badge-warning"><i class="fas fa-mobile-alt"></i> PWA</span>
                                 <span id="firebaseBadge" class="badge badge-info hidden"><i class="fas fa-database"></i> ফায়ারবেস</span>
                             </div>
                         </div>
                         <div class="flex flex-col gap-3">
-                            <!-- পরিবর্তন: শিক্ষক ব্যবস্থাপনা বাটন (ডেসবোর্ডে স্থানান্তর) -->
-                            <button onclick="showTeacherManagement()" class="btn btn-warning">
+                            <button onclick="showTeacherManagement()" class="btn btn-warning ripple">
                                 <i class="fas fa-chalkboard-teacher"></i> শিক্ষক ব্যবস্থাপনা
                             </button>
-                            <button onclick="showClassSheets()" class="btn btn-info">
+                            <button onclick="showClassSheets()" class="btn btn-info ripple">
                                 <i class="fas fa-clipboard-list"></i> শ্রেণি হাজিরা সীট
                             </button>
-                            <!-- পরিবর্তন: ছাত্র-ছাত্রী হাজিরা বাটন -->
-                            <button onclick="showPage('attendance')" class="btn btn-primary">
+                            <button onclick="showPage('attendance')" class="btn btn-primary ripple">
                                 <i class="fas fa-calendar-check"></i> ছাত্র-ছাত্রী হাজিরা
                             </button>
-                            <button onclick="addToHomeScreen()" class="btn btn-success hidden" id="installButton">
+                            <button onclick="addToHomeScreen()" class="btn btn-success hidden ripple" id="installButton">
                                 <i class="fas fa-download"></i> অ্যাপ ইন্সটল
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- ড্যাশবোর্ড স্ট্যাটস -->
+                <!-- Dashboard Stats -->
                 <div class="dashboard-stats">
-                    <div class="stat-card" onclick="showStudents('present')">
+                    <div class="stat-card hover-lift" onclick="showStudents('present')">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-700">উপস্থিত</h3>
                                 <p class="text-gray-500 text-sm mt-1">আজকের উপস্থিত ছাত্র-ছাত্রী</p>
                             </div>
                             <div class="bg-gradient-to-r from-green-100 to-green-50 p-4 rounded-full">
-                                <i class="fas fa-user-check text-3xl text-green-600"></i>
+                                <i class="fas fa-user-check text-3xl text-green-600 floating-element"></i>
                             </div>
                         </div>
                         <div class="stat-number text-green-600" id="presentCount">০</div>
                     </div>
                     
-                    <div class="stat-card" onclick="showStudents('absent')">
+                    <div class="stat-card hover-lift" onclick="showStudents('absent')">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-700">অনুপস্থিত</h3>
                                 <p class="text-gray-500 text-sm mt-1">আজকের অনুপস্থিত ছাত্র-ছাত্রী</p>
                             </div>
                             <div class="bg-gradient-to-r from-red-100 to-red-50 p-4 rounded-full">
-                                <i class="fas fa-user-times text-3xl text-red-600"></i>
+                                <i class="fas fa-user-times text-3xl text-red-600 floating-element"></i>
                             </div>
                         </div>
                         <div class="stat-number text-red-600" id="absentCount">০</div>
                     </div>
                     
-                    <div class="stat-card" onclick="showAllStudents()">
+                    <div class="stat-card hover-lift" onclick="showAllStudents()">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-700">মোট ছাত্র-ছাত্রী</h3>
                                 <p class="text-gray-500 text-sm mt-1">সকল ছাত্র-ছাত্রী</p>
                             </div>
                             <div class="bg-gradient-to-r from-blue-100 to-blue-50 p-4 rounded-full">
-                                <i class="fas fa-users text-3xl text-blue-600"></i>
+                                <i class="fas fa-users text-3xl text-blue-600 floating-element"></i>
                             </div>
                         </div>
                         <div class="stat-number text-blue-600" id="totalCount">০</div>
                     </div>
                     
-                    <div class="stat-card" onclick="showTodayReport()">
+                    <div class="stat-card hover-lift" onclick="showTodayReport()">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-700">উপস্থিতি হার</h3>
                                 <p class="text-gray-500 text-sm mt-1">আজকের উপস্থিতি</p>
                             </div>
                             <div class="bg-gradient-to-r from-purple-100 to-purple-50 p-4 rounded-full">
-                                <i class="fas fa-percentage text-3xl text-purple-600"></i>
+                                <i class="fas fa-percentage text-3xl text-purple-600 floating-element"></i>
                             </div>
                         </div>
                         <div class="stat-number text-purple-600" id="attendanceRate">০%</div>
                     </div>
                 </div>
 
-                <!-- সাপ্তাহিক রিপোর্ট -->
-                <div class="card">
+                <!-- Weekly Report -->
+                <div class="card glass-card">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                             <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg">
@@ -1271,20 +1509,19 @@
                             এই সপ্তাহের হাজিরা রিপোর্ট
                         </h2>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="showWeeklyReport()" class="btn btn-info">
+                            <button onclick="showWeeklyReport()" class="btn btn-info ripple">
                                 <i class="fas fa-expand"></i> বিস্তারিত দেখুন
                             </button>
-                            <button onclick="exportData()" class="btn btn-success">
+                            <button onclick="exportData()" class="btn btn-success ripple">
                                 <i class="fas fa-download"></i> ডেটা ডাউনলোড
                             </button>
-                            <!-- পরিবর্তন: ছাত্র-ছাত্রী হাজিরা বাটন -->
-                            <button onclick="showPage('attendance')" class="btn btn-primary">
+                            <button onclick="showPage('attendance')" class="btn btn-primary ripple">
                                 <i class="fas fa-calendar-check"></i> ছাত্র-ছাত্রী হাজিরা
                             </button>
                         </div>
                     </div>
                     <div id="weeklyReport" class="grid grid-cols-2 md:grid-cols-7 gap-3">
-                        <!-- সাপ্তাহিক ডেটা লোড হবে -->
+                        <!-- Weekly data will load -->
                     </div>
                 </div>
             </div>
@@ -1293,8 +1530,8 @@
         <!-- Attendance Page -->
         <div id="attendance" class="page">
             <div class="max-w-7xl mx-auto">
-                <!-- আজকের হাজিরা -->
-                <div class="card">
+                <!-- Today's Attendance -->
+                <div class="card glass-card">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -1307,23 +1544,23 @@
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <button onclick="confirmAction('markAllPresent', 'সবাইকে উপস্থিত মার্ক করতে চান?', 'এই কাজটি বাতিল করা যাবে না।')" 
-                                    class="btn btn-success">
+                                    class="btn btn-success ripple">
                                 <i class="fas fa-check-circle"></i> সবাই উপস্থিত
                             </button>
                             <button onclick="confirmAction('saveAttendance', 'হাজিরা সংরক্ষণ করতে চান?', 'সংরক্ষণের পর পরিবর্তন করা যাবে না।')" 
-                                    class="btn btn-primary">
+                                    class="btn btn-primary ripple">
                                 <i class="fas fa-save"></i> সংরক্ষণ
                             </button>
-                            <button onclick="showPastDateAttendance()" class="past-date-btn">
+                            <button onclick="showPastDateAttendance()" class="btn btn-warning ripple">
                                 <i class="fas fa-calendar-alt"></i> অতীত তারিখের হাজিরা
                             </button>
-                            <button onclick="showClassSheets()" class="btn btn-info">
+                            <button onclick="showClassSheets()" class="btn btn-info ripple">
                                 <i class="fas fa-print"></i> শ্রেণি সীট
                             </button>
                         </div>
                     </div>
 
-                    <!-- অতীত তারিখ সিলেক্টর -->
+                    <!-- Past Date Selector -->
                     <div id="pastDateSelector" class="date-picker-container hidden">
                         <div class="flex flex-col md:flex-row items-center gap-4">
                             <div>
@@ -1334,10 +1571,10 @@
                                 <input type="date" id="pastDateInput" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
                             </div>
                             <div>
-                                <button onclick="loadPastDateAttendance()" class="btn btn-primary">
+                                <button onclick="loadPastDateAttendance()" class="btn btn-primary ripple">
                                     <i class="fas fa-search"></i> হাজিরা দেখুন
                                 </button>
-                                <button onclick="closePastDateSelector()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 ml-2">
+                                <button onclick="closePastDateSelector()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 ripple ml-2">
                                     <i class="fas fa-times"></i> বাতিল
                                 </button>
                             </div>
@@ -1347,13 +1584,13 @@
                                 <i class="fas fa-calendar-check mr-2"></i>
                                 নির্বাচিত তারিখ: <span id="selectedDateText"></span>
                             </span>
-                            <button onclick="resetToToday()" class="btn btn-warning ml-3">
+                            <button onclick="resetToToday()" class="btn btn-warning ml-3 ripple">
                                 <i class="fas fa-redo"></i> আজকে ফিরে যান
                             </button>
                         </div>
                     </div>
 
-                    <!-- সার্চ বক্স -->
+                    <!-- Search Box -->
                     <div class="relative mb-6">
                         <input type="text" id="searchInputAttendance" class="search-box" placeholder="ছাত্র-ছাত্রীর নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents('attendance')">
                         <div class="absolute right-6 top-4 text-gray-400">
@@ -1361,18 +1598,18 @@
                         </div>
                     </div>
 
-                    <!-- শ্রেণি ফিল্টার -->
+                    <!-- Class Filter -->
                     <div class="mb-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                             <i class="fas fa-filter text-blue-500"></i>
                             শ্রেণি অনুযায়ী ফিল্টার
                         </h3>
                         <div class="class-filter-buttons" id="classFiltersAttendance">
-                            <!-- ক্লাস ফিল্টার বাটন লোড হবে -->
+                            <!-- Class filter buttons will load -->
                         </div>
                     </div>
 
-                    <!-- হাজিরা টেবিল -->
+                    <!-- Attendance Table -->
                     <div class="overflow-x-auto">
                         <table>
                             <thead>
@@ -1388,17 +1625,17 @@
                                 </tr>
                             </thead>
                             <tbody id="attendanceTable">
-                                <!-- ডেটা লোড হবে -->
+                                <!-- Data will load -->
                             </tbody>
                         </table>
                     </div>
                     
                     <div id="noStudents" class="text-center py-12 hidden">
                         <div class="bg-gradient-to-r from-gray-100 to-gray-50 p-8 rounded-2xl inline-block">
-                            <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4"></i>
+                            <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4 floating-element"></i>
                             <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র-ছাত্রী নেই</h3>
                             <p class="text-gray-400 mb-6">প্রথমে ছাত্র-ছাত্রী যোগ করুন</p>
-                            <button onclick="showAddStudentModal()" class="btn btn-primary">
+                            <button onclick="showAddStudentModal()" class="btn btn-primary ripple">
                                 <i class="fas fa-user-plus"></i> ছাত্র-ছাত্রী যোগ করুন
                             </button>
                         </div>
@@ -1410,7 +1647,7 @@
         <!-- Students Page -->
         <div id="students" class="page">
             <div class="max-w-7xl mx-auto">
-                <div class="card">
+                <div class="card glass-card">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -1422,22 +1659,22 @@
                             <p class="text-gray-600 text-sm mt-1">মোট ছাত্র-ছাত্রী: <span id="totalStudentsCount" class="font-bold">০</span></p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="showAddStudentModal()" class="btn btn-primary">
+                            <button onclick="showAddStudentModal()" class="btn btn-primary ripple">
                                 <i class="fas fa-user-plus"></i> নতুন ছাত্র-ছাত্রী যোগ
                             </button>
-                            <button onclick="exportStudents()" class="btn btn-success">
+                            <button onclick="exportStudents()" class="btn btn-success ripple">
                                 <i class="fas fa-download"></i> এক্সপোর্ট
                             </button>
-                            <button onclick="showImportModal()" class="btn btn-warning">
+                            <button onclick="showImportModal()" class="btn btn-warning ripple">
                                 <i class="fas fa-upload"></i> ইমপোর্ট
                             </button>
-                            <button onclick="showBulkDeleteOptions()" class="btn btn-danger pulse-animation">
+                            <button onclick="showBulkDeleteOptions()" class="btn btn-danger ripple">
                                 <i class="fas fa-trash-alt"></i> বাল্ক ডিলিট
                             </button>
                         </div>
                     </div>
 
-                    <!-- সার্চ বক্স -->
+                    <!-- Search Box -->
                     <div class="relative mb-6">
                         <input type="text" id="searchInputStudents" class="search-box" placeholder="ছাত্র-ছাত্রীর নাম, আইডি, রোল বা শ্রেণি দিয়ে খুঁজুন..." onkeyup="searchStudents('list')">
                         <div class="absolute right-6 top-4 text-gray-400">
@@ -1445,18 +1682,18 @@
                         </div>
                     </div>
 
-                    <!-- শ্রেণি ফিল্টার -->
+                    <!-- Class Filter -->
                     <div class="mb-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                             <i class="fas fa-filter text-blue-500"></i>
                             শ্রেণি অনুযায়ী ফিল্টার
                         </h3>
                         <div class="class-filter-buttons" id="classFiltersStudents">
-                            <!-- ক্লাস ফিল্টার বাটন লোড হবে -->
+                            <!-- Class filter buttons will load -->
                         </div>
                     </div>
 
-                    <!-- ছাত্র-ছাত্রী তালিকা টেবিল -->
+                    <!-- Students Table -->
                     <div class="overflow-x-auto">
                         <table>
                             <thead>
@@ -1475,12 +1712,12 @@
                                 </tr>
                             </thead>
                             <tbody id="studentsTable">
-                                <!-- ডেটা লোড হবে -->
+                                <!-- Data will load -->
                             </tbody>
                         </table>
                     </div>
                     
-                    <!-- বাল্ক ডিলিট অপশন -->
+                    <!-- Bulk Delete Options -->
                     <div id="bulkDeleteOptions" class="hidden mt-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-200">
                         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                             <div class="flex items-center gap-3">
@@ -1493,10 +1730,10 @@
                                 </div>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="cancelBulkDelete()" class="btn bg-gradient-to-r from-gray-500 to-gray-600">
+                                <button onclick="cancelBulkDelete()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 ripple">
                                     <i class="fas fa-times"></i> বাতিল
                                 </button>
-                                <button onclick="deleteSelectedStudents()" class="btn btn-danger">
+                                <button onclick="deleteSelectedStudents()" class="btn btn-danger ripple">
                                     <i class="fas fa-trash-alt"></i> নির্বাচিত ছাত্র-ছাত্রী ডিলিট করুন
                                 </button>
                             </div>
@@ -1505,10 +1742,10 @@
                     
                     <div id="noStudentsList" class="text-center py-12 hidden">
                         <div class="bg-gradient-to-r from-gray-100 to-gray-50 p-8 rounded-2xl inline-block">
-                            <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4"></i>
+                            <i class="fas fa-user-graduate text-6xl text-gray-300 mb-4 floating-element"></i>
                             <h3 class="text-xl font-semibold text-gray-500 mb-2">কোন ছাত্র-ছাত্রী নেই</h3>
                             <p class="text-gray-400 mb-6">প্রথমে ছাত্র-ছাত্রী যোগ করুন</p>
-                            <button onclick="showAddStudentModal()" class="btn btn-primary">
+                            <button onclick="showAddStudentModal()" class="btn btn-primary ripple">
                                 <i class="fas fa-user-plus"></i> ছাত্র-ছাত্রী যোগ করুন
                             </button>
                         </div>
@@ -1520,7 +1757,7 @@
         <!-- Reports Page -->
         <div id="reports" class="page">
             <div class="max-w-7xl mx-auto">
-                <div class="card">
+                <div class="card glass-card">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -1532,13 +1769,13 @@
                             <p class="text-gray-600 text-sm mt-1">বিভিন্ন ধরনের রিপোর্ট দেখুন ও ডাউনলোড করুন</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <button onclick="exportData()" class="btn btn-success">
+                            <button onclick="exportData()" class="btn btn-success ripple">
                                 <i class="fas fa-download"></i> সকল ডেটা
                             </button>
-                            <button onclick="showMonthlyReport()" class="btn btn-info">
+                            <button onclick="showMonthlyReport()" class="btn btn-info ripple">
                                 <i class="fas fa-calendar-alt"></i> মাসিক রিপোর্ট
                             </button>
-                            <button onclick="showPastDateCorrection()" class="btn btn-warning">
+                            <button onclick="showPastDateCorrection()" class="btn btn-warning ripple">
                                 <i class="fas fa-edit"></i> অতীত হাজিরা সংশোধন
                             </button>
                         </div>
@@ -1546,10 +1783,10 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Daily Report Card -->
-                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200 cursor-pointer hover:shadow-lg transition" onclick="showTodayReport()">
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200 cursor-pointer hover-lift transition" onclick="showTodayReport()">
                             <div class="flex items-center gap-4 mb-4">
                                 <div class="bg-blue-100 p-3 rounded-full">
-                                    <i class="fas fa-calendar-day text-blue-600 text-xl"></i>
+                                    <i class="fas fa-calendar-day text-blue-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">আজকের রিপোর্ট</h3>
@@ -1563,10 +1800,10 @@
                         </div>
 
                         <!-- Weekly Report Card -->
-                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200 cursor-pointer hover:shadow-lg transition" onclick="showWeeklyReport()">
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200 cursor-pointer hover-lift transition" onclick="showWeeklyReport()">
                             <div class="flex items-center gap-4 mb-4">
                                 <div class="bg-green-100 p-3 rounded-full">
-                                    <i class="fas fa-chart-bar text-green-600 text-xl"></i>
+                                    <i class="fas fa-chart-bar text-green-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">সাপ্তাহিক রিপোর্ট</h3>
@@ -1580,10 +1817,10 @@
                         </div>
 
                         <!-- Monthly Report Card -->
-                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 cursor-pointer hover:shadow-lg transition" onclick="showMonthlyReport()">
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 cursor-pointer hover-lift transition" onclick="showMonthlyReport()">
                             <div class="flex items-center gap-4 mb-4">
                                 <div class="bg-purple-100 p-3 rounded-full">
-                                    <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
+                                    <i class="fas fa-calendar-alt text-purple-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">মাসিক রিপোর্ট</h3>
@@ -1597,10 +1834,10 @@
                         </div>
 
                         <!-- Class-wise Report Card -->
-                        <div class="bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-xl border border-yellow-200 cursor-pointer hover:shadow-lg transition" onclick="showClassWiseReport()">
+                        <div class="bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-xl border border-yellow-200 cursor-pointer hover-lift transition" onclick="showClassWiseReport()">
                             <div class="flex items-center gap-4 mb-4">
                                 <div class="bg-yellow-100 p-3 rounded-full">
-                                    <i class="fas fa-graduation-cap text-yellow-600 text-xl"></i>
+                                    <i class="fas fa-graduation-cap text-yellow-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">শ্রেণি অনুযায়ী</h3>
@@ -1614,10 +1851,10 @@
                         </div>
 
                         <!-- Student-wise Report Card -->
-                        <div class="bg-gradient-to-br from-red-50 to-pink-50 p-6 rounded-xl border border-red-200 cursor-pointer hover:shadow-lg transition" onclick="showStudentReports()">
+                        <div class="bg-gradient-to-br from-red-50 to-pink-50 p-6 rounded-xl border border-red-200 cursor-pointer hover-lift transition" onclick="showStudentReports()">
                             <div class="flex items-center gap-4 mb-4">
                                 <div class="bg-red-100 p-3 rounded-full">
-                                    <i class="fas fa-user-graduate text-red-600 text-xl"></i>
+                                    <i class="fas fa-user-graduate text-red-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">ছাত্র-ছাত্রী অনুযায়ী</h3>
@@ -1631,10 +1868,10 @@
                         </div>
 
                         <!-- Export Report Card -->
-                        <div class="bg-gradient-to-br from-gray-50 to-slate-50 p-6 rounded-xl border border-gray-200 cursor-pointer hover:shadow-lg transition" onclick="exportData()">
+                        <div class="bg-gradient-to-br from-gray-50 to-slate-50 p-6 rounded-xl border border-gray-200 cursor-pointer hover-lift transition" onclick="exportData()">
                             <div class="flex items-center gap-4 mb-4">
                                 <div class="bg-gray-100 p-3 rounded-full">
-                                    <i class="fas fa-file-export text-gray-600 text-xl"></i>
+                                    <i class="fas fa-file-export text-gray-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">ডেটা এক্সপোর্ট</h3>
@@ -1654,19 +1891,19 @@
                     <div class="mt-8 pt-8 border-t">
                         <h3 class="text-lg font-bold text-gray-800 mb-4">দ্রুত পরিসংখ্যান</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div class="bg-white p-4 rounded-xl border text-center">
+                            <div class="bg-white p-4 rounded-xl border text-center hover-lift">
                                 <div class="text-2xl font-bold text-blue-600" id="totalPresentDays">০</div>
                                 <div class="text-sm text-gray-600">মোট উপস্থিতি দিন</div>
                             </div>
-                            <div class="bg-white p-4 rounded-xl border text-center">
+                            <div class="bg-white p-4 rounded-xl border text-center hover-lift">
                                 <div class="text-2xl font-bold text-green-600" id="totalAbsentDays">০</div>
                                 <div class="text-sm text-gray-600">মোট অনুপস্থিতি দিন</div>
                             </div>
-                            <div class="bg-white p-4 rounded-xl border text-center">
+                            <div class="bg-white p-4 rounded-xl border text-center hover-lift">
                                 <div class="text-2xl font-bold text-purple-600" id="bestAttendance">০%</div>
                                 <div class="text-sm text-gray-600">সর্বোচ্চ উপস্থিতি</div>
                             </div>
-                            <div class="bg-white p-4 rounded-xl border text-center">
+                            <div class="bg-white p-4 rounded-xl border text-center hover-lift">
                                 <div class="text-2xl font-bold text-red-600" id="worstAttendance">০%</div>
                                 <div class="text-sm text-gray-600">সর্বনিম্ন উপস্থিতি</div>
                             </div>
@@ -1679,7 +1916,7 @@
         <!-- Classes Page -->
         <div id="classes" class="page">
             <div class="max-w-7xl mx-auto">
-                <div class="card">
+                <div class="card glass-card">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -1691,14 +1928,13 @@
                             <p class="text-gray-600 text-sm mt-1">শ্রেণি ও শ্রেণি শিক্ষক ব্যবস্থাপনা</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <!-- পরিবর্তন: ছাত্র-ছাত্রী হাজিরা বাটন -->
-                            <button onclick="showPage('attendance')" class="btn btn-primary">
+                            <button onclick="showPage('attendance')" class="btn btn-primary ripple">
                                 <i class="fas fa-calendar-check"></i> ছাত্র-ছাত্রী হাজিরা
                             </button>
-                            <button onclick="showAddClassModal()" class="btn btn-warning">
+                            <button onclick="showAddClassModal()" class="btn btn-warning ripple">
                                 <i class="fas fa-plus"></i> নতুন শ্রেণি
                             </button>
-                            <button onclick="showClassSheets()" class="btn btn-info">
+                            <button onclick="showClassSheets()" class="btn btn-info ripple">
                                 <i class="fas fa-print"></i> হাজিরা সীট
                             </button>
                         </div>
@@ -1706,10 +1942,10 @@
 
                     <!-- Class Statistics -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200">
+                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200 hover-lift">
                             <div class="flex items-center gap-4">
                                 <div class="bg-amber-100 p-3 rounded-full">
-                                    <i class="fas fa-school text-amber-600 text-xl"></i>
+                                    <i class="fas fa-school text-amber-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">ইবতেদায়ী</h3>
@@ -1722,10 +1958,10 @@
                             </div>
                         </div>
 
-                        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200">
+                        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200 hover-lift">
                             <div class="flex items-center gap-4">
                                 <div class="bg-blue-100 p-3 rounded-full">
-                                    <i class="fas fa-university text-blue-600 text-xl"></i>
+                                    <i class="fas fa-university text-blue-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">দাখিল</h3>
@@ -1738,10 +1974,10 @@
                             </div>
                         </div>
 
-                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 hover-lift">
                             <div class="flex items-center gap-4">
                                 <div class="bg-purple-100 p-3 rounded-full">
-                                    <i class="fas fa-user-graduate text-purple-600 text-xl"></i>
+                                    <i class="fas fa-user-graduate text-purple-600 text-xl floating-element"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-gray-800">আলিম</h3>
@@ -1770,7 +2006,7 @@
                                 </tr>
                             </thead>
                             <tbody id="classesTable">
-                                <!-- ডেটা লোড হবে -->
+                                <!-- Data will load -->
                             </tbody>
                         </table>
                     </div>
@@ -1781,7 +2017,7 @@
         <!-- Settings Page -->
         <div id="settings" class="page">
             <div class="max-w-4xl mx-auto">
-                <div class="card">
+                <div class="card glass-card">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -1796,7 +2032,7 @@
 
                     <div class="space-y-6">
                         <!-- General Settings -->
-                        <div class="bg-gradient-to-r from-gray-50 to-slate-50 p-6 rounded-xl border">
+                        <div class="bg-gradient-to-r from-gray-50 to-slate-50 p-6 rounded-xl border hover-lift">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <i class="fas fa-sliders-h text-blue-500"></i>
                                 সাধারণ সেটিংস
@@ -1836,30 +2072,30 @@
                         </div>
 
                         <!-- Data Management -->
-                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border">
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border hover-lift">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <i class="fas fa-database text-blue-500"></i>
                                 ডেটা ব্যবস্থাপনা
                             </h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <button onclick="exportAllData()" class="btn btn-success">
+                                <button onclick="exportAllData()" class="btn btn-success ripple">
                                     <i class="fas fa-download"></i> সকল ডেটা ব্যাকআপ
                                 </button>
-                                <button onclick="importData()" class="btn btn-warning">
+                                <button onclick="importData()" class="btn btn-warning ripple">
                                     <i class="fas fa-upload"></i> ডেটা রিস্টোর
                                 </button>
                                 <button onclick="showDeleteConfirmation('clearData', 'সমস্ত ডেটা ডিলিট করতে চান?', 'clearData')" 
-                                        class="btn btn-danger">
+                                        class="btn btn-danger ripple">
                                     <i class="fas fa-trash"></i> সকল ডেটা ডিলিট
                                 </button>
-                                <button onclick="resetSettings()" class="btn btn-info">
+                                <button onclick="resetSettings()" class="btn btn-info ripple">
                                     <i class="fas fa-redo"></i> সেটিংস রিসেট
                                 </button>
                             </div>
                         </div>
 
                         <!-- Firebase Settings -->
-                        <div class="bg-gradient-to-r from-red-50 to-orange-50 p-6 rounded-xl border">
+                        <div class="bg-gradient-to-r from-red-50 to-orange-50 p-6 rounded-xl border hover-lift">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <i class="fas fa-fire text-red-500"></i>
                                 Firebase সেটিংস
@@ -1878,7 +2114,7 @@
                                 <div class="text-center p-4 bg-gradient-to-r from-red-100 to-orange-100 rounded-lg">
                                     <div class="font-bold text-red-600 mb-2">Firebase Status</div>
                                     <div id="firebaseStatusText" class="text-sm text-gray-600">কানেক্ট হচ্ছে...</div>
-                                    <button onclick="checkFirebaseConnection()" class="btn btn-warning mt-3 text-sm">
+                                    <button onclick="checkFirebaseConnection()" class="btn btn-warning mt-3 text-sm ripple">
                                         <i class="fas fa-sync-alt"></i> কানেকশন চেক
                                     </button>
                                 </div>
@@ -1886,7 +2122,7 @@
                         </div>
 
                         <!-- PWA Settings -->
-                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border">
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border hover-lift">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <i class="fas fa-mobile-alt text-purple-500"></i>
                                 PWA সেটিংস
@@ -1913,10 +2149,10 @@
                                     </label>
                                 </div>
                                 <div class="flex items-center gap-4 mt-6">
-                                    <button onclick="addToHomeScreen()" class="btn btn-primary flex-1" id="installButton2">
+                                    <button onclick="addToHomeScreen()" class="btn btn-primary flex-1 ripple" id="installButton2">
                                         <i class="fas fa-download"></i> অ্যাপ ইন্সটল
                                     </button>
-                                    <button onclick="checkForUpdates()" class="btn btn-info flex-1">
+                                    <button onclick="checkForUpdates()" class="btn btn-info flex-1 ripple">
                                         <i class="fas fa-sync-alt"></i> আপডেট চেক
                                     </button>
                                 </div>
@@ -1924,7 +2160,7 @@
                         </div>
 
                         <!-- Contact & Support -->
-                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border hover-lift">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <i class="fas fa-headset text-green-500"></i>
                                 যোগাযোগ ও সাপোর্ট
@@ -1944,14 +2180,14 @@
                                         <div class="text-lg font-bold text-blue-600">support@madrasa.com</div>
                                     </div>
                                 </div>
-                                <button onclick="callSupport()" class="btn btn-success w-full">
+                                <button onclick="callSupport()" class="btn btn-success w-full ripple">
                                     <i class="fas fa-phone"></i> কল করুন
                                 </button>
                             </div>
                         </div>
 
                         <!-- About App -->
-                        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border">
+                        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border hover-lift">
                             <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <i class="fas fa-info-circle text-yellow-500"></i>
                                 অ্যাপ সম্পর্কে
@@ -1967,7 +2203,7 @@
                                 </div>
                                 <div class="flex justify-between">
                                     <span>ডেভেলপার:</span>
-                                    <span class="font-bold">মেহেরপুর আনছারুল উলূম</span>
+                                    <span class="font-bold">মেহেরপুর আনছারুল উলূম আলিম মাদ্রাসা</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span>EIIN:</span>
@@ -1989,7 +2225,7 @@
     </div>
 
     <!-- Modals -->
-    <!-- ছাত্র-ছাত্রী যোগ/এডিট করার মডেল -->
+    <!-- Add/Edit Student Modal -->
     <div id="addStudentModal" class="modal hidden">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 pb-4 border-b">
@@ -1999,7 +2235,7 @@
                     </div>
                     <span id="modalTitle">নতুন ছাত্র-ছাত্রী যোগ</span>
                 </h2>
-                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition ripple">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
@@ -2012,7 +2248,7 @@
                     </label>
                     <input type="text" id="studentId" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition" 
                            placeholder="যেমন: STD-001">
-                    <button type="button" onclick="generateStudentId()" class="btn btn-warning mt-3 text-sm w-full">
+                    <button type="button" onclick="generateStudentId()" class="btn btn-warning mt-3 text-sm w-full ripple">
                         <i class="fas fa-sync-alt"></i> অটো আইডি জেনারেট করুন
                     </button>
                 </div>
@@ -2101,18 +2337,18 @@
             </div>
             
             <div class="flex flex-col md:flex-row gap-4 pt-8 mt-8 border-t">
-                <button onclick="closeModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 flex-1">
+                <button onclick="closeModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 flex-1 ripple">
                     <i class="fas fa-times"></i> বাতিল করুন
                 </button>
                 <button onclick="confirmAction('saveStudent', 'ছাত্র-ছাত্রীর তথ্য সংরক্ষণ করতে চান?', 'সংরক্ষণের পর পরিবর্তন করা যাবে।')" 
-                        class="btn btn-primary flex-1">
+                        class="btn btn-primary flex-1 ripple">
                     <i class="fas fa-save"></i> সংরক্ষণ করুন
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- শ্রেণি হাজিরা সীট মডেল -->
+    <!-- Class Sheets Modal -->
     <div id="classSheetsModal" class="modal hidden">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 pb-4 border-b">
@@ -2122,7 +2358,7 @@
                     </div>
                     শ্রেণি হাজিরা সীট
                 </h2>
-                <button onclick="closeClassSheetsModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+                <button onclick="closeClassSheetsModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition ripple">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
@@ -2156,24 +2392,24 @@
             </div>
             
             <div class="flex gap-4 mb-6">
-                <button onclick="printClassSheet()" class="btn btn-primary flex-1">
+                <button onclick="printClassSheet()" class="btn btn-primary flex-1 ripple">
                     <i class="fas fa-print"></i> প্রিন্ট করুন
                 </button>
-                <button onclick="exportClassSheet()" class="btn btn-success flex-1">
+                <button onclick="exportClassSheet()" class="btn btn-success flex-1 ripple">
                     <i class="fas fa-download"></i> ডাউনলোড করুন
                 </button>
-                <button onclick="showPastDateForClassSheet()" class="btn btn-warning flex-1">
+                <button onclick="showPastDateForClassSheet()" class="btn btn-warning flex-1 ripple">
                     <i class="fas fa-calendar-alt"></i> অতীত তারিখ
                 </button>
             </div>
             
             <div id="classSheetContent">
-                <!-- শ্রেণি সীট কন্টেন্ট লোড হবে -->
+                <!-- Class sheet content will load -->
             </div>
         </div>
     </div>
 
-    <!-- শিক্ষক ব্যবস্থাপনা মডেল -->
+    <!-- Teacher Management Modal -->
     <div id="teacherManagementModal" class="modal hidden">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 pb-4 border-b">
@@ -2183,7 +2419,7 @@
                     </div>
                     শ্রেণি শিক্ষক ব্যবস্থাপনা
                 </h2>
-                <button onclick="closeTeacherModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+                <button onclick="closeTeacherModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition ripple">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
@@ -2202,68 +2438,68 @@
                 <div class="space-y-4">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">ইবতেদায়ী শ্রেণিসমূহ</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="ibtidayeeTeachers">
-                        <!-- ইবতেদায়ী শ্রেণি শিক্ষক ইনপুট -->
+                        <!-- Ibtidayee teacher inputs will load -->
                     </div>
                     
                     <h3 class="text-lg font-bold text-gray-800 mb-4 mt-6">দাখিল শ্রেণিসমূহ</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="dakhilTeachers">
-                        <!-- দাখিল শ্রেণি শিক্ষক ইনপুট -->
+                        <!-- Dakhil teacher inputs will load -->
                     </div>
                     
                     <h3 class="text-lg font-bold text-gray-800 mb-4 mt-6">আলিম শ্রেণিসমূহ</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="alimTeachers">
-                        <!-- আলিম শ্রেণি শিক্ষক ইনপুট -->
+                        <!-- Alim teacher inputs will load -->
                     </div>
                 </div>
             </div>
             
             <div class="flex flex-col md:flex-row gap-4 pt-8 mt-8 border-t">
-                <button onclick="closeTeacherModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 flex-1">
+                <button onclick="closeTeacherModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 flex-1 ripple">
                     <i class="fas fa-times"></i> বাতিল করুন
                 </button>
-                <button onclick="saveTeachers()" class="btn btn-primary flex-1">
+                <button onclick="saveTeachers()" class="btn btn-primary flex-1 ripple">
                     <i class="fas fa-save"></i> সংরক্ষণ করুন
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- রিপোর্ট মডেল -->
+    <!-- Report Modal -->
     <div id="reportModal" class="modal hidden">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 pb-4 border-b">
                 <h2 class="text-2xl font-bold text-gray-800" id="reportTitle"></h2>
-                <button onclick="closeReportModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+                <button onclick="closeReportModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition ripple">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
             
             <div id="reportContent">
-                <!-- রিপোর্ট কন্টেন্ট লোড হবে -->
+                <!-- Report content will load -->
             </div>
         </div>
     </div>
 
-    <!-- কনফার্মেশন মডেল -->
+    <!-- Confirmation Modal -->
     <div id="confirmationModal" class="confirmation-modal hidden">
         <div class="confirmation-content">
             <div class="bg-gradient-to-r from-yellow-100 to-orange-50 p-6 rounded-xl mb-6">
-                <i class="fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4"></i>
+                <i class="fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4 floating-element"></i>
                 <h3 class="text-xl font-bold text-gray-800 mb-2" id="confirmationTitle"></h3>
                 <p class="text-gray-600" id="confirmationMessage"></p>
             </div>
             <div class="confirmation-buttons">
-                <button onclick="cancelAction()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 flex-1">
+                <button onclick="cancelAction()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 flex-1 ripple">
                     <i class="fas fa-times"></i> না, বাতিল করুন
                 </button>
-                <button onclick="proceedAction()" class="btn btn-danger flex-1">
+                <button onclick="proceedAction()" class="btn btn-danger flex-1 ripple">
                     <i class="fas fa-check"></i> হ্যাঁ, নিশ্চিত
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- উন্নত ডিলিট কনফার্মেশন মডেল -->
+    <!-- Advanced Delete Confirmation Modal -->
     <div id="deleteConfirmationModal" class="delete-confirmation-modal hidden">
         <div class="delete-confirmation-content">
             <div class="delete-icon">
@@ -2272,12 +2508,12 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4" id="deleteTitle">ছাত্র-ছাত্রী ডিলিট করবেন?</h2>
             <p class="text-gray-600 mb-6" id="deleteMessage">আপনি কি নিশ্চিত যে এই ছাত্র-ছাত্রীকে ডিলিট করতে চান?</p>
             
-            <!-- ছাত্র-ছাত্রীর তথ্য -->
+            <!-- Student Information -->
             <div class="delete-student-info" id="deleteStudentInfo">
-                <!-- ছাত্র-ছাত্রীর তথ্য এখানে লোড হবে -->
+                <!-- Student information will load here -->
             </div>
             
-            <!-- সতর্কবার্তা -->
+            <!-- Warning -->
             <div class="delete-warning">
                 <div class="delete-warning-title">
                     <i class="fas fa-exclamation-triangle delete-warning-icon"></i>
@@ -2300,17 +2536,17 @@
             </div>
             
             <div class="delete-buttons">
-                <button onclick="cancelDelete()" class="delete-btn delete-cancel-btn">
+                <button onclick="cancelDelete()" class="delete-btn delete-cancel-btn ripple">
                     <i class="fas fa-times"></i> বাতিল করুন
                 </button>
-                <button onclick="confirmDelete()" class="delete-btn delete-confirm-btn">
+                <button onclick="confirmDelete()" class="delete-btn delete-confirm-btn ripple">
                     <i class="fas fa-trash-alt"></i> হ্যাঁ, ডিলিট করুন
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- অতীত তারিখের হাজিরা সংশোধনের মডেল -->
+    <!-- Past Date Correction Modal -->
     <div id="pastDateCorrectionModal" class="modal hidden">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-8 pb-4 border-b">
@@ -2320,7 +2556,7 @@
                     </div>
                     অতীত তারিখের হাজিরা সংশোধন
                 </h2>
-                <button onclick="closePastDateCorrectionModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+                <button onclick="closePastDateCorrectionModal()" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition ripple">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
@@ -2332,7 +2568,7 @@
                 </label>
                 <div class="flex gap-4">
                     <input type="date" id="correctionDateInput" class="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition">
-                    <button onclick="loadDateForCorrection()" class="btn btn-primary whitespace-nowrap">
+                    <button onclick="loadDateForCorrection()" class="btn btn-primary whitespace-nowrap ripple">
                         <i class="fas fa-search"></i> হাজিরা দেখুন
                     </button>
                 </div>
@@ -2340,7 +2576,7 @@
             
             <div id="dateCorrectionContent">
                 <div class="text-center py-12 text-gray-500">
-                    <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+                    <i class="fas fa-calendar-alt text-4xl mb-4 floating-element"></i>
                     <div class="text-xl">তারিখ নির্বাচন করুন</div>
                     <div class="text-sm mt-2">একটি তারিখ নির্বাচন করে হাজিরা দেখুন এবং সংশোধন করুন</div>
                 </div>
@@ -2348,8 +2584,8 @@
         </div>
     </div>
 
-    <!-- PWA ইনস্টল প্রম্পট -->
-    <div id="pwaInstallPrompt" class="pwa-install-prompt">
+    <!-- PWA Install Prompt -->
+    <div id="pwaInstallPrompt" class="pwa-install-prompt hidden">
         <div class="pwa-install-prompt-content">
             <div class="pwa-install-prompt-title">📱 অ্যাপ ইন্সটল করুন</div>
             <div class="pwa-install-prompt-description">অফলাইনে ব্যবহারের জন্য অ্যাপটি আপনার হোম স্ক্রীনে যোগ করুন</div>
@@ -2360,26 +2596,34 @@
         </div>
     </div>
 
-    <!-- নেটওয়ার্ক স্ট্যাটাস ইন্ডিকেটর -->
-    <div id="offlineIndicator" class="offline-indicator">
+    <!-- Network Status Indicator -->
+    <div id="offlineIndicator" class="offline-indicator hidden">
         <i class="fas fa-wifi-slash"></i>
         <span>অফলাইন মোড</span>
     </div>
 
-    <div id="onlineIndicator" class="online-indicator">
+    <div id="onlineIndicator" class="online-indicator hidden">
         <i class="fas fa-wifi"></i>
         <span>অনলাইনে ফিরে এসেছেন</span>
     </div>
 
-    <div id="syncIndicator" class="sync-indicator">
+    <div id="syncIndicator" class="sync-indicator hidden">
         <i class="fas fa-sync-alt fa-spin"></i>
         <span>ডেটা সিঙ্ক হচ্ছে...</span>
     </div>
 
-    <!-- টোয়াস্ট মেসেজ -->
+    <!-- Toast Message -->
     <div id="toast" class="toast hidden">
         <i class="fas fa-check-circle text-xl"></i>
         <span id="toastMessage"></span>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-9999 hidden flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl text-center">
+            <div class="spinner mb-4 mx-auto"></div>
+            <div class="text-gray-700 font-semibold">লোড হচ্ছে...</div>
+        </div>
     </div>
 
     <script>
@@ -2410,26 +2654,26 @@
         let deferredPrompt;
         let isPWAInstalled = false;
         
-        // ডেটা স্টোরেজ
+        // Data Storage
         let students = [];
         let attendance = [];
-        let teachers = {}; // শ্রেণি শিক্ষকদের তথ্য
+        let teachers = {}; // Class teachers information
         let currentStudentId = null;
         let pendingAction = null;
         let currentFilterClass = '';
         let confirmationData = null;
-        let selectedStudents = new Set(); // বাল্ক ডিলিটের জন্য নির্বাচিত ছাত্র-ছাত্রী আইডি
-        let deleteType = ''; // ডিলিটের ধরন (single, bulk, clearData)
-        let deleteStudentData = null; // ডিলিট করা ছাত্র-ছাত্রীর তথ্য
+        let selectedStudents = new Set(); // Selected student IDs for bulk delete
+        let deleteType = ''; // Delete type (single, bulk, clearData)
+        let deleteStudentData = null; // Student data to delete
         
-        // অতীত তারিখের হাজিরা ভ্যারিয়েবল
-        let selectedPastDate = null; // নির্বাচিত অতীত তারিখ
-        let isPastDateMode = false; // অতীত তারিখ মোড চালু আছে কিনা
+        // Past date attendance variables
+        let selectedPastDate = null; // Selected past date
+        let isPastDateMode = false; // Whether past date mode is active
         
         // Navigation Variables
         let currentPage = 'dashboard';
         
-        // বাংলা তারিখ
+        // Bengali date
         const banglaMonths = [
             'জানুয়ারী', 'ফেব্রুয়ারী', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
             'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
@@ -2439,7 +2683,7 @@
             'রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'
         ];
 
-        // বাংলা সংখ্যা
+        // Bengali numbers
         const banglaNumbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
         
         function toBangla(num) {
@@ -2452,7 +2696,7 @@
             }).join('');
         }
 
-        // বাংলা তারিখে রূপান্তর
+        // Convert to Bengali date
         function toBanglaDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
@@ -2464,7 +2708,7 @@
             return `${day}, ${dayNum} ${month} ${year}`;
         }
 
-        // তারিখ স্ট্রিং থেকে বাংলা তারিখ
+        // Get Bengali date from string
         function getBanglaDateFromString(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
@@ -2523,25 +2767,23 @@
             const badge = document.getElementById('firebaseBadge');
             
             if (connected) {
-                statusElement.className = 'firebase-status firebase-connected';
-                statusElement.innerHTML = '<i class="fas fa-check-circle"></i><span>ফায়ারবেস সংযুক্ত</span>';
-                statusElement.classList.remove('hidden');
+                if (statusElement) {
+                    statusElement.className = 'firebase-status firebase-connected';
+                    statusElement.innerHTML = '<i class="fas fa-check-circle"></i><span>ফায়ারবেস সংযুক্ত</span>';
+                    statusElement.classList.remove('hidden');
+                }
                 
                 if (statusText) {
                     statusText.textContent = 'ফায়ারবেস সংযুক্ত - রিয়েলটাইম সিঙ্ক সক্রিয়';
                 }
                 
-                if (badge) {
-                    badge.className = 'badge badge-success';
-                    badge.innerHTML = '<i class="fas fa-database"></i> ফায়ারবেস';
-                    badge.classList.remove('hidden');
-                }
-                
-                showToast('ফায়ারবেস সংযুক্ত!', 'success');
+                 showToast('ফায়ারবেস সংযুক্ত!', 'success');
             } else {
-                statusElement.className = 'firebase-status firebase-disconnected';
-                statusElement.innerHTML = '<i class="fas fa-times-circle"></i><span>ফায়ারবেস সংযোগ নেই</span>';
-                statusElement.classList.remove('hidden');
+                if (statusElement) {
+                    statusElement.className = 'firebase-status firebase-disconnected';
+                    statusElement.innerHTML = '<i class="fas fa-times-circle"></i><span>ফায়ারবেস সংযোগ নেই</span>';
+                    statusElement.classList.remove('hidden');
+                }
                 
                 if (statusText) {
                     statusText.textContent = 'ফায়ারবেস সংযোগ নেই - লোকাল ডেটা ব্যবহার হচ্ছে';
@@ -2788,15 +3030,19 @@
             }
         }
 
-        // Navigation Functions - সংশোধিত
+        // Navigation Functions
         function showPage(pageId) {
+            // Show loading overlay
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            
             // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             
             // Show selected page
-            document.getElementById(pageId).classList.add('active');
+            const pageElement = document.getElementById(pageId);
+            pageElement.classList.add('active');
             
             // Update active nav link in mobile menu
             document.querySelectorAll('.nav-link').forEach(link => {
@@ -2815,11 +3061,15 @@
             // Update current page
             currentPage = pageId;
             
-            // Load page specific data
-            loadPageData(pageId);
-            
             // Auto-hide mobile menu if open
             hideMobileMenu();
+            
+            // Load page specific data
+            setTimeout(() => {
+                loadPageData(pageId);
+                // Hide loading overlay
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 300);
         }
         
         function getPageName(pageId) {
@@ -2862,7 +3112,11 @@
         
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('show');
+            if (mobileMenu.classList.contains('show')) {
+                mobileMenu.classList.remove('show');
+            } else {
+                mobileMenu.classList.add('show');
+            }
         }
         
         function hideMobileMenu() {
@@ -2890,7 +3144,7 @@
             }
         }
 
-        // শ্রেণি লেবেল
+        // Class Label
         function getClassLabel(classValue) {
             const classMap = {
                 'ibtidayee-1': {label: 'ইবতেদায়ী ১ম', badge: 'class-ibtidayee'},
@@ -2910,12 +3164,12 @@
             return classMap[classValue] || {label: classValue, badge: ''};
         }
 
-        // শ্রেণি শিক্ষকের নাম পাওয়া
+        // Get class teacher
         function getClassTeacher(classValue) {
             return teachers[classValue] || 'শ্রেণি শিক্ষক: নির্ধারণ করুন';
         }
 
-        // তারিখ আপডেট
+        // Update date
         function updateDate() {
             const now = new Date();
             const day = banglaDays[now.getDay()];
@@ -2953,7 +3207,7 @@
             }
         }
 
-        // শ্রেণি ফিল্টার রেন্ডার
+        // Render class filters
         function renderClassFilters(page = 'attendance') {
             const containerId = page === 'attendance' ? 'classFiltersAttendance' : 'classFiltersStudents';
             const container = document.getElementById(containerId);
@@ -2984,7 +3238,7 @@
                 
                 html += `
                     <button onclick="filterByClass('${cls.value}', '${page}')" 
-                            class="class-filter-btn ${isActive ? 'active' : ''}">
+                            class="class-filter-btn ${isActive ? 'active' : ''} ripple">
                         <div class="text-left">
                             <div class="font-bold">${cls.label}</div>
                             <div class="text-xs ${teacherName ? 'text-purple-600 font-semibold' : 'text-gray-500'}">
@@ -2999,7 +3253,7 @@
             container.innerHTML = html;
         }
 
-        // শ্রেণি অনুযায়ী ফিল্টার
+        // Filter by class
         function filterByClass(className, page = 'attendance') {
             currentFilterClass = className;
             
@@ -3016,7 +3270,7 @@
             }
         }
 
-        // ড্যাশবোর্ড আপডেট
+        // Update dashboard
         function updateDashboard() {
             const today = new Date().toDateString();
             const todayAttendance = attendance.filter(a => a.date === today);
@@ -3042,13 +3296,13 @@
             document.getElementById('attendanceRate').textContent = toBangla(rate) + '%';
         }
 
-        // হাজিরা টেবিল রেন্ডার (বর্তমান তারিখের জন্য)
+        // Render attendance table (for current date)
         function renderAttendanceTable() {
             const today = new Date().toDateString();
             renderAttendanceTableForDate(today);
         }
 
-        // নির্দিষ্ট তারিখের জন্য হাজিরা টেবিল রেন্ডার
+        // Render attendance table for specific date
         function renderAttendanceTableForDate(dateString) {
             const table = document.getElementById('attendanceTable');
             const noStudents = document.getElementById('noStudents');
@@ -3070,7 +3324,7 @@
             const banglaDate = toBanglaDate(dateString);
             const isToday = dateString === new Date().toDateString();
             
-            // হেডারে তারিখ আপডেট করুন
+            // Update date in header
             if (isPastDateMode && selectedPastDate) {
                 document.getElementById('todayDate2').textContent = banglaDate + ' (অতীত তারিখ)';
                 document.getElementById('todayDate2').className = 'text-orange-600';
@@ -3104,11 +3358,11 @@
                         <td class="attendance-column">
                             <div class="flex flex-col md:flex-row gap-2">
                                 <button onclick="markAttendanceForDate('${student.id}', 'present', '${dateString}')" 
-                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
+                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'} ripple">
                                     <i class="fas fa-check"></i> উপস্থিত
                                 </button>
                                 <button onclick="markAttendanceForDate('${student.id}', 'absent', '${dateString}')" 
-                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
+                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'} ripple">
                                     <i class="fas fa-times"></i> অনুপস্থিত
                                 </button>
                             </div>
@@ -3133,14 +3387,14 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
+                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit ripple">
                                     <i class="fas fa-edit"></i> এডিট
                                 </button>
                                 <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
-                                        class="action-btn action-btn-delete">
+                                        class="action-btn action-btn-delete ripple">
                                     <i class="fas fa-trash-alt"></i> ডিলিট
                                 </button>
-                                <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view">
+                                <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view ripple">
                                     <i class="fas fa-eye"></i> বিস্তারিত
                                 </button>
                             </div>
@@ -3152,7 +3406,7 @@
             table.innerHTML = html;
         }
 
-        // ছাত্র-ছাত্রী তালিকা টেবিল রেন্ডার
+        // Render students table
         function renderStudentsTable() {
             const table = document.getElementById('studentsTable');
             const noStudents = document.getElementById('noStudentsList');
@@ -3212,14 +3466,14 @@
                         <td>${student.address || 'N/A'}</td>
                         <td>
                             <div class="action-buttons">
-                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
+                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit ripple">
                                     <i class="fas fa-edit"></i> এডিট
                                 </button>
                                 <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
-                                        class="action-btn action-btn-delete">
+                                        class="action-btn action-btn-delete ripple">
                                     <i class="fas fa-trash-alt"></i> ডিলিট
                                 </button>
-                                <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view">
+                                <button onclick="viewStudentDetails('${student.id}')" class="action-btn action-btn-view ripple">
                                     <i class="fas fa-eye"></i> বিস্তারিত
                                 </button>
                             </div>
@@ -3234,7 +3488,7 @@
             updateBulkDeleteOptions();
         }
 
-        // ছাত্র-ছাত্রী নির্বাচন টগল
+        // Toggle student selection
         function toggleStudentSelection(studentId) {
             if (selectedStudents.has(studentId)) {
                 selectedStudents.delete(studentId);
@@ -3245,7 +3499,7 @@
             updateBulkDeleteOptions();
         }
 
-        // সব ছাত্র-ছাত্রী নির্বাচন/অনির্বাচন
+        // Select/Deselect all students
         function toggleSelectAllStudents() {
             const selectAllCheckbox = document.getElementById('selectAllStudents');
             const studentCheckboxes = document.querySelectorAll('.student-checkbox');
@@ -3267,7 +3521,7 @@
             updateBulkDeleteOptions();
         }
 
-        // বাল্ক ডিলিট অপশন আপডেট
+        // Update bulk delete options
         function updateBulkDeleteOptions() {
             const bulkDeleteOptions = document.getElementById('bulkDeleteOptions');
             const selectedCount = document.getElementById('selectedCount');
@@ -3289,7 +3543,7 @@
             }
         }
 
-        // বাল্ক ডিলিট অপশন দেখাও
+        // Show bulk delete options
         function showBulkDeleteOptions() {
             if (students.length === 0) {
                 showToast('ডিলিট করার কোন ছাত্র-ছাত্রী নেই!', 'warning');
@@ -3297,7 +3551,7 @@
             }
             
             if (selectedStudents.size === 0) {
-                // যদি কোন ছাত্র-ছাত্রী নির্বাচিত না থাকে, সব ছাত্র-ছাত্রী নির্বাচন করুন
+                // If no students selected, select all students
                 students.forEach(student => {
                     selectedStudents.add(student.id);
                 });
@@ -3307,23 +3561,23 @@
             showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র-ছাত্রীদের ডিলিট করবেন?', 'bulk');
         }
 
-        // বাল্ক ডিলিট বাতিল
+        // Cancel bulk delete
         function cancelBulkDelete() {
             selectedStudents.clear();
             renderStudentsTable();
         }
 
-        // নির্বাচিত ছাত্র-ছাত্রী ডিলিট
+        // Delete selected students
         function deleteSelectedStudents() {
             if (selectedStudents.size === 0) {
                 showToast('কোন ছাত্র-ছাত্রী নির্বাচন করা হয়নি!', 'warning');
                 return;
             }
             
-            showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র-ছাত্রীদের ডিলিট করবেন?', 'bulk');
+            showDeleteConfirmation('bulk', 'নির্বাচিত ছাত্র -ছাত্রীদের ডিলিট করবেন?', 'bulk');
         }
 
-        // উন্নত ডিলিট কনফার্মেশন মডেল দেখাও
+        // Show advanced delete confirmation modal
         function showDeleteConfirmation(type, message, data) {
             deleteType = type;
             deleteStudentData = data;
@@ -3333,7 +3587,7 @@
             const messageEl = document.getElementById('deleteMessage');
             const studentInfo = document.getElementById('deleteStudentInfo');
             
-            // মডেলের টাইটেল ও মেসেজ সেট করুন
+            // Set modal title and message
             if (type === 'single') {
                 const student = students.find(s => s.id === data);
                 if (student) {
@@ -3341,7 +3595,7 @@
                     title.textContent = 'ছাত্র-ছাত্রী ডিলিট করবেন?';
                     messageEl.textContent = `আপনি কি নিশ্চিত যে "${student.name}" কে ডিলিট করতে চান?`;
                     
-                    // ছাত্র-ছাত্রীর তথ্য দেখান
+                    // Show student information
                     studentInfo.innerHTML = `
                         <div class="delete-student-info-item">
                             <span class="delete-student-info-label">নাম:</span>
@@ -3366,7 +3620,7 @@
                 title.textContent = 'নির্বাচিত ছাত্র-ছাত্রী ডিলিট করবেন?';
                 messageEl.textContent = `আপনি কি নিশ্চিত যে ${selectedStudents.size} জন ছাত্র/ছাত্রীকে ডিলিট করতে চান?`;
                 
-                // নির্বাচিত ছাত্র-ছাত্রীদের তালিকা দেখান
+                // Show selected students list
                 let selectedStudentsList = '';
                 let count = 0;
                 students.forEach(student => {
@@ -3396,7 +3650,7 @@
                 title.textContent = 'সমস্ত ডেটা ডিলিট করবেন?';
                 messageEl.textContent = 'আপনি কি নিশ্চিত যে সমস্ত ডেটা (ছাত্র-ছাত্রী, হাজিরা, শিক্ষক) ডিলিট করতে চান?';
                 
-                // ডেটা পরিসংখ্যান দেখান
+                // Show data statistics
                 studentInfo.innerHTML = `
                     <div class="delete-student-info-item">
                         <span class="delete-student-info-label">ছাত্র-ছাত্রী:</span>
@@ -3417,27 +3671,27 @@
             modal.classList.remove('hidden');
         }
 
-        // ডিলিট কনফার্মেশন বাতিল
+        // Cancel delete confirmation
         function cancelDelete() {
             document.getElementById('deleteConfirmationModal').classList.add('hidden');
             deleteType = '';
             deleteStudentData = null;
         }
 
-        // ডিলিট নিশ্চিত
+        // Confirm delete
         function confirmDelete() {
             document.getElementById('deleteConfirmationModal').classList.add('hidden');
             
             if (deleteType === 'single') {
-                // একক ছাত্র-ছাত্রী ডিলিট
+                // Single student delete
                 if (deleteStudentData && deleteStudentData.id) {
                     deleteSingleStudent(deleteStudentData.id);
                 }
             } else if (deleteType === 'bulk') {
-                // বাল্ক ডিলিট
+                // Bulk delete
                 deleteBulkStudents();
             } else if (deleteType === 'clearData') {
-                // সব ডেটা ডিলিট
+                // Clear all data
                 clearAllData();
             }
             
@@ -3445,26 +3699,26 @@
             deleteStudentData = null;
         }
 
-        // একক ছাত্র-ছাত্রী ডিলিট
+        // Delete single student
         function deleteSingleStudent(studentId) {
             const index = students.findIndex(s => s.id === studentId);
             if (index !== -1) {
                 const studentName = students[index].name;
                 
-                // ছাত্র-ছাত্রী ডিলিট
+                // Delete student
                 students.splice(index, 1);
                 
-                // সংশ্লিষ্ট হাজিরা ডেটা ডিলিট
+                // Delete associated attendance data
                 attendance = attendance.filter(a => a.studentId !== studentId);
                 
-                // Firebase থেকে ডিলিট
+                // Delete from Firebase
                 deleteStudentFromFirebase(studentId);
                 
-                // লোকাল স্টোরেজে সেভ
+                // Save to local storage
                 saveToLocal('students', students);
                 saveToLocal('attendance', attendance);
                 
-                // নির্বাচিত ছাত্র-ছাত্রীদের তালিকা থেকে রিমুভ
+                // Remove from selected students list
                 selectedStudents.delete(studentId);
                 
                 updateUI();
@@ -3473,7 +3727,7 @@
             }
         }
 
-        // বাল্ক ডিলিট
+        // Bulk delete
         function deleteBulkStudents() {
             if (selectedStudents.size === 0) {
                 showToast('কোন ছাত্র-ছাত্রী নির্বাচন করা হয়নি!', 'warning');
@@ -3482,28 +3736,28 @@
             
             let deletedCount = 0;
             
-            // প্রতিটি নির্বাচিত ছাত্র-ছাত্রী ডিলিট করুন
+            // Delete each selected student
             selectedStudents.forEach(studentId => {
                 const index = students.findIndex(s => s.id === studentId);
                 if (index !== -1) {
-                    // ছাত্র-ছাত্রী ডিলিট
+                    // Delete student
                     students.splice(index, 1);
                     
-                    // সংশ্লিষ্ট হাজিরা ডেটা ডিলিট
+                    // Delete associated attendance data
                     attendance = attendance.filter(a => a.studentId !== studentId);
                     
-                    // Firebase থেকে ডিলিট
+                    // Delete from Firebase
                     deleteStudentFromFirebase(studentId);
                     
                     deletedCount++;
                 }
             });
             
-            // লোকাল স্টোরেজে সেভ
+            // Save to local storage
             saveToLocal('students', students);
             saveToLocal('attendance', attendance);
             
-            // নির্বাচিত ছাত্র-ছাত্রীদের তালিকা ক্লিয়ার
+            // Clear selected students list
             selectedStudents.clear();
             
             updateUI();
@@ -3511,13 +3765,13 @@
             showToast(`${toBangla(deletedCount)} জন ছাত্র-ছাত্রী সফলভাবে ডিলিট করা হয়েছে!`, 'success');
         }
 
-        // হাজিরা মার্ক করা (বর্তমান তারিখের জন্য)
+        // Mark attendance (for current date)
         function markAttendance(studentId, status) {
             const today = new Date().toDateString();
             markAttendanceForDate(studentId, status, today);
         }
 
-        // নির্দিষ্ট তারিখের জন্য হাজিরা মার্ক করা
+        // Mark attendance for specific date
         function markAttendanceForDate(studentId, status, dateString) {
             const student = students.find(s => s.id === studentId);
             const statusText = status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
@@ -3536,7 +3790,7 @@
                 status: status,
                 timestamp: new Date().toISOString(),
                 teacher: getClassTeacher(student.class),
-                corrected: existingIndex !== -1 // সংশোধন করা হয়েছে কিনা
+                corrected: existingIndex !== -1 // Whether it was corrected
             };
             
             if (existingIndex !== -1) {
@@ -3560,7 +3814,7 @@
             updateDashboard();
         }
 
-        // ছাত্র-ছাত্রী এডিট
+        // Edit student
         function editStudent(studentId) {
             const student = students.find(s => s.id === studentId);
             if (!student) return;
@@ -3579,7 +3833,7 @@
             document.getElementById('addStudentModal').classList.remove('hidden');
         }
 
-        // ছাত্র-ছাত্রী ডিটেইলস দেখাও
+        // View student details
         function viewStudentDetails(studentId) {
             const student = students.find(s => s.id === studentId);
             if (!student) return;
@@ -3675,14 +3929,14 @@
                 </div>
                 
                 <div class="flex gap-4 pt-6 border-t">
-                    <button onclick="editStudent('${student.id}')" class="btn btn-primary flex-1">
+                    <button onclick="editStudent('${student.id}')" class="btn btn-primary flex-1 ripple">
                         <i class="fas fa-edit"></i> তথ্য এডিট
                     </button>
                     <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
-                            class="btn btn-danger flex-1">
+                            class="btn btn-danger flex-1 ripple">
                         <i class="fas fa-trash-alt"></i> ডিলিট করুন
                     </button>
-                    <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
+                    <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1 ripple">
                         <i class="fas fa-times"></i> বন্ধ করুন
                     </button>
                 </div>
@@ -3693,7 +3947,7 @@
             document.getElementById('reportModal').classList.remove('hidden');
         }
 
-        // সবাইকে উপস্থিত মার্ক
+        // Mark all present
         function markAllPresent() {
             const dateString = isPastDateMode && selectedPastDate ? selectedPastDate : new Date().toDateString();
             const banglaDate = getBanglaDateFromString(dateString);
@@ -3737,7 +3991,7 @@
             showToast(`সবাইকে ${banglaDate} তারিখের জন্য উপস্থিত মার্ক করা হয়েছে!`, 'success');
         }
 
-        // ছাত্র-ছাত্রী সংরক্ষণ
+        // Save student
         function saveStudent() {
             const id = document.getElementById('studentId').value.trim();
             const roll = document.getElementById('studentRoll').value.trim();
@@ -3788,7 +4042,7 @@
             updateUI();
         }
 
-        // ছাত্র-ছাত্রী খুঁজা
+        // Search students
         function searchStudents(page = 'attendance') {
             const searchInputId = page === 'attendance' ? 'searchInputAttendance' : 'searchInputStudents';
             const searchText = document.getElementById(searchInputId).value.toLowerCase();
@@ -3857,11 +4111,11 @@
                         <td class="attendance-column">
                             <div class="flex flex-col md:flex-row gap-2">
                                 <button onclick="markAttendanceForDate('${student.id}', 'present', '${dateString}')" 
-                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'}">
+                                        class="attendance-btn ${status === 'present' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-green-500 border-green-500'} ripple">
                                     <i class="fas fa-check"></i> উপস্থিত
                                 </button>
                                 <button onclick="markAttendanceForDate('${student.id}', 'absent', '${dateString}')" 
-                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'}">
+                                        class="attendance-btn ${status === 'absent' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500'} ripple">
                                     <i class="fas fa-times"></i> অনুপস্থিত
                                 </button>
                             </div>
@@ -3886,11 +4140,11 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
+                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit ripple">
                                     <i class="fas fa-edit"></i> এডিট
                                 </button>
                                 <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
-                                        class="action-btn action-btn-delete">
+                                        class="action-btn action-btn-delete ripple">
                                     <i class="fas fa-trash-alt"></i> ডিলিট
                                 </button>
                             </div>
@@ -3955,11 +4209,11 @@
                         <td>${student.address || 'N/A'}</td>
                         <td>
                             <div class="action-buttons">
-                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit">
+                                <button onclick="editStudent('${student.id}')" class="action-btn action-btn-edit ripple">
                                     <i class="fas fa-edit"></i> এডিট
                                 </button>
                                 <button onclick="showDeleteConfirmation('single', 'আপনি কি নিশ্চিত?', '${student.id}')" 
-                                        class="action-btn action-btn-delete">
+                                        class="action-btn action-btn-delete ripple">
                                     <i class="fas fa-trash-alt"></i> ডিলিট
                                 </button>
                             </div>
@@ -3972,14 +4226,14 @@
             updateBulkDeleteOptions();
         }
 
-        // শিক্ষক ব্যবস্থাপনা দেখাও
+        // Show teacher management
         function showTeacherManagement() {
             renderTeacherInputs();
             document.getElementById('teacherManagementModal').classList.remove('hidden');
             hideMobileMenu();
         }
 
-        // শিক্ষক ইনপুট রেন্ডার
+        // Render teacher inputs
         function renderTeacherInputs() {
             const ibtidayeeContainer = document.getElementById('ibtidayeeTeachers');
             const dakhilContainer = document.getElementById('dakhilTeachers');
@@ -3989,7 +4243,7 @@
             let dakhilHtml = '';
             let alimHtml = '';
             
-            // ইবতেদায়ী শ্রেণিসমূহ
+            // Ibtidayee classes
             for (let i = 1; i <= 5; i++) {
                 const classValue = `ibtidayee-${i}`;
                 const classInfo = getClassLabel(classValue);
@@ -4010,7 +4264,7 @@
                 `;
             }
             
-            // দাখিল শ্রেণিসমূহ
+            // Dakhil classes
             for (let i = 6; i <= 10; i++) {
                 const classValue = `dakhil-${i}`;
                 const classInfo = getClassLabel(classValue);
@@ -4031,7 +4285,7 @@
                 `;
             }
             
-            // আলিম শ্রেণিসমূহ
+            // Alim classes
             for (let i = 11; i <= 12; i++) {
                 const classValue = `alim-${i}`;
                 const classInfo = getClassLabel(classValue);
@@ -4057,9 +4311,9 @@
             alimContainer.innerHTML = alimHtml;
         }
 
-        // শিক্ষক সংরক্ষণ
+        // Save teachers
         function saveTeachers() {
-            // ইবতেদায়ী শ্রেণিসমূহ
+            // Ibtidayee classes
             for (let i = 1; i <= 5; i++) {
                 const classValue = `ibtidayee-${i}`;
                 const input = document.getElementById(`teacher-${classValue}`);
@@ -4068,7 +4322,7 @@
                 }
             }
             
-            // দাখিল শ্রেণিসমূহ
+            // Dakhil classes
             for (let i = 6; i <= 10; i++) {
                 const classValue = `dakhil-${i}`;
                 const input = document.getElementById(`teacher-${classValue}`);
@@ -4077,7 +4331,7 @@
                 }
             }
             
-            // আলিম শ্রেণিসমূহ
+            // Alim classes
             for (let i = 11; i <= 12; i++) {
                 const classValue = `alim-${i}`;
                 const input = document.getElementById(`teacher-${classValue}`);
@@ -4098,14 +4352,14 @@
             showToast('শ্রেণি শিক্ষকদের তথ্য সংরক্ষণ করা হয়েছে!', 'success');
         }
 
-        // শ্রেণি হাজিরা সীট দেখাও
+        // Show class sheets
         function showClassSheets() {
             document.getElementById('classSheetsModal').classList.remove('hidden');
             loadClassSheet();
             hideMobileMenu();
         }
 
-        // শ্রেণি সীট লোড
+        // Load class sheet
         function loadClassSheet() {
             const selectedClass = document.getElementById('sheetClassSelect').value;
             let filteredStudents = students;
@@ -4209,7 +4463,7 @@
             document.getElementById('classSheetContent').innerHTML = content;
         }
 
-        // শ্রেণি সীট প্রিন্ট
+        // Print class sheet
         function printClassSheet() {
             const printContent = document.getElementById('classSheetContent').innerHTML;
             const originalContent = document.body.innerHTML;
@@ -4281,7 +4535,7 @@
             loadClassSheet();
         }
 
-        // শ্রেণি সীট ডাউনলোড
+        // Export class sheet
         function exportClassSheet() {
             const dateString = selectedPastDate || new Date().toDateString();
             const date = new Date(dateString);
@@ -4320,7 +4574,7 @@
             showToast('হাজিরা সীট ডাউনলোড করা হয়েছে!', 'success');
         }
 
-        // সাপ্তাহিক রিপোর্ট
+        // Weekly report
         function renderWeeklyReport() {
             const container = document.getElementById('weeklyReport');
             const days = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহ', 'শুক্র', 'শনি'];
@@ -4346,7 +4600,7 @@
                 else colorClass = 'from-red-50 to-pink-100';
                 
                 html += `
-                    <div class="text-center p-4 bg-gradient-to-br ${colorClass} rounded-xl cursor-pointer hover:shadow-lg transition" 
+                    <div class="text-center p-4 bg-gradient-to-br ${colorClass} rounded-xl cursor-pointer hover-lift transition" 
                          onclick="showDayReport('${dateStr}')">
                         <div class="font-bold text-gray-800 text-lg mb-1">${days[date.getDay()]}</div>
                         <div class="text-sm text-gray-600 mb-3">${toBangla(date.getDate())}/${toBangla(date.getMonth() + 1)}</div>
@@ -4376,7 +4630,7 @@
             container.innerHTML = html;
         }
 
-        // সাপ্তাহিক রিপোর্ট দেখাও
+        // Show weekly report
         function showWeeklyReport() {
             let content = `
                 <h3 class="text-lg font-bold mb-6">এই সপ্তাহের হাজিরা রিপোর্ট</h3>
@@ -4429,7 +4683,7 @@
                             </span>
                         </td>
                         <td class="py-3 px-4">
-                            <button onclick="showDayReport('${dateStr}')" class="btn btn-info text-sm py-1">
+                            <button onclick="showDayReport('${dateStr}')" class="btn btn-info text-sm py-1 ripple">
                                 <i class="fas fa-eye"></i> দেখুন
                             </button>
                         </td>
@@ -4458,7 +4712,7 @@
             hideMobileMenu();
         }
 
-        // নির্দিষ্ট দিনের রিপোর্ট
+        // Show specific day report
         function showDayReport(dateStr) {
             const date = new Date(dateStr);
             const dayAttendance = attendance.filter(a => a.date === dateStr);
@@ -4589,7 +4843,7 @@
             hideMobileMenu();
         }
 
-        // উপস্থিত ছাত্র-ছাত্রী দেখাও
+        // Show students
         function showStudents(status) {
             const today = new Date().toDateString();
             const dayAttendance = attendance.filter(a => a.date === today);
@@ -4624,23 +4878,21 @@
                 
                 content += `
                     <div class="flex items-center justify-between p-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} rounded-xl mb-3 shadow-sm">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-4">
-                                <div>
-                                    <div class="font-semibold text-gray-800">${student.name}</div>
-                                    <div class="text-sm text-gray-600 mt-1">
-                                        আইডি: ${student.id} | রোল: ${toBangla(student.roll)} | 
-                                        <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
-                                    </div>
-                                    <div class="text-sm text-gray-600">
-                                        পিতা: ${student.father} | শিক্ষক: <span class="text-purple-600">${teacherName}</span>
-                                    </div>
+                        <div class="flex items-center gap-4">
+                            <div>
+                                <div class="font-semibold text-gray-800">${student.name}</div>
+                                <div class="text-sm text-gray-600 mt-1">
+                                    আইডি: ${student.id} | রোল: ${toBangla(student.roll)} | 
+                                    <span class="${classInfo.badge} class-badge">${classInfo.label}</span>
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    পিতা: ${student.father} | শিক্ষক: <span class="text-purple-600">${teacherName}</span>
                                 </div>
                             </div>
                         </div>
                         <div>
                             <button onclick="markAttendance('${student.id}', '${status === 'present' ? 'absent' : 'present'}')" 
-                                    class="btn ${status === 'present' ? 'btn-danger' : 'btn-success'}">
+                                    class="btn ${status === 'present' ? 'btn-danger' : 'btn-success'} ripple">
                                 ${status === 'present' ? 'অনুপস্থিত' : 'উপস্থিত'}
                             </button>
                         </div>
@@ -4667,25 +4919,25 @@
             hideMobileMenu();
         }
 
-        // সব ছাত্র-ছাত্রী দেখাও
+        // Show all students
         function showAllStudents() {
             showStudents('all');
         }
 
-        // আজকের রিপোর্ট দেখাও
+        // Show today's report
         function showTodayReport() {
             const today = new Date().toDateString();
             showDayReport(today);
         }
 
-        // কল সাপোর্ট ফাংশন
+        // Call support function
         function callSupport() {
             showToast('কল করা হচ্ছে: ০১৮১১২৩৬৫৪৮', 'info');
-            // মোবাইল ডিভাইসে কল করার জন্য
+            // For mobile devices to make a call
             if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 window.open('tel:01811236548');
             } else {
-                // কম্পিউটারে কল করার অপশন
+                // Call option for computers
                 document.getElementById('reportTitle').textContent = 'প্রয়োজনে যোগাযোগ';
                 document.getElementById('reportContent').innerHTML = `
                     <div class="text-center p-8">
@@ -4698,7 +4950,7 @@
                             যেকোনো সমস্যা বা জিজ্ঞাসার জন্য উপরের নম্বরে কল করুন।
                             আমাদের সাপোর্ট টিম আপনাকে সাহায্য করতে প্রস্তুত।
                         </div>
-                        <button onclick="closeReportModal()" class="btn btn-primary">
+                        <button onclick="closeReportModal()" class="btn btn-primary ripple">
                             <i class="fas fa-check"></i> ঠিক আছে
                         </button>
                     </div>
@@ -4707,7 +4959,7 @@
             }
         }
 
-        // কনফার্মেশন মডেল
+        // Confirmation modal
         function confirmAction(action, title, message, data = null) {
             pendingAction = action;
             confirmationData = data;
@@ -4753,7 +5005,7 @@
             confirmationData = null;
         }
 
-        // সব ডেটা ডিলিট
+        // Clear all data
         function clearAllData() {
             // Clear from Firebase
             if (firebaseInitialized && isFirebaseConnected) {
@@ -4788,7 +5040,7 @@
             showToast('সমস্ত ডেটা সফলভাবে ডিলিট করা হয়েছে!', 'success');
         }
 
-        // মডেল কন্ট্রোল
+        // Modal control
         function showAddStudentModal() {
             document.getElementById('modalTitle').textContent = 'নতুন ছাত্র-ছাত্রী যোগ';
             document.getElementById('studentId').value = '';
@@ -4826,7 +5078,7 @@
             document.getElementById('reportModal').classList.add('hidden');
         }
 
-        // টোয়াস্ট মেসেজ
+        // Toast message
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
@@ -4834,10 +5086,10 @@
             toast.className = 'toast hidden';
             toastMessage.textContent = message;
             
-            // টাইপ সেট করুন
+            // Set type
             toast.classList.add(`toast-${type}`);
             
-            // আইকন সেট করুন
+            // Set icon
             const icon = toast.querySelector('i');
             if (type === 'success') {
                 icon.className = 'fas fa-check-circle text-xl';
@@ -4849,10 +5101,10 @@
                 icon.className = 'fas fa-info-circle text-xl';
             }
             
-            // টোয়াস্ট দেখান
+            // Show toast
             toast.classList.remove('hidden');
             
-            // ৩ সেকেন্ড পর অটো হাইড
+            // Auto hide after 3 seconds
             setTimeout(() => {
                 toast.classList.add('hidden');
             }, 3000);
@@ -5116,10 +5368,10 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button onclick="filterByClass('${classValue}'); showPage('attendance');" class="action-btn action-btn-view">
+                                <button onclick="filterByClass('${classValue}'); showPage('attendance');" class="action-btn action-btn-view ripple">
                                     <i class="fas fa-eye"></i> দেখুন
                                 </button>
-                                <button onclick="showClassStudents('${classValue}')" class="action-btn action-btn-edit">
+                                <button onclick="showClassStudents('${classValue}')" class="action-btn action-btn-edit ripple">
                                     <i class="fas fa-list"></i> তালিকা
                                 </button>
                             </div>
@@ -5176,7 +5428,7 @@
                                 </div>
                             </div>
                             <div>
-                                <button onclick="viewStudentDetails('${student.id}')" class="btn btn-info text-sm">
+                                <button onclick="viewStudentDetails('${student.id}')" class="btn btn-info text-sm ripple">
                                     <i class="fas fa-eye"></i> বিস্তারিত
                                 </button>
                             </div>
@@ -5189,10 +5441,10 @@
                 </div>
                 <div class="mt-6 pt-6 border-t">
                     <div class="flex gap-4">
-                        <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
+                        <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1 ripple">
                             <i class="fas fa-times"></i> বন্ধ করুন
                         </button>
-                        <button onclick="filterByClass('${classValue}'); showPage('attendance'); closeReportModal();" class="btn btn-primary flex-1">
+                        <button onclick="filterByClass('${classValue}'); showPage('attendance'); closeReportModal();" class="btn btn-primary flex-1 ripple">
                             <i class="fas fa-calendar-check"></i> হাজিরা করুন
                         </button>
                     </div>
@@ -5514,7 +5766,7 @@
                             </span>
                         </td>
                         <td class="py-3 px-4">
-                            <button onclick="showClassStudents('${classValue}')" class="btn btn-info text-sm py-1">
+                            <button onclick="showClassStudents('${classValue}')" class="btn btn-info text-sm py-1 ripple">
                                 <i class="fas fa-eye"></i> দেখুন
                             </button>
                         </td>
@@ -5593,7 +5845,7 @@
                                 </div>
                             </div>
                             <div class="ml-4">
-                                <button onclick="viewStudentDetails('${student.id}')" class="btn btn-info text-sm">
+                                <button onclick="viewStudentDetails('${student.id}')" class="btn btn-info text-sm ripple">
                                     <i class="fas fa-eye"></i> বিস্তারিত
                                 </button>
                             </div>
@@ -5606,10 +5858,10 @@
                 </div>
                 <div class="mt-6 pt-6 border-t">
                     <div class="flex gap-4">
-                        <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
+                        <button onclick="closeReportModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1 ripple">
                             <i class="fas fa-times"></i> বন্ধ করুন
                         </button>
-                        <button onclick="exportData()" class="btn btn-success flex-1">
+                        <button onclick="exportData()" class="btn btn-success flex-1 ripple">
                             <i class="fas fa-download"></i> এক্সপোর্ট করুন
                         </button>
                     </div>
@@ -5655,7 +5907,7 @@
                     </select>
                 </div>
                 <div id="monthlyReportContent">
-                    <!-- মাসিক রিপোর্ট লোড হবে -->
+                    <!-- Monthly report will load -->
                 </div>
             `;
             
@@ -5770,7 +6022,7 @@
                         </td>
                         <td class="py-3 px-4">
                             ${dayData.hasData ? 
-                                `<button onclick="showDayReport('${dayData.date.toDateString()}')" class="btn btn-info text-sm py-1">
+                                `<button onclick="showDayReport('${dayData.date.toDateString()}')" class="btn btn-info text-sm py-1 ripple">
                                     <i class="fas fa-eye"></i> দেখুন</button>` :
                                 '<span class="text-gray-400 text-sm">ডেটা নাই</span>'
                             }
@@ -5835,7 +6087,7 @@
             }, 1500);
         }
 
-        // অতীত তারিখের হাজিরা সংশোধন ফাংশনগুলি
+        // Past date attendance functions
         function showPastDateAttendance() {
             document.getElementById('pastDateSelector').classList.remove('hidden');
             // Set default date to yesterday
@@ -5961,11 +6213,11 @@
                         <td class="py-3 px-4">
                             <div class="flex gap-2">
                                 <button onclick="markAttendanceForDate('${student.id}', 'present', '${dateString}')" 
-                                        class="btn ${status === 'present' ? 'btn-success' : 'btn-outline-success'} text-sm py-1">
+                                        class="btn ${status === 'present' ? 'btn-success' : 'btn-outline-success'} text-sm py-1 ripple">
                                     <i class="fas fa-check"></i> উপস্থিত
                                 </button>
                                 <button onclick="markAttendanceForDate('${student.id}', 'absent', '${dateString}')" 
-                                        class="btn ${status === 'absent' ? 'btn-danger' : 'btn-outline-danger'} text-sm py-1">
+                                        class="btn ${status === 'absent' ? 'btn-danger' : 'btn-outline-danger'} text-sm py-1 ripple">
                                     <i class="fas fa-times"></i> অনুপস্থিত
                                 </button>
                             </div>
@@ -5982,13 +6234,13 @@
                 
                 <div class="mt-6 pt-6 border-t">
                     <div class="flex gap-4">
-                        <button onclick="closePastDateCorrectionModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1">
+                        <button onclick="closePastDateCorrectionModal()" class="btn bg-gradient-to-r from-gray-500 to-gray-600 flex-1 ripple">
                             <i class="fas fa-times"></i> বন্ধ করুন
                         </button>
-                        <button onclick="markAllPresentForDate('${dateString}')" class="btn btn-success flex-1">
+                        <button onclick="markAllPresentForDate('${dateString}')" class="btn btn-success flex-1 ripple">
                             <i class="fas fa-check-circle"></i> সবাই উপস্থিত
                         </button>
-                        <button onclick="loadDateForCorrection()" class="btn btn-primary flex-1">
+                        <button onclick="loadDateForCorrection()" class="btn btn-primary flex-1 ripple">
                             <i class="fas fa-redo"></i> রিফ্রেশ
                         </button>
                     </div>
@@ -6063,6 +6315,24 @@
                     document.getElementById('searchInputAttendance')?.focus();
                 }, 100);
             }
+            
+            // Add mobile menu links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const href = link.getAttribute('href');
+                    if (href === '#') {
+                        const text = link.textContent.trim();
+                        if (text.includes('ড্যাশবোর্ড')) showPage('dashboard');
+                        else if (text.includes('হাজিরা')) showPage('attendance');
+                        else if (text.includes('ছাত্র-ছাত্রী তালিকা')) showPage('students');
+                        else if (text.includes('রিপোর্ট')) showPage('reports');
+                        else if (text.includes('শ্রেণি ব্যবস্থাপনা')) showPage('classes');
+                        else if (text.includes('সেটিংস')) showPage('settings');
+                    }
+                });
+            });
         });
 
         // Keyboard shortcuts
@@ -6100,7 +6370,7 @@
                 cancelDelete();
                 closePastDateCorrectionModal();
                 closePastDateSelector();
-                hideMobileMenu(); // ESC-এ মেনু বন্ধ হবে
+                hideMobileMenu(); // ESC will close menu
             }
             
             // PWA Install Shortcut
@@ -6117,7 +6387,7 @@
                 }
             }
             
-            // অতীত তারিখ মোড টগল (Alt+P)
+            // Past date mode toggle (Alt+P)
             if (e.altKey && e.key === 'p') {
                 e.preventDefault();
                 if (isPastDateMode) {
